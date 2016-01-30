@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# How do I get apache to startup at bootime on Linux
+# http://serverfault.com/a/16903
+# http://help.directadmin.com/item.php?id=379
+
+##
+# /etc/init.d/apache2
+# Startup script for the Apache HTTP Server
+#
+# chkconfig: 3 85 15
+# description: Apache is a World Wide Web server.  It is used to serve HTML files and CGI.
+##
+
+/usr/local/apache2/bin/apachectl $@
