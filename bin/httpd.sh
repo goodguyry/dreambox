@@ -32,15 +32,17 @@ tar xvf "$PACKAGE_NAME".tar;
 cd "$PACKAGE_NAME"/;
 
 # Configure and build
+# https://httpd.apache.org/docs/2.2/programs/configure.html
 ./configure \
---disable-autoindex \
+--enable-mods-shared='all actions alias autoindex cgi deflate expires headers rewrite ssl unique-id' \
 --enable-actions \
+--enable-alias \
+--enable-autoindex \
 --enable-cgi \
 --enable-deflate \
 --enable-expires \
 --enable-headers \
 --enable-rewrite \
---enable-so \
 --enable-ssl \
 --enable-unique-id \
 --with-included-apr \
