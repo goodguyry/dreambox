@@ -21,7 +21,8 @@ apt-get -y install make checkinstall zip;
 cd /usr/local/src;
 
 # Download mod_fastcgi
-wget http://www.fastcgi.com/dist/"$MOD_NAME".tar.gz;
+# wget http://www.fastcgi.com/dist/"$MOD_NAME".tar.gz;
+wget https://fossies.org/linux/www/apache_httpd_modules/"$MOD_NAME".tar.gz;
 
 # Unpack the files
 tar xvfz "$MOD_NAME".tar.gz;
