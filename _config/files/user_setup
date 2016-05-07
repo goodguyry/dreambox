@@ -107,7 +107,7 @@ if [[ -n $DREAMBOX_USER_NAME && -n $DREAMBOX_SITE_ROOT && -n $DREAMBOX_PROJECT_D
   USER_NAME="$DREAMBOX_USER_NAME"
   USER_DIR="$USER_DIR/$USER_NAME"
   SITE_ROOT="$USER_DIR/$DREAMBOX_SITE_ROOT"
-  PROJECT_ROOT="/vagrant$DREAMBOX_PROJECT_DIR"
+  PROJECT_ROOT="/vagrant/$DREAMBOX_PROJECT_DIR"
 
   # Setting status to 4 allows for automating in non-interactive shells, such
   # as during Vagrant provisioning
