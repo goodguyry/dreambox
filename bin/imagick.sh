@@ -31,7 +31,7 @@ ldconfig /usr/local/lib;
 cd /usr/local/src;
 
 # Download ImageMagick 6.6.9
-wget http://skylineservers.dl.sourceforge.net/project/imagemagick/old-sources/6.x/6.6/"$PACKAGE_NAME".tar.gz;
+wget https://sourceforge.net/projects/imagemagick/files/old-sources/6.x/6.6/"$PACKAGE_NAME".tar.gz;
 
 # Unpack the files
 tar xvzf "$PACKAGE_NAME".tar.gz;
