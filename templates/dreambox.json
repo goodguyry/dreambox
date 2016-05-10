@@ -9,24 +9,24 @@
   "provisioners": [
     {
       "type": "file",
-      "source": "files",
+      "source": "{{pwd}}/files",
       "destination": "/tmp"
     },
     {
       "type": "file",
-      "source": "packages",
+      "source": "{{pwd}}/packages",
       "destination": "/tmp"
     },
     {
       "type": "shell",
       "scripts": [
-        "scripts/base.sh",
-        "scripts/package-setup.sh",
-        "scripts/virtualbox.sh",
-        "scripts/vmware.sh",
-        "scripts/vagrant.sh",
-        "scripts/cleanup.sh",
-        "scripts/zerodisk.sh"
+        "{{pwd}}/scripts/base.sh",
+        "{{pwd}}/scripts/package-setup.sh",
+        "{{pwd}}/scripts/virtualbox.sh",
+        "{{pwd}}/scripts/vmware.sh",
+        "{{pwd}}/scripts/vagrant.sh",
+        "{{pwd}}/scripts/cleanup.sh",
+        "{{pwd}}/scripts/zerodisk.sh"
       ],
       "override": {
         "virtualbox-iso": {
