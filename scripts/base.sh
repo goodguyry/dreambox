@@ -38,13 +38,6 @@ EOF
 
 update-grub
 
-if [[ $DREAMBOX_ENV == "develop" ]]; then
-  # Simulate packer file upload provisioner
-  echo "Copying to /tmp"
-  cp -R /vagrant/files /tmp
-  cp -R /vagrant/packages /tmp
-fi
-
 # Unzip the archives
 echo "Unziping the archives"
 find /tmp/packages/ -name '*.zip' -exec unzip -d /usr/local/src/ {} \; > /dev/null 2>&1
