@@ -20,14 +20,14 @@ Vagrant.configure(2) do |config|
   # Installed utinities and libraries
   config.vm.provision "base",
     type: "shell",
-    path: "_config/scripts/base.sh",
+    path: "scripts/base.sh",
     # Environment variable for simulating Packer file provisioner
     :env => {"DREAMBOX_ENV" => "develop"}
 
   # Post-install MySQL setup
   config.vm.provision "package-setup",
     type: "shell",
-    path: "_config/scripts/package-setup.sh"
+    path: "scripts/package-setup.sh"
 
   # Environment variables for automating user_setup
   user_vars = {

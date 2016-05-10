@@ -6,7 +6,7 @@
 
 # Set Apache to start at boot
 echo "Setting Apache to start at boot"
-cp /tmp/files/apache2 /etc/init.d/
+cp /tmp/files/http/apache2 /etc/init.d/
 chmod +x /etc/init.d/apache2
 ln -s /usr/lib/insserv/insserv /sbin/insserv
 chkconfig --add apache2 > /dev/null 2>&1
