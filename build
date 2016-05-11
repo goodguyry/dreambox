@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# #
+# Build script for the Dreambox
+# #
+
+set -e
+
+if [[ "$@" == 'dreambox' ]]; then
+  # Build and deploy to atlas
+  packer build -var-file=templates/common.json templates/dreambox.json
+else
+  # Clear the builds directory, rather than forcing the build
+  rm -f builds/*
+  # Remove the box from Vagrant to avoid collisions
+  vagrant box remove --force --all dreambox_pre
+  # Build for local testing
+  packer build -var-file=templates/common.json templates/local.json
+  # Add the box to vagrant as 'dreambox_pre'
+  vagrant box add --force dreambox_pre builds/dreambox.*.box
+fi
