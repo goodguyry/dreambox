@@ -1,39 +1,36 @@
 {
   "push": {
-    "name": "goodguyry/dreambox"
+    "name": "{{ user `name` }}"
   },
-  "description": "A Vagrant environment based on DreamHost's shared hosting",
-  "variables": {
-    "box_version": "0.1.0"
-  },
+  "description": "{{ user `description` }}",
   "provisioners": [
     {
       "type": "file",
-      "source": "{{pwd}}/files",
+      "source": "{{ pwd }}/files",
       "destination": "/tmp"
     },
     {
       "type": "file",
-      "source": "{{pwd}}/packages",
+      "source": "{{ pwd }}/packages",
       "destination": "/tmp"
     },
     {
       "type": "shell",
       "scripts": [
-        "{{pwd}}/scripts/base.sh",
-        "{{pwd}}/scripts/package-setup.sh",
-        "{{pwd}}/scripts/virtualbox.sh",
-        "{{pwd}}/scripts/vmware.sh",
-        "{{pwd}}/scripts/vagrant.sh",
-        "{{pwd}}/scripts/cleanup.sh",
-        "{{pwd}}/scripts/zerodisk.sh"
+        "{{ pwd }}/scripts/base.sh",
+        "{{ pwd }}/scripts/package-setup.sh",
+        "{{ pwd }}/scripts/virtualbox.sh",
+        "{{ pwd }}/scripts/vmware.sh",
+        "{{ pwd }}/scripts/vagrant.sh",
+        "{{ pwd }}/scripts/cleanup.sh",
+        "{{ pwd }}/scripts/zerodisk.sh"
       ],
       "override": {
         "virtualbox-iso": {
-          "execute_command": "echo 'vagrant'|sudo -S bash '{{.Path}}'"
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
         },
         "vmware-iso": {
-          "execute_command": "echo 'vagrant'|sudo -S bash '{{.Path}}'"
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
         }
       }
     }
@@ -50,22 +47,22 @@
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false ",
         "initrd=/install/initrd.gz -- <enter>"
       ],
-      "headless": true,
-      "boot_wait": "10s",
-      "disk_size": 20480,
-      "guest_os_type": "Ubuntu_64",
-      "http_directory": "files/preseed",
-      "iso_checksum": "af224223de99e2a730b67d7785b657f549be0d63221188e105445f75fb8305c9",
-      "iso_checksum_type": "sha256",
-      "iso_url": "http://releases.ubuntu.com/precise/ubuntu-12.04.5-server-amd64.iso",
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
-      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
-      "virtualbox_version_file": ".vbox_version",
-      "vm_name": "dreambox"
+      "headless": "{{ user `headless` }}",
+      "boot_wait": "{{ user `boot_wait` }}",
+      "disk_size": "{{ user `disk_size` }}",
+      "guest_os_type": "{{ user `virtualbox_guest_os_type` }}",
+      "http_directory": "{{ user `http_directory` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_port": "{{ user `ssh_port` }}",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
+      "shutdown_command": "{{ user `shutdown_command` }}",
+      "vm_name": "{{ user `vm_name` }}",
+      "guest_additions_path": "VBoxGuestAdditions_{{ .Version }}.iso",
+      "virtualbox_version_file": ".vbox_version"
     },
     {
       "type": "vmware-iso",
@@ -78,22 +75,24 @@
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false ",
         "initrd=/install/initrd.gz -- <enter>"
       ],
-      "boot_wait": "10s",
-      "disk_size": 20480,
+      "headless": "{{ user `headless` }}",
+      "boot_wait": "{{ user `boot_wait` }}",
+      "disk_size": "{{ user `disk_size` }}",
+      "http_directory": "{{ user `http_directory` }}",
+      "iso_checksum": "{{ user `iso_checksum` }}",
+      "iso_checksum_type": "{{ user `iso_checksum_type` }}",
+      "iso_url": "{{ user `iso_url` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_port": "{{ user `ssh_port` }}",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
+      "shutdown_command": "{{ user `shutdown_command` }}",
+      "vm_name": "{{ user `vm_name` }}",
+      "guest_additions_path": "VBoxGuestAdditions_{{ .Version }}.iso",
+      "virtualbox_version_file": ".vbox_version",
       "guest_os_type": "Ubuntu-64",
-      "headless": true,
-      "http_directory": "files/preseed",
-      "iso_checksum": "af224223de99e2a730b67d7785b657f549be0d63221188e105445f75fb8305c9",
-      "iso_checksum_type": "sha256",
-      "iso_url": "http://releases.ubuntu.com/precise/ubuntu-12.04.5-server-amd64.iso",
       "skip_compaction": true,
-      "ssh_username": "vagrant",
-      "ssh_password": "vagrant",
-      "ssh_port": 22,
-      "ssh_wait_timeout": "10000s",
-      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
-      "tools_upload_flavor": "linux",
-      "vm_name": "dreambox"
+      "tools_upload_flavor": "linux"
     }
   ],
   "post-processors": [
@@ -104,7 +103,7 @@
     {
       "type": "atlas",
       "only": ["vmware-iso"],
-      "artifact": "goodguyry/dreambox",
+      "artifact": "{{ user `name` }}",
       "artifact_type": "vagrant.box",
       "metadata": {
         "provider": "vmware_desktop",
@@ -114,7 +113,7 @@
     {
       "type": "atlas",
       "only": ["virtualbox-iso"],
-      "artifact": "goodguyry/dreambox",
+      "artifact": "{{ user `name` }}",
       "artifact_type": "vagrant.box",
       "metadata": {
         "provider": "virtualbox",
