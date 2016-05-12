@@ -51,4 +51,4 @@ make;
 checkinstall -D make install;
 
 # Zip it into the synced directory
-zip /vagrant/pkg/"$PACKAGE_NAME".zip *.deb modsecurity.conf-recommended unicode.mapping;
+zip /tmp/packages/"$PACKAGE_NAME".zip *.deb modsecurity.conf-recommended unicode.mapping;

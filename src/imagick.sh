@@ -67,7 +67,7 @@ make;
 checkinstall -D make install;
 
 # Zip it into the synced directory
-zip /vagrant/pkg/"$PACKAGE_NAME".zip *.deb;
+zip /tmp/packages/"$PACKAGE_NAME".zip *.deb;
 
 # imagick
 
@@ -98,4 +98,4 @@ make;
 checkinstall -D make install;
 
 # Zip it into the synced directory
-zip /vagrant/pkg/"$MOD_NAME".zip *.deb;
+zip /tmp/packages/"$MOD_NAME".zip *.deb;

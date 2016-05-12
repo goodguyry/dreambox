@@ -41,4 +41,4 @@ make;
 checkinstall -D make install;
 
 # Zip it into the synced directory
-zip /vagrant/pkg/"$MOD_NAME".zip *.deb;
+zip /tmp/packages/"$MOD_NAME".zip *.deb;
