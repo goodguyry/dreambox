@@ -33,10 +33,6 @@ cd "$PACKAGE_NAME"/;
 groupadd mysql;
 useradd -g mysql mysql;
 
-export CHOST="i686-pc-linux-gnu";
-export CFLAGS="-mcpu=i686 -march=i686 -O3 -pipe -fomit-frame-pointer";
-export CXX=gcc;
-
 cmake .;
 make;
 
