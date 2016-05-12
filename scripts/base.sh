@@ -38,16 +38,9 @@ EOF
 
 update-grub
 
-if [[ $DREAMBOX_ENV == "develop" ]]; then
-  # Simulate packer file upload provisioner
-  echo "Copying to /tmp"
-  cp -R /vagrant/_config/files /tmp/files
-  cp -R /vagrant/_config/pkg /tmp/pkg
-fi
-
 # Unzip the archives
 echo "Unziping the archives"
-find /tmp/pkg/ -name '*.zip' -exec unzip -d /usr/local/src/ {} \; > /dev/null 2>&1
+find /tmp/packages/ -name '*.zip' -exec unzip -d /usr/local/src/ {} \; > /dev/null 2>&1
 
 # Install the packages
 echo "Installing the packages"
@@ -67,19 +60,19 @@ echo "Copying files into place"
 
 # Copy the .ini file into place
 mkdir -p /etc/php56
-cp /tmp/files/php.ini /etc/php56/
+cp /tmp/files/php/php.ini /etc/php56/
 
 # Copy php-cgi to the Apache cgi-bin
 cp /usr/local/php56/bin/php-cgi /usr/local/apache2/cgi-bin/
 
 # Copy the PHP FastCGI Wrapper into place
-cp /tmp/files/php-fastcgi-wrapper /usr/local/bin/
+cp /tmp/files/php/php-fastcgi-wrapper /usr/local/bin/
 # Make it executable
 chmod +x /usr/local/bin/php-fastcgi-wrapper
 
 # Copy the Apache config files into place
-cp /tmp/files/httpd.conf /usr/local/apache2/conf/
-cp /tmp/files/httpd-vhosts.conf /usr/local/apache2/conf/extra/
+cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
+cp /tmp/files/http/httpd-vhosts.conf /usr/local/apache2/conf/extra/
 
 # Copy user setup script to vagrant home
 cp /tmp/files/user_setup /usr/local/bin/user_setup

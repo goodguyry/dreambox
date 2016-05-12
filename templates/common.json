@@ -1,0 +1,19 @@
+{
+  "name": "goodguyry/dreambox",
+  "box_version": "0.1.0",
+  "description": "A Vagrant environment based on DreamHost's shared hosting",
+  "headless": "true",
+  "boot_wait": "10s",
+  "disk_size": "20480",
+  "virtualbox_guest_os_type": "Ubuntu_64",
+  "http_directory": "files/preseed",
+  "iso_checksum": "af224223de99e2a730b67d7785b657f549be0d63221188e105445f75fb8305c9",
+  "iso_checksum_type": "sha256",
+  "iso_url": "http://releases.ubuntu.com/precise/ubuntu-12.04.5-server-amd64.iso",
+  "ssh_username": "vagrant",
+  "ssh_password": "vagrant",
+  "ssh_port": "22",
+  "ssh_wait_timeout": "10000s",
+  "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; echo 'vagrant'|sudo -S bash 'shutdown.sh'",
+  "vm_name": "dreambox"
+}

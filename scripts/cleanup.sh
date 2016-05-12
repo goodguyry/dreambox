@@ -13,10 +13,8 @@ rm /lib/udev/rules.d/75-persistent-net-generator.rules
 
 # Remove temporary directories
 echo "Removing temporary files"
-rm -f /tmp/user_setup
-rm -rf /tmp/httpd
-rm -rf /tmp/php
-rm -rf /tmp/pkg
+rm -rf /tmp/files
+rm -rf /tmp/packages
 
 echo "Adding a 2 sec delay to the interface up, to make the dhclient happy"
 echo "pre-up sleep 2" >> /etc/network/interfaces
