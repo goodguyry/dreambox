@@ -1,13 +1,15 @@
 DreamBox
 ========
 
-Recreates the DreamHost shared hosting environment as a Vagrant box.
+> Recreates the DreamHost shared hosting environment as a Vagrant box.
+
+This project repo is for [building the Dreambox base box](https://github.com/goodguyry/dreambox/blob/master/BUILDING.md). To use this box in a project, see [the usage instructions](#usage) below.
+
+## Features
 
 - Ubuntu - `12.04 LTS`
 - PHP - `5.6.10`
-- Apache - `2.2.22`
-  - CGI/FastCGI
-  - ModSecurity
+- Apache - `2.2.22` (CGI/FastCGI)
 - MySQL - `5.5.40`
 
 _Python and Ruby environments are not set up. [Contributions](https://github.com/goodguyry/dreambox/blob/master/CONTRIBUTING.md) are welcome and appreciated._
@@ -32,7 +34,7 @@ config.vm.box_url = "https://atlas.hashicorp.com/goodguyry/boxes/dreambox"
 
 DreamBox is meant to replicate both the hosting environment _and_ the shared hosting setup (the full path to the web root). The `user_setup` script is provided to create the user directory and link the project root in your Vagrant sync folder to your new web root.
 
-The `user_setup` script can be automated as part of your provisioning. Pass environment variables to the provisioner as follows, changing the variable values to reflect your needs.
+The `user_setup` script should be automated as part of your provisioning. Pass environment variables to the provisioner as follows, changing the variable values to reflect your needs.
 
 ```ruby
   # Environment variables for automating user_setup
