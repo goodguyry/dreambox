@@ -90,3 +90,13 @@ export PATH=$PATH:/usr/local/mysql/bin
 echo "PATH=\$PATH:/usr/local/apache2/bin" >> /home/vagrant/.profile
 echo "PATH=\$PATH:/usr/local/php56/bin" >> /home/vagrant/.profile
 echo "PATH=\$PATH:/usr/local/mysql/bin" >> /home/vagrant/.profile
+
+# Set up motd
+# Remove existing files
+rm -f /etc/update-motd.d/*
+# Copy Dreambox motd in place
+for MOTD in /tmp/files/motd/*; do
+  cp "${MOTD}" /etc/update-motd.d/
+done
+# Make new files executable
+chmod +x /etc/update-motd.d/*
