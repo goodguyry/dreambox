@@ -3,7 +3,7 @@ DreamBox
 
 > Recreates the DreamHost shared hosting environment as a Vagrant box.
 
-This project repo is for [building the Dreambox base box](https://github.com/goodguyry/dreambox/blob/master/BUILDING.md). To use this box in a project, see [the usage instructions](#usage) below.
+This project repo is for [building the Dreambox base box](BUILDING.md). To use this box in a project, see [the usage instructions](#usage) below.
 
 ## Features
 
@@ -12,7 +12,7 @@ This project repo is for [building the Dreambox base box](https://github.com/goo
 - Apache - `2.2.22` (CGI/FastCGI)
 - MySQL - `5.5.40`
 
-_Python and Ruby environments are not set up. [Contributions](https://github.com/goodguyry/dreambox/blob/master/CONTRIBUTING.md) are welcome and appreciated._
+_Python and Ruby environments are not set up. [Contributions](CONTRIBUTING.md) are welcome and appreciated._
 
 ## Usage
 
@@ -72,5 +72,5 @@ mysql_secure_installation
 
 ## References
 
-- http://php56.dreamhosters.com
+- http://phpinfo.dreamhosters.com/ (outdated)
 - http://wiki.dreamhost.com/Supported_and_unsupported_technologies

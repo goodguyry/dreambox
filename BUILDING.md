@@ -1,7 +1,7 @@
 Building Dreambox
 =================
 
-For information about using Dreambox in your project, see the [usage instructions](https://github.com/goodguyry/dreambox/blob/master/README.md#usage).
+For information about using Dreambox in your project, see the [usage instructions](README.md#usage).
 
 ## Packer test build
 
