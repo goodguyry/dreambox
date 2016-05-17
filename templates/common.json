@@ -1,6 +1,6 @@
 {
   "name": "goodguyry/dreambox",
-  "box_version": "0.1.0",
+  "box_version": "0.1.1",
   "description": "A Vagrant environment based on DreamHost's shared hosting",
   "headless": "true",
   "boot_wait": "10s",

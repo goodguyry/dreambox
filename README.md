@@ -74,3 +74,22 @@ mysql_secure_installation
 
 - http://phpinfo.dreamhosters.com/ (outdated)
 - http://wiki.dreamhost.com/Supported_and_unsupported_technologies
+
+## Changelog
+
+### v0.1.1
+
+- Added a Dreambox Message of the Day (motd)
+- Fixed an issue preventing sites from displaying when accessed via IP address
+- Added compiled package files
+- Cleaned up documentation (more to come...)
+- Disabled Sendfile [mitchellh/vagrant#351 (comment)](https://github.com/mitchellh/vagrant/issues/351#issuecomment-1339640)
+- Fixed broken MySQL build script
+- Restructured source files and development workflow
+- Fixed PROJECT_ROOT variable used by `user_setup`
+- Updated broken package source URLs
+- Enabled and loaded shared Apache modules
+
+### v0.1.0
+
+Initial release
