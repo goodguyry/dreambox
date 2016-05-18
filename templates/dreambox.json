@@ -88,8 +88,6 @@
       "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
       "shutdown_command": "{{ user `shutdown_command` }}",
       "vm_name": "{{ user `vm_name` }}",
-      "guest_additions_path": "VBoxGuestAdditions_{{ .Version }}.iso",
-      "virtualbox_version_file": ".vbox_version",
       "guest_os_type": "Ubuntu-64",
       "skip_compaction": true,
       "tools_upload_flavor": "linux"
