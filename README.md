@@ -32,11 +32,10 @@ curl https://raw.githubusercontent.com/goodguyry/dreambox/master/Vagrantfile-exa
 config.vm.box = "goodguyry/dreambox"
 ```
 
-**- or -** initialize a new project using this box by running the following commands.
+**- or -** initialize a new project using this box by running the following command:
 
 ```shell
 vagrant init goodguyry/dreambox
-vagrant up
 ```
 
 ### User Setup
