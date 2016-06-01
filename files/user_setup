@@ -81,8 +81,13 @@ function trim_extra_slashes {
 # Adds/Deletes user
 function user_do {
   # Add the user
-  adduser --disabled-password --gecos "" "$@" >/dev/null
+  adduser --disabled-password --no-create-home --gecos "" "$@" >/dev/null
   e_catch $? "Add user '$USER_NAME'"
+  # Set permissions for the home folder since it's not owned by the new user
+  #   due to having been created by Vagrant as a sync folder
+  if [[ "$(stat -c '%U' /home/${USER_NAME})" != "${USER_NAME}" ]]; then
+    chown "${USER_NAME}":"${USER_NAME}" "/home/${USER_NAME}"
+  fi
 }
 
 
@@ -213,12 +218,9 @@ fi
 
 if [[ $status -eq 4 ]]; then
   echo
+
   # Add the user
   user_do "$USER_NAME"
-
-  # Link up the user directory
-  ln -s "$CLEANED_PROJECT_ROOT" "$SITE_ROOT";
-  e_catch $? "Symlink web root" --clean
 
   # Backup httpd-vhosts.conf
   conf_do -b
