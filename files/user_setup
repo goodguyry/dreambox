@@ -78,14 +78,6 @@ function trim_extra_slashes {
 }
 
 
-# Adds/Deletes user
-function user_do {
-  # Add the user
-  adduser --disabled-password --gecos "" "$@" >/dev/null
-  e_catch $? "Add user '$USER_NAME'"
-}
-
-
 # Backup and restore the httpd-vhosts.conf
 function conf_do {
   if [[ "$@" == "-b" ]] && [[ -r $VHOST_CONF ]] ; then
@@ -196,9 +188,8 @@ if [[ $status -eq 3 ]]; then
   echo
   echo "---"
   echo
-  echo "The user '$USER_NAME' will be created at /home/$USER_NAME."
-  echo "The site's root will be at $SITE_ROOT and linked to"
-  echo "the shared directory at '$CLEANED_PROJECT_ROOT'."
+  echo "The site's root will be at $SITE_ROOT, which is"
+  echo "synced to '$CLEANED_PROJECT_ROOT' by Vagrant."
   echo
   printf "Proceed with these changes? [Y/n]"
   read REPLY
@@ -213,12 +204,6 @@ fi
 
 if [[ $status -eq 4 ]]; then
   echo
-  # Add the user
-  user_do "$USER_NAME"
-
-  # Link up the user directory
-  ln -s "$CLEANED_PROJECT_ROOT" "$SITE_ROOT";
-  e_catch $? "Symlink web root" --clean
 
   # Backup httpd-vhosts.conf
   conf_do -b

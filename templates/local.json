@@ -65,7 +65,8 @@
   "post-processors": [
     [{
       "type": "vagrant",
-      "output": "{{ pwd }}/builds/dreambox.{{ user `box_version` }}.box"
+      "output": "{{ pwd }}/_builds/dreambox.{{ user `box_version` }}.box",
+      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
     }]
   ]
 }

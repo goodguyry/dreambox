@@ -16,49 +16,44 @@ _Python and Ruby environments are not set up. [Contributions](CONTRIBUTING.md) a
 
 ## Usage
 
-Initialize a new project using this box by running the following commands:
+### Vagrantfile setup
+
+Choose one of the following methods for getting started with Dreambox:
+
+Pull [the example Vagrantfile](Vagrantfile-example) into your project directory...
 
 ```shell
-vagrant init goodguyry/dreambox
-vagrant up
+curl https://raw.githubusercontent.com/goodguyry/dreambox/master/Vagrantfile-example > Vagrantfile
 ```
 
-To use this box with an existing project, use the following in your Vagrantfile:
+**- or -** use this box with an existing project by adding the following to your Vagrantfile...
 
 ```ruby
 config.vm.box = "goodguyry/dreambox"
-config.vm.box_url = "https://atlas.hashicorp.com/goodguyry/boxes/dreambox"
+```
+
+**- or -** initialize a new project using this box by running the following command:
+
+```shell
+vagrant init goodguyry/dreambox
 ```
 
 ### User Setup
 
-DreamBox is meant to replicate both the hosting environment _and_ the shared hosting setup (the full path to the web root). The `user_setup` script is provided to create the user directory and link the project root in your Vagrant sync folder to your new web root.
+DreamBox is meant to replicate both the hosting environment _and_ the shared hosting setup (the full path to the web root).
 
-The `user_setup` script should be automated as part of your provisioning. Pass environment variables to the provisioner as follows, changing the variable values to reflect your needs.
+A user setup script is _automatically run_ by Dreambox during `vagrant up`. The following Hash must be in your Vagrantfile for Dreambox to provision correctly:
 
 ```ruby
   # Environment variables for automating user_setup
-  user_vars = {
-    "DREAMBOX_USER_NAME" => "db_user", # DreamHost username
-    "DREAMBOX_SITE_ROOT" => "dreambox.com", # Site root directory
-    "DREAMBOX_PROJECT_DIR" => "/web" # Relative to project root
+  $user_vars = {
+    'DREAMBOX_USER_NAME' => 'my-user',      # DreamHost username
+    'DREAMBOX_SITE_ROOT' => 'example.com',  # Site root directory
+    'DREAMBOX_PROJECT_DIR' => 'web'         # Relative to project root
   }
-
-  # Runs user_setup
-  config.vm.provision "shell",
-    inline: "/bin/bash /usr/local/bin/user_setup",
-    # Pass user_setup ENV variables to this script
-    :env => user_vars
-
 ```
 
-Alternatively, if you'd rather not commit this information to a public repo, run `user_setup` from within the VM and follow the prompts.
-
-```shell
-vagrant up
-vagrant ssh
-sudo user_setup
-```
+See [the example Vagrantfile](Vagrantfile-example) for a basic Dreambox Vagrantfile setup.
 
 ### MySQL Setup (Optional)
 
