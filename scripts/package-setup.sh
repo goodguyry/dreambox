@@ -36,48 +36,6 @@ done
 
 
 ##
-# ModSecurity
-##
-
-# Download OWASP ModSecurity rules
-echo "Downloading OWASP ModSecurity rules"
-wget https://github.com/SpiderLabs/owasp-modsecurity-crs/tarball/master -O /usr/local/apache2/master.tar.gz > /dev/null 2>&1
-
-# Unpack the files
-echo "Unpacking the files"
-tar xvf /usr/local/apache2/master.tar.gz -C /usr/local/apache2/ > /dev/null 2>&1
-
-# Rename the directory
-mv /usr/local/apache2/SpiderLabs-owasp-modsecurity-crs-* /usr/local/apache2/modsecurity-crs
-rm /usr/local/apache2/master.tar.gz
-
-echo "Setting modsecurity rules"
-
-# Set the configuration files
-cp /usr/local/src/modsecurity.conf-recommended /usr/local/apache2/modsecurity-crs/modsecurity.conf
-
-cp /usr/local/src/unicode.mapping /usr/local/apache2/modsecurity-crs/
-
-mv /usr/local/apache2/modsecurity-crs/modsecurity_crs_10_setup.conf.example /usr/local/apache2/modsecurity-crs/modsecurity_crs_10_setup.conf
-
-# Link rules for httpd.conf to find
-ln -s /usr/local/apache2/modsecurity-crs/modsecurity_crs_10_setup.conf /usr/local/apache2/modsecurity-crs/activated_rules/modsecurity_crs_10_setup.conf
-
-for f in `ls /usr/local/apache2/modsecurity-crs/base_rules/`; do
-  ln -s /usr/local/apache2/modsecurity-crs/base_rules/$f /usr/local/apache2/modsecurity-crs/activated_rules/$f
-done
-
-for f in `ls /usr/local/apache2/modsecurity-crs/optional_rules/ | grep comment_spam`; do
-  ln -s /usr/local/apache2/modsecurity-crs/optional_rules/$f /usr/local/apache2/modsecurity-crs/activated_rules/$f
-done
-
-# Activate mod_security
-sed -i 's/\(SecRuleEngine\) DetectionOnly/\1 On/' /usr/local/apache2/modsecurity-crs/modsecurity.conf
-
-
-
-
-##
 # MySQL
 ##
 
