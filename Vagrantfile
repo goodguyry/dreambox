@@ -28,6 +28,9 @@ Vagrant.configure(2) do |config|
     test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"
 
+    # Sets up the sync folder
+    test.vm.synced_folder 'web', '/home/db_user/dreambox.com'
+
     # Start bash as a non-login shell
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
