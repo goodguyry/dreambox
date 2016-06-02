@@ -67,6 +67,7 @@ cp support-files/my-medium.cnf /etc/my.cnf
 # Set mysql to start at boot
 echo "Setting mysql to start at boot"
 cp support-files/mysql.server /etc/init.d/mysql.server
+update-rc.d mysql.server defaults
 
 cd - >/dev/null
 
