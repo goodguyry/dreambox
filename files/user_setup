@@ -188,9 +188,8 @@ if [[ $status -eq 3 ]]; then
   echo
   echo "---"
   echo
-  echo "The user '$USER_NAME' will be created at /home/$USER_NAME."
-  echo "The site's root will be at $SITE_ROOT and linked to"
-  echo "the shared directory at '$CLEANED_PROJECT_ROOT'."
+  echo "The site's root will be at $SITE_ROOT, which is"
+  echo "synced to '$CLEANED_PROJECT_ROOT' by Vagrant."
   echo
   printf "Proceed with these changes? [Y/n]"
   read REPLY
