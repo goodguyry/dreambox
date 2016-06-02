@@ -48,7 +48,6 @@ dpkg -i /usr/local/src/httpd_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/php_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/mysql_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/mod-fastcgi_*.deb > /dev/null 2>&1
-dpkg -i /usr/local/src/modsecurity_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/imagemagick-*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/imagick_*.deb > /dev/null 2>&1
 
