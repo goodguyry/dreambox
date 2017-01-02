@@ -72,6 +72,17 @@ mysql_secure_installation
 
 ## Changelog
 
+### v0.2.0
+
+- Removes ModSecurity
+- Fixed MySql autostart (#9)
+- `user_setup` no longer creates a user
+- `user_setup` now creates a sync folder for the web root
+- Adds example Vagrantfile
+- `user_setup` is now automatically run during `vagrant up`
+- Adds packaged Vagrantfile to simplify the setup process
+- Fixes a build error when `dropbox_pre` isn't found
+
 ### v0.1.1
 
 - Added a Dreambox Message of the Day (motd)
