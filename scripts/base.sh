@@ -73,9 +73,13 @@ chmod +x /usr/local/bin/php-fastcgi-wrapper
 cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
 cp /tmp/files/http/httpd-vhosts.conf /usr/local/apache2/conf/extra/
 
-# Copy user setup script to vagrant home
+# Copy user setup script and set as executable
 cp /tmp/files/user_setup /usr/local/bin/user_setup
 chmod +x /usr/local/bin/user_setup
+
+# Copy SSL setup script and set as executable
+cp /tmp/files/ssl_setup /usr/local/bin/ssl_setup
+chmod +x /usr/local/bin/ssl_setup
 
 # Add Apache, PHP and MySQL bins to PATH
 echo "Adding Apache, PHP and MySQL bins to PATH"
