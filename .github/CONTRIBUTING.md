@@ -2,7 +2,7 @@ DreamBox is an open source project. It is licensed using the [GNU General Public
 
 1. File a bug at https://github.com/goodguyry/dreambox/issues (if there isn’t one already).
 2. Please start a discussion beforehand for any large patches and pull requests.
-3. Make sure to fully document any patches and pull requests, regarding what it achieves and why it is necessary.
+3. Make sure to fully document any patches and pull requests, specifying what it achieves and why it is necessary.
 
 If you're adding software:
 
