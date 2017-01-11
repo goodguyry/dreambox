@@ -96,7 +96,8 @@
   "post-processors": [
     [{
       "type": "vagrant",
-      "keep_input_artifact": false
+      "keep_input_artifact": false,
+      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
     },
     {
       "type": "atlas",
