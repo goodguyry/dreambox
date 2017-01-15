@@ -9,16 +9,16 @@ set -e
 # Create the _builds directory
 [[ ! -d '_builds' ]] && mkdir '_builds'
 
-if [[ "$@" == 'dreambox' ]]; then
-  # Build and deploy to atlas
-  packer build -force -var-file=templates/common.json templates/dreambox.json
-else
-  # Clear the _builds directory, rather than forcing the build
-  rm -f _builds/*
-  # Remove the box from Vagrant to avoid collisions
-  [[ $(vagrant box remove --force --all dreambox_pre 2> /dev/null) ]] || echo "No Vagrant box to remove..."
-  # Build for local testing
-  packer build -force -var-file=templates/common.json templates/local.json
-  # Add the box to vagrant as 'dreambox_pre'
-  vagrant box add --force dreambox_pre _builds/dreambox.*.box
-fi
+# Clear the _builds directory, rather than forcing the build
+rm -f _builds/*
+
+# Remove the box from Vagrant to avoid collisions
+[[ $(vagrant box remove --force --all dreambox_pre/virtualbox 2> /dev/null) ]] || echo "No Vagrant box to remove..."
+[[ $(vagrant box remove --force --all dreambox_pre/vmware 2> /dev/null) ]] || echo "No Vagrant box to remove..."
+
+# Build
+packer build -force -var-file=templates/common.json templates/dreambox.json
+
+# Add the box to vagrant as 'dreambox_pre'
+vagrant box add --force dreambox_pre/virtualbox _builds/dreambox.virtualbox.*.box
+vagrant box add --force dreambox_pre/vmware _builds/dreambox.vmware.*.box

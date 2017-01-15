@@ -47,22 +47,22 @@
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false ",
         "initrd=/install/initrd.gz -- <enter>"
       ],
-      "headless": "{{ user `headless` }}",
       "boot_wait": "{{ user `boot_wait` }}",
       "disk_size": "{{ user `disk_size` }}",
+      "guest_additions_path": "VBoxGuestAdditions_{{ .Version }}.iso",
       "guest_os_type": "{{ user `virtualbox_guest_os_type` }}",
+      "headless": "{{ user `headless` }}",
       "http_directory": "{{ user `http_directory` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_url": "{{ user `iso_url` }}",
-      "ssh_username": "{{ user `ssh_username` }}",
+      "shutdown_command": "{{ user `shutdown_command` }}",
       "ssh_password": "{{ user `ssh_password` }}",
       "ssh_port": "{{ user `ssh_port` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
       "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
-      "shutdown_command": "{{ user `shutdown_command` }}",
-      "vm_name": "{{ user `vm_name` }}",
-      "guest_additions_path": "VBoxGuestAdditions_{{ .Version }}.iso",
-      "virtualbox_version_file": ".vbox_version"
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "{{ user `vm_name` }}"
     },
     {
       "type": "vmware-iso",
@@ -75,49 +75,36 @@
         "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA keyboard-configuration/variant=USA console-setup/ask_detect=false ",
         "initrd=/install/initrd.gz -- <enter>"
       ],
-      "headless": "{{ user `headless` }}",
       "boot_wait": "{{ user `boot_wait` }}",
       "disk_size": "{{ user `disk_size` }}",
+      "guest_os_type": "Ubuntu-64",
+      "headless": "{{ user `headless` }}",
       "http_directory": "{{ user `http_directory` }}",
       "iso_checksum": "{{ user `iso_checksum` }}",
       "iso_checksum_type": "{{ user `iso_checksum_type` }}",
       "iso_url": "{{ user `iso_url` }}",
-      "ssh_username": "{{ user `ssh_username` }}",
+      "shutdown_command": "{{ user `shutdown_command` }}",
+      "skip_compaction": true,
       "ssh_password": "{{ user `ssh_password` }}",
       "ssh_port": "{{ user `ssh_port` }}",
+      "ssh_username": "{{ user `ssh_username` }}",
       "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
-      "shutdown_command": "{{ user `shutdown_command` }}",
-      "vm_name": "{{ user `vm_name` }}",
-      "guest_os_type": "Ubuntu-64",
-      "skip_compaction": true,
-      "tools_upload_flavor": "linux"
+      "tools_upload_flavor": "linux",
+      "vm_name": "{{ user `vm_name` }}"
     }
   ],
   "post-processors": [
     [{
       "type": "vagrant",
-      "keep_input_artifact": false,
+      "only": ["virtualbox-iso"],
+      "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.box",
       "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
     },
     {
-      "type": "atlas",
+      "type": "vagrant",
       "only": ["vmware-iso"],
-      "artifact": "{{ user `name` }}",
-      "artifact_type": "vagrant.box",
-      "metadata": {
-        "provider": "vmware_desktop",
-        "version": "{{user `box_version`}}"
-      }
-    },
-    {
-      "type": "atlas",
-      "only": ["virtualbox-iso"],
-      "artifact": "{{ user `name` }}",
-      "artifact_type": "vagrant.box",
-      "metadata": {
-        "provider": "virtualbox",
-        "version": "{{user `box_version`}}"
-      }
+      "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.box",
+      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
     }]
   ]
 }
