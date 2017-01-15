@@ -26,16 +26,15 @@ fi
 # Update vhost file for SSL
 
 # Listen 443
-sed -i 's/\(Listen\ \)\(80\)/\1443/' $VHOST_CONF
+sed -i 's/\(#\ \)\(Listen\ \)\(80\)/\2443/' $VHOST_CONF
 # <VirtualHost *:443>
 sed -i 's/\*:80/\*:443/' $VHOST_CONF
 # SSLEngine on
 sed -i 's/\(SSLEngine\ \)\w*/\1on/' $VHOST_CONF
-# ServerName
-sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${DREAMBOX_SITE_ROOT}/" $VHOST_CONF
 # SSLCertificateFile
 sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${CERT_NAME}\.crt"/ $VHOST_CONF
 # SSLCertificateKeyFile
 sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${CERT_NAME}\.key"/ $VHOST_CONF
 
 e_catch $? "SSL setup" --clean
+echo "For best results, add the certificate to your keychain"
