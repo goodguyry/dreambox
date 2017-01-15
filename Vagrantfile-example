@@ -5,7 +5,8 @@
 $user_vars = {
   'DREAMBOX_USER_NAME' => 'my-user',      # DreamHost username
   'DREAMBOX_SITE_ROOT' => 'example.com',  # Site root directory
-  'DREAMBOX_PROJECT_DIR' => 'web'         # Relative to project root
+  'DREAMBOX_PROJECT_DIR' => 'web',        # Relative to project root
+  "ENABLE_SSL" => true,                   # Defaults to false
 }
 
 # See https://www.vagrantup.com/docs/vagrantfile/ for

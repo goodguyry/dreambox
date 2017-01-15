@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Create the SSL certificate, then finish setup
+
+CERT_COUNTRY='US'
+CERT_STATE='Washington'
+CERT_CITY='Seattle'
+CERT_DEPARTMENT='IT'
+
+if [[ -r "/vagrant/certs/${CERT_NAME}.key" && -r "/vagrant/certs/${CERT_NAME}.crt" ]]; then
+  # Use the saved certs
+  echo "Using saved certs from /vagrant/certs/"
+  cp -f /vagrant/certs/"${CERT_NAME}".* /usr/local/apache2/conf/
+else
+  # Create the certificate
+  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=${CERT_COUNTRY}/ST=${CERT_STATE}/L=${CERT_CITY}/O=${CERT_DEPARTMENT}/CN=${DREAMBOX_SITE_ROOT}" -keyout "/usr/local/apache2/conf/${CERT_NAME}.key" -out "/usr/local/apache2/conf/${CERT_NAME}.crt"
+
+  # Create the certs directory
+  [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
+  # Save these for next time
+  cp -f /usr/local/apache2/conf/"${CERT_NAME}".* /vagrant/certs
+  e_catch $? "SSL certificate" --clean
+fi
+
+
+# Update vhost file for SSL
+
+# Listen 443
+sed -i 's/\(#\ \)\(Listen\ \)\(80\)/\2443/' $VHOST_CONF
+# <VirtualHost *:443>
+sed -i 's/\*:80/\*:443/' $VHOST_CONF
+# SSLEngine on
+sed -i 's/\(SSLEngine\ \)\w*/\1on/' $VHOST_CONF
+# SSLCertificateFile
+sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${CERT_NAME}\.crt"/ $VHOST_CONF
+# SSLCertificateKeyFile
+sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${CERT_NAME}\.key"/ $VHOST_CONF
+
+e_catch $? "SSL setup" --clean
+echo "For best results, add the certificate to your keychain"
