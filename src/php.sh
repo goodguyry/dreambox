@@ -3,11 +3,10 @@
 ##
 # php.sh
 #
-# Install PHP v5.6.10
-# Configuration details pulled from http://php56.dreamhosters.com
+# Install PHP v5.6.29
 ##
 
-PACKAGE_NAME="php-5.6.10"
+PACKAGE_NAME="php-5.6.29"
 
 # Create some needed directories
 mkdir -p /usr/local/php56;
@@ -33,7 +32,7 @@ ldconfig /usr/local/lib;
 
 cd /usr/local/src/;
 
-# Download php 5.6
+# Download PHP
 wget http://de.php.net/get/"$PACKAGE_NAME".tar.bz2/from/this/mirror -O "$PACKAGE_NAME".tar.bz2;
 
 # Unpack the files
@@ -128,7 +127,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: PHP 5.6.10 compiled from source on 12.04
+# Description: PHP 5.6.29 compiled from source on 12.04
 # Hit return through all prompts
 checkinstall -D make install;
 
