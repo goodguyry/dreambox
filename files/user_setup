@@ -54,11 +54,6 @@ function e_catch {
 
 # Cleanup and exit
 function clean_and_exit {
-  # Remove the user if it exists
-  if $(getent passwd "$USER_NAME" >/dev/null); then
-    userdel -r "$USER_NAME"
-    e_catch $? "Delete user '$USER_NAME'"
-  fi
   echo
   # Reset httpd-vhosts.conf_original
   conf_do -d

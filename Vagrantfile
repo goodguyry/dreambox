@@ -17,14 +17,14 @@ Vagrant.configure(2) do |config|
 
   # Development machine
   # Ubuntu 12.04
-  config.vm.define 'dev' do |dev|
+  config.vm.define 'dev', autostart: false do |dev|
     dev.vm.hostname = "dreambox.dev"
     dev.vm.network :private_network, ip: "192.168.12.34"
   end
 
   # Testing machine
   # Fully provisioned and ready to test
-  config.vm.define 'test' do |test|
+  config.vm.define 'test', primary: true do |test|
     test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"
 
