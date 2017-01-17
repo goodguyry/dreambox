@@ -3,10 +3,10 @@
 ##
 # httpd.sh
 #
-# Install the httpd (Apache) web server v2.2.22
+# Install the httpd (Apache) web server v2.2.31
 ##
 
-PACKAGE_NAME="httpd-2.2.22";
+PACKAGE_NAME="httpd-2.2.31";
 
 # Update apt-get
 apt-get -qq update;
@@ -22,7 +22,7 @@ ldconfig /usr/local/lib;
 
 cd /usr/local/src;
 
-# Download httpd 2.2.22
+# Download httpd
 wget http://archive.apache.org/dist/httpd/"$PACKAGE_NAME".tar.gz;
 
 # Extract the files
@@ -52,7 +52,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: Apache 2.2.22 compiled from source on 12.04
+# Description: Apache 2.2.31 compiled from source on 12.04
 # Hit return through all prompts
 checkinstall -D make install;
 

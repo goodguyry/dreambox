@@ -10,8 +10,8 @@ This project repo contains the code for [building the Dreambox base box][wiki_bu
 ## Package Versions
 
 - Ubuntu - `12.04 LTS`
-- PHP - `5.6.10`
-- Apache - `2.2.22` (CGI/FastCGI)
+- PHP - `5.6.29`
+- Apache - `2.2.31` (FastCGI)
 - MySQL - `5.5.40`
 
 _Python and Ruby environments are not set up. Contributions are welcome and appreciated._
@@ -20,7 +20,6 @@ See [the Wiki][getting_started] for additional setup options and documentation.
 
 ## References
 
-- http://phpinfo.dreamhosters.com/ (outdated)
 - http://wiki.dreamhost.com/Supported_and_unsupported_technologies
 
 [getting_started]: ../../wiki/Home
