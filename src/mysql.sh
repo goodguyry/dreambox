@@ -33,12 +33,12 @@ cd "$PACKAGE_NAME"/;
 groupadd mysql;
 useradd -g mysql mysql;
 
-cmake .;
+cmake . -DWITH_READLINE=ON -DWITH_LIBEDIT=OFF;
 make;
 
 # Package into a deb file for quick install
 #
-# Description: MySQL 5.5.40 compiled from source on 12.04
+# Description: MySQL 5.5.40 with readline
 # Hit return through all prompts
 checkinstall -D make install;
 
