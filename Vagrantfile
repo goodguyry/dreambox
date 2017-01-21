@@ -25,11 +25,11 @@ Vagrant.configure(2) do |config|
   # Testing machine
   # Fully provisioned and ready to test
   config.vm.define 'test', primary: true do |test|
-    test.vm.hostname = "dreambox.test"
+    test.vm.hostname = "dreambox.com"
     test.vm.network :private_network, ip: "192.168.56.78"
 
     # Sets up the sync folder
-    test.vm.synced_folder 'web', '/home/db_user/dreambox.test'
+    test.vm.synced_folder 'web', '/home/db_user/dreambox.com'
 
     # Start bash as a non-login shell
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
@@ -49,9 +49,10 @@ Vagrant.configure(2) do |config|
     # Environment variables for automating user_setup
     user_vars = {
       "DREAMBOX_USER_NAME" => "db_user",
-      "DREAMBOX_SITE_ROOT" => "dreambox.test",
+      "DREAMBOX_SITE_ROOT" => "dreambox.com",
       "DREAMBOX_PROJECT_DIR" => "web",
       "ENABLE_SSL" => true,
+      "DREAMBOX_SITE_NAME" => "dreambox.test",
     }
 
     # Runs user_setup
