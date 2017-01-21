@@ -13,7 +13,7 @@ if [[ -r "/vagrant/certs/${CERT_NAME}.key" && -r "/vagrant/certs/${CERT_NAME}.cr
   cp -f /vagrant/certs/"${CERT_NAME}".* /usr/local/apache2/conf/
 else
   # Create the certificate
-  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=${CERT_COUNTRY}/ST=${CERT_STATE}/L=${CERT_CITY}/O=${CERT_DEPARTMENT}/CN=${DREAMBOX_SITE_ROOT}" -keyout "/usr/local/apache2/conf/${CERT_NAME}.key" -out "/usr/local/apache2/conf/${CERT_NAME}.crt"
+  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=${CERT_COUNTRY}/ST=${CERT_STATE}/L=${CERT_CITY}/O=${CERT_DEPARTMENT}/CN=*.${CERT_NAME}" -keyout "/usr/local/apache2/conf/${CERT_NAME}.key" -out "/usr/local/apache2/conf/${CERT_NAME}.crt"
 
   # Create the certs directory
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
