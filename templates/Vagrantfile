@@ -49,13 +49,6 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/user_setup",
       # Pass user_setup ENV variables to this script
-      :env => {
-        "DREAMBOX_USER_NAME"    => conf['username'],
-        "DREAMBOX_SITE_ROOT"    => conf['web_root'],
-        "DREAMBOX_PROJECT_DIR"  => conf['local_root'],
-        "DREAMBOX_HOST"         => conf['host'],
-        "ENABLE_SSL"            => conf['ssl_enabled'],
-        "DREAMBOX_SITE_NAME"    => conf['ssl_name'],
-      }
+      :env => conf
   end
 end

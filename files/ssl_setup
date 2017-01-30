@@ -1,24 +1,21 @@
 #!/bin/bash
-
+#
 # Create the SSL certificate, then finish setup
+#
 
-CERT_COUNTRY='US'
-CERT_STATE='Washington'
-CERT_CITY='Seattle'
-CERT_DEPARTMENT='IT'
-
-if [[ -r "/vagrant/certs/${CERT_NAME}.key" && -r "/vagrant/certs/${CERT_NAME}.crt" ]]; then
+# Check for a saved certificate and key
+if [[ -r "/vagrant/certs/${ssl_name}.key" && -r "/vagrant/certs/${ssl_name}.crt" ]]; then
   # Use the saved certs
   echo "Using saved certs from /vagrant/certs/"
-  cp -f /vagrant/certs/"${CERT_NAME}".* /usr/local/apache2/conf/
+  cp -f /vagrant/certs/"${ssl_name}".* /usr/local/apache2/conf/
 else
   # Create the certificate
-  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=${CERT_COUNTRY}/ST=${CERT_STATE}/L=${CERT_CITY}/O=${CERT_DEPARTMENT}/CN=*.${CERT_NAME}" -keyout "/usr/local/apache2/conf/${CERT_NAME}.key" -out "/usr/local/apache2/conf/${CERT_NAME}.crt"
+  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=*.${ssl_name}" -keyout "/usr/local/apache2/conf/${ssl_name}.key" -out "/usr/local/apache2/conf/${ssl_name}.crt"
 
   # Create the certs directory
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
   # Save these for next time
-  cp -f /usr/local/apache2/conf/"${CERT_NAME}".* /vagrant/certs
+  cp -f /usr/local/apache2/conf/"${ssl_name}".* /vagrant/certs
   e_catch $? "SSL certificate" --clean
 fi
 
@@ -32,9 +29,9 @@ sed -i 's/\*:80/\*:443/' $VHOST_CONF
 # SSLEngine on
 sed -i 's/\(SSLEngine\ \)\w*/\1on/' $VHOST_CONF
 # SSLCertificateFile
-sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${CERT_NAME}\.crt"/ $VHOST_CONF
+sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${ssl_name}\.crt"/ $VHOST_CONF
 # SSLCertificateKeyFile
-sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${CERT_NAME}\.key"/ $VHOST_CONF
+sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${ssl_name}\.key"/ $VHOST_CONF
 
 e_catch $? "SSL setup" --clean
 echo "For best results, add the certificate to your keychain"

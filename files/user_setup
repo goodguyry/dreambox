@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Create the web root and virtual host
+#
 
 trap "clean_and_exit" TERM INT
 
@@ -10,8 +13,6 @@ if [ "$(whoami)" != "root" ]; then
   exit 1
 fi
 
-# Base for user directory
-USER_DIR="/home"
 # httpd-vhost.conf values; original and backup
 VHOST_CONF="/usr/local/apache2/conf/extra/httpd-vhosts.conf"
 BAK_FILE="/tmp/httpd-vhosts.conf_original"
@@ -44,6 +45,7 @@ function e_catch {
 
 function do_exit {
   echo
+  echo "${@}"
   echo "Exiting..."
   echo
   exit 1
@@ -80,44 +82,40 @@ function conf_do {
   fi
 }
 
-if [[ -n $DREAMBOX_USER_NAME && -n $DREAMBOX_SITE_ROOT && -n $DREAMBOX_PROJECT_DIR ]]; then
+if [[ -n $host && -n $root_path && -n $local_root ]]; then
   # Set variables based on passed ENV variables
-  USER_NAME="$DREAMBOX_USER_NAME"
-  USER_DIR="$USER_DIR/$USER_NAME"
-  SITE_ROOT="$USER_DIR/$DREAMBOX_SITE_ROOT"
-  PROJECT_ROOT="/vagrant/$DREAMBOX_PROJECT_DIR"
-  CERT_NAME="${DREAMBOX_SITE_NAME}"
+  VHOST="${host}"
+
+  # Remove any extra slashed from the path
+  trim_extra_slashes "/vagrant/${local_root}"
+
+  echo
+
+  # Backup httpd-vhosts.conf
+  conf_do -b
+
+  # Create the SSL certificate
+  [[ $ssl_enabled ]] && source ssl_setup;
+
+  # Set Apache directory
+  ESCAPED_SITE_ROOT=$(echo "$root_path" | sed 's/\(\W\)/\\\1/g');
+  sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ $VHOST_CONF;
+  e_catch $? "httpd-vhosts.conf update" --clean
+
+  # ServerName
+  sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${VHOST}/" $VHOST_CONF
+
+  # Change ownership to Apache user
+  chown -R www-data:www-data "$root_path"
+  e_catch $? "Permissions update" --clean
+
+  # Restart Apache
+  /usr/local/apache2/bin/apachectl restart >/dev/null;
+  e_catch $? "Apache restart"
+
+  echo
+
+  [[ $? -lt 1 ]] && echo -e "User setup complete.\n"
 else
-  do_exit
+  do_exit 'Missing required Dreambox config settings.'
 fi
-
-# Remove any extra slashed from the path
-trim_extra_slashes "$PROJECT_ROOT"
-
-echo
-
-# Backup httpd-vhosts.conf
-conf_do -b
-
-# Create the SSL certificate
-[[ $ENABLE_SSL ]] && source ssl_setup;
-
-# Set Apache directory
-ESCAPED_SITE_ROOT=$(echo "$SITE_ROOT" | sed 's/\(\W\)/\\\1/g');
-sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ $VHOST_CONF;
-e_catch $? "httpd-vhosts.conf update" --clean
-
-# ServerName
-sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${DREAMBOX_HOST}/" $VHOST_CONF
-
-# Change ownership to Apache user
-chown -R www-data:www-data "$SITE_ROOT"
-e_catch $? "Permissions update" --clean
-
-# Restart Apache
-/usr/local/apache2/bin/apachectl restart >/dev/null;
-e_catch $? "Apache restart"
-
-echo
-
-[[ $? -lt 1 ]] && echo -e "User setup complete.\n"
