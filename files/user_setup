@@ -213,7 +213,7 @@ if [[ $status -eq 4 ]]; then
   e_catch $? "httpd-vhosts.conf update" --clean
 
   # ServerName
-  sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${DREAMBOX_SITE_ROOT}/" $VHOST_CONF
+  sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${DREAMBOX_HOST}/" $VHOST_CONF
 
   # Change ownership to Apache user
   chown -R www-data:www-data "$SITE_ROOT"
