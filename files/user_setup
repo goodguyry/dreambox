@@ -10,14 +10,6 @@ if [ "$(whoami)" != "root" ]; then
   exit 1
 fi
 
-
-# Tracking status throughout helps ensure all values are collected and all
-# steps are passing.
-#   1 - Username collected
-#   2 - Site root directory collected
-#   3 - Project root collected
-#   4 - Collected values confirmed || script automated
-status=0
 # Base for user directory
 USER_DIR="/home"
 # httpd-vhost.conf values; original and backup
@@ -25,7 +17,6 @@ VHOST_CONF="/usr/local/apache2/conf/extra/httpd-vhosts.conf"
 BAK_FILE="/tmp/httpd-vhosts.conf_original"
 # Unless otherwise specified, project files will be found in `web`
 DEFAULT_PROJECT_DIR="web"
-
 
 # Catch errors and provide feedback
 # Passing --clean as the last argument runs `clean_and_exit`
@@ -51,6 +42,12 @@ function e_catch {
   fi
 }
 
+function do_exit {
+  echo
+  echo "Exiting..."
+  echo
+  exit 1
+}
 
 # Cleanup and exit
 function clean_and_exit {
@@ -59,19 +56,14 @@ function clean_and_exit {
   conf_do -d
   # Restart Apache
   apachectl restart;
-  echo
-  echo "Exiting..."
-  echo
-  exit 1
+  do_exit
 }
-
 
 # Remove any extra slashed from the path
 # Extra slashes could result from improper input
 function trim_extra_slashes {
   CLEANED_PROJECT_ROOT=$(echo "$@" | sed 's/\(\/\{2,\}\)/\//g')
 }
-
 
 # Backup and restore the httpd-vhosts.conf
 function conf_do {
@@ -88,7 +80,6 @@ function conf_do {
   fi
 }
 
-
 if [[ -n $DREAMBOX_USER_NAME && -n $DREAMBOX_SITE_ROOT && -n $DREAMBOX_PROJECT_DIR ]]; then
   # Set variables based on passed ENV variables
   USER_NAME="$DREAMBOX_USER_NAME"
@@ -96,133 +87,37 @@ if [[ -n $DREAMBOX_USER_NAME && -n $DREAMBOX_SITE_ROOT && -n $DREAMBOX_PROJECT_D
   SITE_ROOT="$USER_DIR/$DREAMBOX_SITE_ROOT"
   PROJECT_ROOT="/vagrant/$DREAMBOX_PROJECT_DIR"
   CERT_NAME="${DREAMBOX_SITE_NAME}"
-
-  # Setting status to 4 allows for automating in non-interactive shells, such
-  # as during Vagrant provisioning
-  status=4
+else
+  do_exit
 fi
-
-
-if [[ $status -eq 0 ]]; then
-  echo
-  echo
-  echo
-  echo "DreamBox is meant to replicate DreamHost's shared hosting environment."
-  echo "In order to ensure your local setup matches that of your hosting"
-  echo "environment, enter the same username you use to log in to your server."
-  echo
-
-  # > Prompt for username
-  while [[ $status -eq 0 ]]; do
-    printf "What is your username? "
-    read USER_NAME
-    # Test for input
-    if [[ "x$USER_NAME" != "x" ]]; then
-      # Save path: /home/user
-      USER_DIR="$USER_DIR/$USER_NAME"
-      status=1;
-    else
-      echo "x ... You must enter a username..."
-      echo
-    fi
-  done
-fi
-
-
-if [[ $status -eq 1 ]]; then
-  echo
-  echo
-  echo
-  echo "Your public web files are stored and served from the site's root"
-  echo "directory, which by default is named after your domain (example.com)."
-  echo
-
-  # > Prompt for site directory
-  while [[ $status -eq 1 ]]; do
-    printf "What is the name of your site's root directory? "
-    read REPLY
-    # Test for input
-    if [[ "x$REPLY" != "x" ]]; then
-      # Build path: /home/user/site
-      SITE_ROOT="$USER_DIR/$REPLY"
-      status=2;
-      unset REPLY
-    else
-      echo "x ... You must enter a root directory name..."
-      echo
-    fi
-  done
-fi
-
-if [[ $status -eq 2 ]]; then
-  echo
-  echo
-  echo
-  echo "Enter the name of the directory within which DreamBox will find your"
-  echo "site's files, relative to your Vagrantfile (or press return for '$DEFAULT_PROJECT_DIR')."
-  echo
-
-  # > Prompt for project directory
-  while [[ $status -eq 2 ]]; do
-    printf "Local files are found in [$DEFAULT_PROJECT_DIR] "
-    read REPLY
-
-    # Default to /vagrant/web if unanswered
-    PROJECT_ROOT="/vagrant/${REPLY:=$DEFAULT_PROJECT_DIR}";
-    status=3
-    unset REPLY
-  done
-fi
-
 
 # Remove any extra slashed from the path
 trim_extra_slashes "$PROJECT_ROOT"
 
+echo
 
-if [[ $status -eq 3 ]]; then
-  # > Prompt for confirmation
-  echo
-  echo "---"
-  echo
-  echo "The site's root will be at $SITE_ROOT, which is"
-  echo "synced to '$CLEANED_PROJECT_ROOT' by Vagrant."
-  echo
-  printf "Proceed with these changes? [Y/n]"
-  read REPLY
+# Backup httpd-vhosts.conf
+conf_do -b
 
-  if [[ "$REPLY" = "n" ]]; then
-    clean_and_exit
-  else
-    status=4
-  fi
-fi
+# Create the SSL certificate
+[[ $ENABLE_SSL ]] && source ssl_setup;
 
+# Set Apache directory
+ESCAPED_SITE_ROOT=$(echo "$SITE_ROOT" | sed 's/\(\W\)/\\\1/g');
+sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ $VHOST_CONF;
+e_catch $? "httpd-vhosts.conf update" --clean
 
-if [[ $status -eq 4 ]]; then
-  echo
+# ServerName
+sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${DREAMBOX_HOST}/" $VHOST_CONF
 
-  # Backup httpd-vhosts.conf
-  conf_do -b
+# Change ownership to Apache user
+chown -R www-data:www-data "$SITE_ROOT"
+e_catch $? "Permissions update" --clean
 
-  # Create the SSL certificate
-  [[ $ENABLE_SSL ]] && source ssl_setup;
+# Restart Apache
+/usr/local/apache2/bin/apachectl restart >/dev/null;
+e_catch $? "Apache restart"
 
-  # Set Apache directory
-  ESCAPED_SITE_ROOT=$(echo "$SITE_ROOT" | sed 's/\(\W\)/\\\1/g');
-  sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ $VHOST_CONF;
-  e_catch $? "httpd-vhosts.conf update" --clean
-
-  # ServerName
-  sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${DREAMBOX_HOST}/" $VHOST_CONF
-
-  # Change ownership to Apache user
-  chown -R www-data:www-data "$SITE_ROOT"
-  e_catch $? "Permissions update" --clean
-
-  # Restart Apache
-  /usr/local/apache2/bin/apachectl restart >/dev/null;
-  e_catch $? "Apache restart"
-fi
 echo
 
 [[ $? -lt 1 ]] && echo -e "User setup complete.\n"
