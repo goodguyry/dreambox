@@ -1,0 +1,10 @@
+vm_name: 'dreambox'
+
+sites:
+  'dreambox':
+    username: db_user
+    web_root: dreambox.com
+    local_root: web
+    host: dreambox.test
+    config:
+    - ssl
