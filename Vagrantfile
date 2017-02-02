@@ -1,45 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-require 'yaml'
-
-vagrant_dir = File.expand_path(File.dirname(__FILE__))
-
-if defined? vm_config_file
-  vm_config_file_path = File.join(vagrant_dir, vm_config_file)
-else
-  vm_config_file_path = File.join(vagrant_dir, 'vm-config.yml')
-end
-
-config_file_message = "Dreambox config file: #{vm_config_file_path}"
-puts "\e[32m\e[1m#{config_file_message}\e[0m"
-
-if File.file?(vm_config_file_path) then
-  vm_config = YAML.load_file(vm_config_file_path)
-end
-
-vm_config['sites'].each do |site, items|
-  if ! items.kind_of? Hash then
-      items = Hash.new
-  end
-
-  defaults = Hash.new
-  defaults['local_root'] = 'web'
-  defaults['ssl_enabled'] = false
-
-  items['root_path'] = "/home/#{items['username']}/#{items['web_root']}"
-
-  items['config'].each do |conf|
-    case conf
-    when 'ssl'
-      items['ssl_enabled'] = true
-      items['ssl_name'] = items['host']
-    end
-  end
-
-  vm_config['sites'][site].delete('config')
-  vm_config['sites'][site] = defaults.merge(items)
-end
+require_relative File.join(File.expand_path(Dir.pwd), 'templates/config-setup.rb')
+vm_config = Config::VM_CONFIG
 
 Vagrant.configure(2) do |config|
   config.vm.box = "hashicorp/precise64"
