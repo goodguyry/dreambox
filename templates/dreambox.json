@@ -98,13 +98,19 @@
       "type": "vagrant",
       "only": ["virtualbox-iso"],
       "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.box",
-      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
+      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
+      "include": [
+        "{{ pwd }}/templates/config-setup.rb"
+      ]
     },
     {
       "type": "vagrant",
       "only": ["vmware-iso"],
       "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.box",
-      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
+      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
+      "include": [
+        "{{ pwd }}/templates/config-setup.rb"
+      ]
     }]
   ]
 }
