@@ -85,6 +85,7 @@ function conf_do {
 if [[ -n $host && -n $root_path && -n $local_root ]]; then
   # Set variables based on passed ENV variables
   VHOST="${host}"
+  NEW_VHOST_CONF="/usr/local/apache2/conf/vhosts/${host}"
 
   # Remove any extra slashed from the path
   trim_extra_slashes "/vagrant/${local_root}"
@@ -94,16 +95,20 @@ if [[ -n $host && -n $root_path && -n $local_root ]]; then
   # Backup httpd-vhosts.conf
   conf_do -b
 
+  # Set the new vhost conf file in place
+  [[ ! -d '/usr/local/apache2/conf/vhosts' ]] && mkdir '/usr/local/apache2/conf/vhosts'
+  cp "${$VHOST_CONF}" "${NEW_VHOST_CONF}"
+
   # Create the SSL certificate
   [[ $ssl_enabled ]] && source ssl_setup;
 
   # Set Apache directory
   ESCAPED_SITE_ROOT=$(echo "$root_path" | sed 's/\(\W\)/\\\1/g');
-  sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ $VHOST_CONF;
+  sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ "${NEW_VHOST_CONF}";
   e_catch $? "httpd-vhosts.conf update" --clean
 
   # ServerName
-  sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${VHOST}/" $VHOST_CONF
+  sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${VHOST}/" "${NEW_VHOST_CONF}"
 
   # Change ownership to Apache user
   chown -R www-data:www-data "$root_path"
