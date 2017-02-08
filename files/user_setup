@@ -85,7 +85,7 @@ function conf_do {
 if [[ -n $host && -n $root_path && -n $local_root ]]; then
   # Set variables based on passed ENV variables
   VHOST="${host}"
-  NEW_VHOST_CONF="/usr/local/apache2/conf/vhosts/${host}"
+  NEW_VHOST_CONF="/usr/local/apache2/conf/vhosts/${host}.conf"
 
   # Remove any extra slashed from the path
   trim_extra_slashes "/vagrant/${local_root}"
@@ -96,11 +96,10 @@ if [[ -n $host && -n $root_path && -n $local_root ]]; then
   conf_do -b
 
   # Set the new vhost conf file in place
-  [[ ! -d '/usr/local/apache2/conf/vhosts' ]] && mkdir '/usr/local/apache2/conf/vhosts'
-  cp "${$VHOST_CONF}" "${NEW_VHOST_CONF}"
+  cp "${VHOST_CONF}" "${NEW_VHOST_CONF}"
 
   # Create the SSL certificate
-  [[ $ssl_enabled ]] && source ssl_setup;
+  [[ 'true' == $ssl_enabled ]] && source ssl_setup;
 
   # Set Apache directory
   ESCAPED_SITE_ROOT=$(echo "$root_path" | sed 's/\(\W\)/\\\1/g');
