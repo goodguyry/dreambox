@@ -28,6 +28,10 @@ module Config
 
     items['root_path'] = "/home/#{items['username']}/#{items['web_root']}"
 
+    if ! items['config'].kind_of? Array then
+        items['config'] = Array.new
+    end
+
     items['config'].each do |conf|
       case conf
       when 'ssl'
