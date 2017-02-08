@@ -23,15 +23,15 @@ fi
 # Update vhost file for SSL
 
 # Listen 443
-sed -i 's/\(#\ \)\(Listen\ \)\(80\)/\2443/' $VHOST_CONF
+sed -i 's/\(#\ \)\(Listen\ \)\(80\)/\2443/' "${NEW_VHOST_CONF}"
 # <VirtualHost *:443>
-sed -i 's/\*:80/\*:443/' $VHOST_CONF
+sed -i 's/\*:80/\*:443/' "${NEW_VHOST_CONF}"
 # SSLEngine on
-sed -i 's/\(SSLEngine\ \)\w*/\1on/' $VHOST_CONF
+sed -i 's/\(SSLEngine\ \)\w*/\1on/' "${NEW_VHOST_CONF}"
 # SSLCertificateFile
-sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${ssl_name}\.crt"/ $VHOST_CONF
+sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${ssl_name}\.crt"/ "${NEW_VHOST_CONF}"
 # SSLCertificateKeyFile
-sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${ssl_name}\.key"/ $VHOST_CONF
+sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${ssl_name}\.key"/ "${NEW_VHOST_CONF}"
 
 e_catch $? "SSL setup" --clean
 echo "For best results, add the certificate to your keychain"

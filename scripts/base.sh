@@ -70,6 +70,7 @@ cp /tmp/files/php/php-fastcgi-wrapper /usr/local/bin/
 chmod +x /usr/local/bin/php-fastcgi-wrapper
 
 # Copy the Apache config files into place
+[[ ! -d '/usr/local/apache2/conf/vhosts' ]] && mkdir '/usr/local/apache2/conf/vhosts'
 cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
 cp /tmp/files/http/httpd-vhosts.conf /usr/local/apache2/conf/extra/
 
