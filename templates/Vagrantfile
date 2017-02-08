@@ -1,3 +1,5 @@
+VAGRANT_COMMAND = ARGV[0]
+
 Vagrant.configure(2) do |config|
   # Start bash as a non-login shell
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
@@ -9,6 +11,11 @@ Vagrant.configure(2) do |config|
     inline: '/bin/bash /usr/local/bin/user_setup',
     # Pass user_setup ENV variables to this script
     :env => $user_vars
+
+  if VAGRANT_COMMAND == "ssh"
+      config.ssh.username = $user_vars['DREAMBOX_USER_NAME']
+  end
+
   config.vm.synced_folder "#{$user_vars['DREAMBOX_PROJECT_DIR']}",
     "/home/#{$user_vars['DREAMBOX_USER_NAME']}/#{$user_vars['DREAMBOX_SITE_ROOT']}",
     owner: $user_vars["DREAMBOX_UID"],
