@@ -4,6 +4,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.synced_folder "#{$user_vars['DREAMBOX_PROJECT_DIR']}",
     "/home/#{$user_vars['DREAMBOX_USER_NAME']}/#{$user_vars['DREAMBOX_SITE_ROOT']}"
+  $user_vars["DREAMBOX_UID"] = 31415
 
   # Run user_setup
   config.vm.provision 'shell',

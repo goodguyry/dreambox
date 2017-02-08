@@ -132,6 +132,12 @@ if [[ $status -eq 0 ]]; then
   done
 fi
 
+useradd -g users -s /bin/bash $USER_NAME -u $DREAMBOX_UID
+cp -R /home/vagrant/.ssh /home/$USER_NAME/.ssh
+chown -R $USER_NAME /home/$USER_NAME/.ssh
+echo -e "vagrant\nvagrant" | (passwd $USER_NAME)
+cp /home/vagrant/.profile /home/$USER_NAME/.profile
+echo "$USER_NAME  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 if [[ $status -eq 1 ]]; then
   echo
