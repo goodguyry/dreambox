@@ -7,10 +7,11 @@
 ##
 
 PACKAGE_NAME="php-5.6.29"
+PHP_DIR="php56"
 
 # Create some needed directories
-mkdir -p /usr/local/php56;
-mkdir -p /etc/php56;
+mkdir -p /usr/local/"${PHP_DIR}";
+mkdir -p /etc/"${PHP_DIR}";
 
 # Update apt-get
 apt-get -qq update;
@@ -33,16 +34,16 @@ ldconfig /usr/local/lib;
 cd /usr/local/src/;
 
 # Download PHP
-wget http://de.php.net/get/"$PACKAGE_NAME".tar.bz2/from/this/mirror -O "$PACKAGE_NAME".tar.bz2;
+wget http://de.php.net/get/"${PACKAGE_NAME}".tar.bz2/from/this/mirror -O "${PACKAGE_NAME}".tar.bz2;
 
 # Unpack the files
-tar jxf "$PACKAGE_NAME".tar.bz2;
+tar jxf "${PACKAGE_NAME}".tar.bz2;
 
-cd "$PACKAGE_NAME"/;
+cd "${PACKAGE_NAME}"/;
 
 # Configure and build
 ./configure \
---datadir=/usr/local/php56/share \
+--datadir=/usr/local/"${PHP_DIR}"/share \
 --enable-bcmath \
 --enable-calendar \
 --enable-cgi \
@@ -79,11 +80,11 @@ cd "$PACKAGE_NAME"/;
 --enable-xmlreader \
 --enable-xmlwriter \
 --enable-zip \
---localstatedir=/usr/local/php56/var \
---prefix=/usr/local/php56 \
+--localstatedir=/usr/local/"${PHP_DIR}"/var \
+--prefix=/usr/local/"${PHP_DIR}" \
 --with-bz2 \
---with-config-file-path=/etc/php56 \
---with-config-file-scan-dir=/etc/php56/conf.d \
+--with-config-file-path=/etc/"${PHP_DIR}" \
+--with-config-file-scan-dir=/etc/"${PHP_DIR}"/conf.d \
 --with-curl \
 --with-freetype-dir=/usr \
 --with-gd \
@@ -132,10 +133,10 @@ make;
 checkinstall -D make install;
 
 # Zip it into the synced directory
-zip /tmp/packages/"$PACKAGE_NAME".zip *.deb *.ini-*;
+zip /tmp/packages/"${PACKAGE_NAME}".zip *.deb *.ini-*;
 
 # Be sure the PHP bin is in the PATH
 # For this shell
-export PATH=$PATH:/usr/local/php56/bin;
+export PATH=$PATH:/usr/local/"${PHP_DIR}"/bin;
 # For future shells
-echo "PATH=\"\$PATH:/usr/local/php56/bin\"" >> /home/vagrant/.profile;
+echo "PATH=\"\$PATH:/usr/local/${PHP_DIR}/bin\"" >> /home/vagrant/.profile;
