@@ -97,6 +97,7 @@ cd "${PACKAGE_NAME}"/;
 --with-kerberos \
 --with-mcrypt \
 --with-mhash \
+--with-msql \
 --with-mysql-sock=/No-MySQL-hostname-was-specified \
 --with-mysql=mysqlnd \
 --with-mysqli=mysqlnd \
