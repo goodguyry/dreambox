@@ -42,4 +42,26 @@ module Config
     VM_CONFIG['sites'][site].delete('config')
     VM_CONFIG['sites'][site] = defaults.merge(items)
   end
+
+  # Set default 'box' values
+  defaults = Hash.new
+  defaults['name'] = 'dreambox'
+  defaults['php_version'] = '5'
+
+  # Merge the default 'box' values with those from vm-config
+  VM_CONFIG['box'] = defaults.merge(VM_CONFIG['box'])
+
+  # We only need the first character of the PHP version value
+  # This should end up being '5' or '7'
+  VM_CONFIG['box']['php_version'] = VM_CONFIG['box']['php'][0,1]
+
+  # Test the PHP version and set the PHP directory
+  if '5' === VM_CONFIG['box']['php_version'] then
+    VM_CONFIG['box']['php_dir'] = 'php56'
+  elsif '7' === VM_CONFIG['box']['php_version'] then
+    VM_CONFIG['box']['php_dir'] = 'php70'
+  else
+    # Error feedback
+    abort("Invalid `php` value in #{vm_config_file_path}\n >> Should be either \'5\' or \'7\'.")
+  end
 end
