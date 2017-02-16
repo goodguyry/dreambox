@@ -10,8 +10,7 @@ module Config
     vm_config_file_path = File.join(vagrant_dir, 'vm-config.yml')
   end
 
-  config_file_message = "Dreambox config file: #{vm_config_file_path}"
-  puts "\e[32m\e[1m#{config_file_message}\e[0m"
+  puts "Dreambox config file: #{vm_config_file_path}"
 
   if File.file?(vm_config_file_path) then
     VM_CONFIG = YAML.load_file(vm_config_file_path)
