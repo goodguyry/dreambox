@@ -45,7 +45,6 @@ find /tmp/packages/ -name '*.zip' -exec unzip -d /usr/local/src/ {} \; > /dev/nu
 # Install the packages
 echo "Installing the packages"
 dpkg -i /usr/local/src/httpd_*.deb > /dev/null 2>&1
-dpkg -i /usr/local/src/php_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/mysql_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/mod-fastcgi_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/imagemagick-*.deb > /dev/null 2>&1
@@ -57,13 +56,6 @@ ldconfig /usr/local/lib
 # Copy files into place
 echo "Copying files into place"
 
-# Copy the .ini file into place
-mkdir -p /etc/php56
-cp /tmp/files/php/php.ini /etc/php56/
-
-# Copy php-cgi to the Apache cgi-bin
-cp /usr/local/php56/bin/php-cgi /usr/local/apache2/cgi-bin/
-
 # Copy the PHP FastCGI Wrapper into place
 cp /tmp/files/php/php-fastcgi-wrapper /usr/local/bin/
 # Make it executable
@@ -72,7 +64,6 @@ chmod +x /usr/local/bin/php-fastcgi-wrapper
 # Copy the Apache config files into place
 [[ ! -d '/usr/local/apache2/conf/vhosts' ]] && mkdir '/usr/local/apache2/conf/vhosts'
 cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
-cp /tmp/files/http/httpd-vhosts.conf /usr/local/apache2/conf/extra/
 
 # Copy user setup script and set as executable
 cp /tmp/files/user_setup /usr/local/bin/user_setup
@@ -82,17 +73,19 @@ chmod +x /usr/local/bin/user_setup
 cp /tmp/files/ssl_setup /usr/local/bin/ssl_setup
 chmod +x /usr/local/bin/ssl_setup
 
+# Copy PHP install script and set as executable
+cp /tmp/files/php_install /usr/local/bin/php_install
+chmod +x /usr/local/bin/php_install
+
 # Add Apache, PHP and MySQL bins to PATH
 echo "Adding Apache, PHP and MySQL bins to PATH"
 
 # For this shell
 export PATH=$PATH:/usr/local/apache2/bin
-export PATH=$PATH:/usr/local/php56/bin
 export PATH=$PATH:/usr/local/mysql/bin
 
 # For all future shells
 echo "PATH=\$PATH:/usr/local/apache2/bin" >> /home/vagrant/.profile
-echo "PATH=\$PATH:/usr/local/php56/bin" >> /home/vagrant/.profile
 echo "PATH=\$PATH:/usr/local/mysql/bin" >> /home/vagrant/.profile
 
 # Set up motd
