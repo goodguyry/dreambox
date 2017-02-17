@@ -47,6 +47,12 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "scripts/package-setup.sh"
 
+    # Install PHP
+    test.vm.provision "shell",
+      inline: "/bin/bash /usr/local/bin/php_install",
+      # Pass user_setup ENV variables to this script
+      :env => vm_config['box']
+
     vm_config['sites'].each do |site, conf|
       # Sets up the sync folder
       test.vm.synced_folder conf['local_root'], conf['root_path']

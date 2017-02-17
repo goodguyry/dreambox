@@ -96,7 +96,7 @@ if [[ -n $host && -n $root_path && -n $local_root ]]; then
   conf_do -b
 
   # Set the new vhost conf file in place
-  cp "${VHOST_CONF}" "${NEW_VHOST_CONF}"
+  cp /tmp/files/http/httpd-vhosts.conf "${NEW_VHOST_CONF}"
 
   # Create the SSL certificate
   [[ 'true' == $ssl_enabled ]] && source ssl_setup;
