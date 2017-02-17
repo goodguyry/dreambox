@@ -3,7 +3,7 @@ box:
   name: 'dreambox'
 
 sites:
-  'dreambox':
+  'dreambox': # Can be anything
     username: db_user
     web_root: dreambox.com
     local_root: web

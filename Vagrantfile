@@ -50,7 +50,6 @@ Vagrant.configure(2) do |config|
     # Install PHP
     test.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/php_install",
-      # Pass user_setup ENV variables to this script
       :env => vm_config['box']
 
     vm_config['sites'].each do |site, conf|
@@ -59,7 +58,6 @@ Vagrant.configure(2) do |config|
       # Runs user_setup
       test.vm.provision "shell",
         inline: "/bin/bash /usr/local/bin/user_setup",
-        # Pass user_setup ENV variables to this script
         :env => conf
     end
   end

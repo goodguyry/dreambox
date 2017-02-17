@@ -4,36 +4,41 @@ require 'yaml'
 module Config
   vagrant_dir = File.expand_path(Dir.pwd)
 
+  # Build the config filepath
   if defined? vm_config_file
     vm_config_file_path = File.join(vagrant_dir, vm_config_file)
   else
     vm_config_file_path = File.join(vagrant_dir, 'vm-config.yml')
   end
 
+  # Load the config file if found
+  # Otherwise abort with message
   if File.file?(vm_config_file_path) then
     VM_CONFIG = YAML.load_file(vm_config_file_path)
+    puts "Dreambox config file: #{vm_config_file_path}"
   else
-    # Error feedback
     abort("Config file '#{vm_config_file_path}' not found.\n >> See 'Getting Started': https://github.com/goodguyry/dreambox/wiki")
   end
 
-  puts "Dreambox config file: #{vm_config_file_path}"
-
+  # Collect settings for each site
   VM_CONFIG['sites'].each do |site, items|
     if ! items.kind_of? Hash then
         items = Hash.new
     end
 
+    # Establish defaults
     defaults = Hash.new
     defaults['local_root'] = 'web'
     defaults['ssl_enabled'] = false
 
+    # Build the root path here rather than in a provisioner
     items['root_path'] = "/home/#{items['username']}/#{items['web_root']}"
 
     if ! items['config'].kind_of? Array then
         items['config'] = Array.new
     end
 
+    # Collect each of the site's config settings
     items['config'].each do |conf|
       case conf
       when 'ssl'
@@ -59,12 +64,12 @@ module Config
   VM_CONFIG['box']['php_version'] = VM_CONFIG['box']['php'][0,1]
 
   # Test the PHP version and set the PHP directory
+  # Abort of the value isn't one of the two specific options
   if '5' === VM_CONFIG['box']['php_version'] then
     VM_CONFIG['box']['php_dir'] = 'php56'
   elsif '7' === VM_CONFIG['box']['php_version'] then
     VM_CONFIG['box']['php_dir'] = 'php70'
   else
-    # Error feedback
     abort("Invalid `php` value in #{vm_config_file_path}\n >> Should be either \'5\' or \'7\'.")
   end
 end
