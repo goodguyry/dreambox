@@ -15,9 +15,10 @@ Vagrant.configure(2) do |config|
     config.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/user_setup",
       :env => conf
-    # Install PHP
-    config.vm.provision "shell",
-      inline: "/bin/bash /usr/local/bin/php_install",
-      :env => conf
   end
+
+  # Install PHP
+  config.vm.provision "shell",
+    inline: "/bin/bash /usr/local/bin/php_install",
+    :env => conf
 end
