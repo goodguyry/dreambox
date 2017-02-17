@@ -10,11 +10,14 @@ module Config
     vm_config_file_path = File.join(vagrant_dir, 'vm-config.yml')
   end
 
-  puts "Dreambox config file: #{vm_config_file_path}"
-
   if File.file?(vm_config_file_path) then
     VM_CONFIG = YAML.load_file(vm_config_file_path)
+  else
+    # Error feedback
+    abort("Config file '#{vm_config_file_path}' not found.\n >> See 'Getting Started': https://github.com/goodguyry/dreambox/wiki")
   end
+
+  puts "Dreambox config file: #{vm_config_file_path}"
 
   VM_CONFIG['sites'].each do |site, items|
     if ! items.kind_of? Hash then
