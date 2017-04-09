@@ -87,5 +87,19 @@ module Config
   # Test the PHP version and set the PHP directory
   VM_CONFIG['box']['php_dir'] = php_versions[0] === VM_CONFIG['box']['php'] ? php_dirs[0] : php_dirs[1]
 
-  # puts VM_CONFIG
+  if VM_CONFIG['debug'] then
+    puts "Dreambox Debug:".bold.yellow
+    puts "===> Config File:   #{vm_config_file_path}".bold
+    puts "===> Box Name:      #{VM_CONFIG['box']['name']}".bold
+    puts "===> PHP Version:   #{VM_CONFIG['box']['php']}".bold
+    puts "===> SSL Enabled:   #{VM_CONFIG['ssl_enabled']}".bold
+    puts "===> Hosts:         #{VM_CONFIG['hosts']}".bold
+    puts ''
+    VM_CONFIG['sites'].each do |site, items|
+      puts "===> #{site}['local_root']   #{items['local_root']}".bold
+      puts "===> #{site}['root_path']    #{items['root_path']}".bold
+      puts ''
+    end
+    puts ''
+  end
 end
