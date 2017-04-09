@@ -96,8 +96,12 @@ module Config
     puts "===> Hosts:         #{VM_CONFIG['hosts']}".bold
     puts ''
     VM_CONFIG['sites'].each do |site, items|
-      puts "===> #{site}['local_root']   #{items['local_root']}".bold
+      puts "===> #{site}['username']     #{items['username']}".bold
       puts "===> #{site}['root_path']    #{items['root_path']}".bold
+      puts "===> #{site}['web_root']     #{items['web_root']}".bold
+      puts "===> #{site}['local_root']   #{items['local_root']}".bold
+      puts "===> #{site}['host']         #{items['host']}".bold
+      puts "===> #{site}['ssl']          #{items['ssl']}".bold
       puts ''
     end
     puts ''
