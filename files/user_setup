@@ -3,7 +3,7 @@
 # Create the web root and virtual host
 #
 
-trap "clean_and_exit" TERM INT
+trap "do_exit" TERM INT
 
 # Ensure the script is run as SU
 if [ "$(whoami)" != "root" ]; then
@@ -13,14 +13,7 @@ if [ "$(whoami)" != "root" ]; then
   exit 1
 fi
 
-# httpd-vhost.conf values; original and backup
-VHOST_CONF="/usr/local/apache2/conf/extra/httpd-vhosts.conf"
-BAK_FILE="/tmp/httpd-vhosts.conf_original"
-# Unless otherwise specified, project files will be found in `web`
-DEFAULT_PROJECT_DIR="web"
-
 # Catch errors and provide feedback
-# Passing --clean as the last argument runs `clean_and_exit`
 function e_catch {
   PASS=false
   CLEAN=false
@@ -28,7 +21,6 @@ function e_catch {
   for opt in $@; do
     case $opt in
             0)  PASS=true             ;;
-      --clean)  CLEAN=true            ;;
             *)  MESSAGE=${@%%--clean} ;;
     esac
   done;
@@ -38,8 +30,7 @@ function e_catch {
   else
     echo
     echo " x ... ${MESSAGE:2} failed!"
-    $CLEAN && clean_and_exit
-    ! $CLEAN && exit 1
+    do_exit
   fi
 }
 
@@ -51,48 +42,14 @@ function do_exit {
   exit 1
 }
 
-# Cleanup and exit
-function clean_and_exit {
-  echo
-  # Reset httpd-vhosts.conf_original
-  conf_do -d
-  # Restart Apache
-  apachectl restart;
-  do_exit
-}
-
-# Remove any extra slashed from the path
-# Extra slashes could result from improper input
-function trim_extra_slashes {
-  CLEANED_PROJECT_ROOT=$(echo "$@" | sed 's/\(\/\{2,\}\)/\//g')
-}
-
-# Backup and restore the httpd-vhosts.conf
-function conf_do {
-  if [[ "$@" == "-b" ]] && [[ -r $VHOST_CONF ]] ; then
-    # Backup the .conf file
-    cp $VHOST_CONF $BAK_FILE
-    e_catch $? "httpd-vhosts.conf backup" --clean
-  elif [[  "$@" == "-d"  ]] && [[ -r $BAK_FILE ]]; then
-    # Restore the .conf file
-    cp $BAK_FILE $VHOST_CONF
-    # Delete the backup
-    rm -f $BAK_FILE
-    e_catch $? "httpd-vhosts.conf restore"
-  fi
-}
-
 if [[ -n $host && -n $root_path && -n $local_root ]]; then
-  # Backup httpd-vhosts.conf
-  conf_do -b
-
   # Set the new vhost conf file in place
   cp /tmp/files/http/httpd-vhosts.conf "${vhost_file}"
 
   # Set Apache directory
   ESCAPED_SITE_ROOT=$(echo "$root_path" | sed 's/\(\W\)/\\\1/g');
   sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ "${vhost_file}";
-  e_catch $? "httpd-vhosts.conf update" --clean
+  e_catch $? "httpd-vhosts.conf update"
 
   # ServerName
   sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${host}/" "${vhost_file}"
@@ -110,13 +67,13 @@ if [[ -n $host && -n $root_path && -n $local_root ]]; then
     # SSLCertificateKeyFile
     sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${ssl_name}\.key"/ "${vhost_file}"
 
-    e_catch $? "SSL setup" --clean
+    e_catch $? "SSL setup"
     echo "For best results, add the certificate to your keychain"
   fi
 
   # Change ownership to Apache user
   chown -R www-data:www-data "$root_path"
-  e_catch $? "Permissions update" --clean
+  e_catch $? "Permissions update"
 
   # Restart Apache
   /usr/local/apache2/bin/apachectl restart >/dev/null;

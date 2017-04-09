@@ -30,5 +30,5 @@ else
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
   # Save these for next time
   cp -f /usr/local/apache2/conf/"${host}".* /vagrant/certs
-  e_catch $? "SSL certificate" --clean
+  [[ $? ]] && echo "SSL certificate done."
 fi
