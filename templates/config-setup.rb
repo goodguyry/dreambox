@@ -1,6 +1,13 @@
 #!/usr/bin/env ruby
 require 'yaml'
 
+class String
+  def red;     "\e[31m#{self}\e[0m" end
+  def green;   "\e[32m#{self}\e[0m" end
+  def yellow;  "\e[33m#{self}\e[0m" end
+  def bold;    "\e[1m#{self}\e[22m" end
+end
+
 module Config
   vagrant_dir = File.expand_path(Dir.pwd)
 
@@ -15,9 +22,9 @@ module Config
   # Otherwise abort with message
   if File.file?(vm_config_file_path) then
     VM_CONFIG = YAML.load_file(vm_config_file_path)
-    puts "Dreambox config file: #{vm_config_file_path}"
   else
-    abort("Config file '#{vm_config_file_path}' not found.\n >> See 'Getting Started': https://github.com/goodguyry/dreambox/wiki")
+    puts "Config file '#{vm_config_file_path}' not found.".bold.red
+    abort "===> See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".bold.yellow
   end
 
   VM_CONFIG['hosts'] = Array.new
@@ -74,7 +81,7 @@ module Config
 
   # Abort of the php version isn't one of the two specific options
   if ! php_versions.include?(VM_CONFIG['box']['php']) then
-    abort("Abort: Acceptable `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'")
+    abort "===> Dreambox config: Acceptable `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'".bold.red
   end
 
   # Test the PHP version and set the PHP directory
