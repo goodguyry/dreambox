@@ -8,6 +8,12 @@ Vagrant.configure(2) do |config|
   # Start bash as a non-login shell
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
+  if vm_config['ssl_enabled'] then
+    config.vm.provision "shell",
+      inline: "/bin/bash /usr/local/bin/ssl_setup",
+      :env => vm_config
+  end
+
   vm_config['sites'].each do |site, conf|
     # Sets up the sync folder
     config.vm.synced_folder conf['local_root'], conf['root_path']

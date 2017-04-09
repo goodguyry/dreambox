@@ -52,6 +52,12 @@ Vagrant.configure(2) do |config|
       inline: "/bin/bash /usr/local/bin/php_install",
       :env => vm_config['box']
 
+    if vm_config['ssl_enabled'] then
+      test.vm.provision "shell",
+        inline: "/bin/bash /usr/local/bin/ssl_setup",
+        :env => vm_config
+    end
+
     vm_config['sites'].each do |site, conf|
       # Sets up the sync folder
       test.vm.synced_folder conf['local_root'], conf['root_path']

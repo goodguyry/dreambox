@@ -2,36 +2,33 @@
 #
 # Create the SSL certificate, then finish setup
 #
+open_ssl_conf='/usr/lib/ssl/dreambox-openssl.cnf'
 
 # Check for a saved certificate and key
-if [[ -r "/vagrant/certs/${ssl_name}.key" && -r "/vagrant/certs/${ssl_name}.crt" ]]; then
+if [[ -r "/vagrant/certs/${HOST_LIST[0]}.key" && -r "/vagrant/certs/${HOST_LIST[0]}.crt" ]]; then
   # Use the saved certs
   echo "Using saved certs from /vagrant/certs/"
-  cp -f /vagrant/certs/"${ssl_name}".* /usr/local/apache2/conf/
+  cp -f /vagrant/certs/"${HOST_LIST[0]}".* /usr/local/apache2/conf/
 else
+  # Build the hosts strings
+  for (( i=1; i<=${#HOST_LIST[@]}; i++ )); do
+    echo "DNS.${i} = ${HOST_LIST[$i-1]}" >> "${open_ssl_conf}"
+  done
+
   # Create the certificate
-  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=*.${ssl_name}" -keyout "/usr/local/apache2/conf/${ssl_name}.key" -out "/usr/local/apache2/conf/${ssl_name}.crt"
+  openssl req \
+    -x509 -nodes \
+    -days 365 \
+    -newkey rsa:2048 \
+    -extensions v3_req \
+    -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=${host}/" \
+    -keyout "/usr/local/apache2/conf/${host}.key" \
+    -out "/usr/local/apache2/conf/${host}.crt" \
+    -config "${open_ssl_conf}";
 
   # Create the certs directory
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
   # Save these for next time
-  cp -f /usr/local/apache2/conf/"${ssl_name}".* /vagrant/certs
+  cp -f /usr/local/apache2/conf/"${host}".* /vagrant/certs
   e_catch $? "SSL certificate" --clean
 fi
-
-
-# Update vhost file for SSL
-
-# Listen 443
-sed -i 's/\(#\ \)\(Listen\ \)\(80\)/\2443/' "${NEW_VHOST_CONF}"
-# <VirtualHost *:443>
-sed -i 's/\*:80/\*:443/' "${NEW_VHOST_CONF}"
-# SSLEngine on
-sed -i 's/\(SSLEngine\ \)\w*/\1on/' "${NEW_VHOST_CONF}"
-# SSLCertificateFile
-sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${ssl_name}\.crt"/ "${NEW_VHOST_CONF}"
-# SSLCertificateKeyFile
-sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${ssl_name}\.key"/ "${NEW_VHOST_CONF}"
-
-e_catch $? "SSL setup" --clean
-echo "For best results, add the certificate to your keychain"

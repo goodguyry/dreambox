@@ -72,6 +72,7 @@ chmod +x /usr/local/bin/user_setup
 # Copy SSL setup script and set as executable
 cp /tmp/files/ssl_setup /usr/local/bin/ssl_setup
 chmod +x /usr/local/bin/ssl_setup
+cp /tmp/files/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
 
 # Copy PHP install script and set as executable
 cp /tmp/files/php_install /usr/local/bin/php_install

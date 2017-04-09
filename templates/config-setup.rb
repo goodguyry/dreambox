@@ -20,36 +20,45 @@ module Config
     abort("Config file '#{vm_config_file_path}' not found.\n >> See 'Getting Started': https://github.com/goodguyry/dreambox/wiki")
   end
 
+  VM_CONFIG['hosts'] = Array.new
+  VM_CONFIG['ssl_enabled'] = false
+
   # Collect settings for each site
   VM_CONFIG['sites'].each do |site, items|
     if ! items.kind_of? Hash then
-        items = Hash.new
+      items = Hash.new
     end
 
     # Establish defaults
     defaults = Hash.new
     defaults['local_root'] = 'web'
-    defaults['ssl_enabled'] = false
 
-    # Build the root path here rather than in a provisioner
+    # Build paths here rather than in a provisioner
     items['root_path'] = "/home/#{items['username']}/#{items['web_root']}"
+    items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['hosts'][0]}.conf"
 
-    if ! items['config'].kind_of? Array then
-        items['config'] = Array.new
+    # Temporary fix
+    if ! items['hosts'].kind_of? Array then
+      items['host'] = items['hosts'][0]
     end
 
-    # Collect each of the site's config settings
-    items['config'].each do |conf|
-      case conf
-      when 'ssl'
-        items['ssl_enabled'] = true
-        items['ssl_name'] = items['host']
-      end
+    # Take hosts and create a large string in a root 'hosts' property
+    # just push it, since it doesn't matter what type it is
+    if (items['ssl'] || VM_CONFIG['box']['ssl']) then
+      VM_CONFIG['ssl_enabled'] = true
+      VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*items['hosts'])
     end
 
-    VM_CONFIG['sites'][site].delete('config')
+    # Delete properties we no longer need
+    VM_CONFIG['sites'][site].delete('hosts')
+    VM_CONFIG['sites'][site].delete('ssl')
+
+    # Merge in settings
     VM_CONFIG['sites'][site] = defaults.merge(items)
   end
+
+  # Merge hosts into string in a root 'hosts' property
+  VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
 
   # Set default 'box' values
   defaults = Hash.new

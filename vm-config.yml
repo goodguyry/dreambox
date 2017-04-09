@@ -7,6 +7,7 @@ sites:
     username: db_user
     web_root: dreambox.com
     local_root: web
-    host: dreambox.test
-    config:
-    - ssl
+    hosts:
+      - dreambox.test
+      - www.dreambox.test
+    ssl: true
