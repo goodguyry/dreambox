@@ -45,7 +45,7 @@ module Config
     items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['hosts'][0]}.conf"
 
     # Temporary fix
-    if ! items['hosts'].kind_of? Array then
+    if items['hosts'].kind_of? Array then
       items['host'] = items['hosts'][0]
     end
 
@@ -58,7 +58,6 @@ module Config
 
     # Delete properties we no longer need
     VM_CONFIG['sites'][site].delete('hosts')
-    VM_CONFIG['sites'][site].delete('ssl')
 
     # Merge in settings
     VM_CONFIG['sites'][site] = defaults.merge(items)
