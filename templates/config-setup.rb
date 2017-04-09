@@ -60,25 +60,25 @@ module Config
   # Merge hosts into string in a root 'hosts' property
   VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
 
+  # Allowed php values
+  php_versions = ['5', '7']
+  php_dirs = ['php56', 'php70']
+
   # Set default 'box' values
-  defaults = Hash.new
-  defaults['name'] = 'dreambox'
-  defaults['php_version'] = '5'
+  box_defaults = Hash.new
+  box_defaults['name'] = 'dreambox'
+  box_defaults['php'] = php_versions[0]
 
   # Merge the default 'box' values with those from vm-config
-  VM_CONFIG['box'] = defaults.merge(VM_CONFIG['box'])
+  VM_CONFIG['box'] = box_defaults.merge(VM_CONFIG['box'])
 
-  # We only need the first character of the PHP version value
-  # This should end up being '5' or '7'
-  VM_CONFIG['box']['php_version'] = VM_CONFIG['box']['php'][0,1]
+  # Abort of the php version isn't one of the two specific options
+  if ! php_versions.include?(VM_CONFIG['box']['php']) then
+    abort("Abort: Acceptable `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'")
+  end
 
   # Test the PHP version and set the PHP directory
-  # Abort of the value isn't one of the two specific options
-  if '5' === VM_CONFIG['box']['php_version'] then
-    VM_CONFIG['box']['php_dir'] = 'php56'
-  elsif '7' === VM_CONFIG['box']['php_version'] then
-    VM_CONFIG['box']['php_dir'] = 'php70'
-  else
-    abort("Invalid `php` value in #{vm_config_file_path}\n >> Should be either \'5\' or \'7\'.")
-  end
+  VM_CONFIG['box']['php_dir'] = php_versions[0] === VM_CONFIG['box']['php'] ? php_dirs[0] : php_dirs[1]
+
+  # puts VM_CONFIG
 end
