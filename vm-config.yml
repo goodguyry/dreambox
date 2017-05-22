@@ -10,5 +10,15 @@ sites:
     hosts:
       - dreambox.test
       - www.dreambox.test
-    ssl: true
+    # ssl: true
+  'example':
+    username: example_user
+    web_root: example.com
+    local_root: web
+    host: example.dev
+    hosts:
+      - example.test
+      - www.example.test
+    ssl: false
+
 debug: true
