@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+$vm_config_file = 'vm-config.yml'
+
 require_relative File.join(File.expand_path(Dir.pwd), 'templates/config-setup.rb')
 vm_config = Config::VM_CONFIG
 

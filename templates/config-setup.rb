@@ -16,6 +16,7 @@ def print_error(message)
 end
 
 module Config
+  vm_config_file = $vm_config_file
   vagrant_dir = File.expand_path(Dir.pwd)
 
   # Build the config filepath
