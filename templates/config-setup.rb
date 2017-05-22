@@ -110,20 +110,26 @@ module Config
   end
 
   if VM_CONFIG['debug'] then
-    puts "Dreambox Debug:".bold.yellow
-    puts "===> Config File:   #{vm_config_file_path}".bold
-    puts "===> Box Name:      #{VM_CONFIG['box']['name']}".bold
-    puts "===> PHP Version:   #{VM_CONFIG['box']['php']}".bold
-    puts "===> SSL Enabled:   #{VM_CONFIG['ssl_enabled']}".bold
-    puts "===> Hosts:         #{VM_CONFIG['hosts']}".bold
+    puts ''
+    puts "===> Dreambox Debug:".bold.yellow
+    puts "     Config File:   #{vm_config_file_path}".bold
+    puts "     Box Name:      #{VM_CONFIG['name']}".bold
+    puts "     PHP Version:   #{VM_CONFIG['php']}".bold
+    puts "     SSL Enabled:   #{VM_CONFIG['ssl_enabled']}".bold
+    if 0 < "#{VM_CONFIG['hosts']}".length then
+      puts "     Hosts:         #{VM_CONFIG['hosts']}".bold
+    end
     puts ''
     VM_CONFIG['sites'].each do |site, items|
-      puts "===> #{site}['username']     #{items['username']}".bold
-      puts "===> #{site}['root_path']    #{items['root_path']}".bold
-      puts "===> #{site}['web_root']     #{items['web_root']}".bold
-      puts "===> #{site}['local_root']   #{items['local_root']}".bold
-      puts "===> #{site}['host']         #{items['host']}".bold
-      puts "===> #{site}['ssl']          #{items['ssl']}".bold
+      puts "===> #{site}: username     #{items['username']}".bold
+      puts "     #{site}: root_path    #{items['root_path']}".bold
+      puts "     #{site}: web_root     #{items['web_root']}".bold
+      puts "     #{site}: local_root   #{items['local_root']}".bold
+      if 0 < "#{items['ssl']}".length then
+	puts "     #{site}: ssl          #{items['ssl']}".bold
+      end
+      puts "     #{site}: box_name     #{items['box_name']}".bold
+      puts "     #{site}: host         #{items['host']}".bold
       puts ''
     end
     puts ''
