@@ -119,6 +119,9 @@ module Config
   # If not, force disable SSL
   if 1 > VM_CONFIG['hosts'].length then
     VM_CONFIG['ssl_enabled'] = false
+    VM_CONFIG['sites'].each do |site, items|
+      items['ssl'] = false
+    end
     puts "===> Dreambox config: Missing hosts list; SSL disabled.".bold.yellow
   end
 
