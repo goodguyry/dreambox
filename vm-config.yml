@@ -1,6 +1,6 @@
-box:
-  php: '7'
-  name: 'dreambox'
+name: 'dreambox'
+php: '7'
+ssl: true
 
 sites:
   'dreambox':

@@ -50,7 +50,7 @@ Vagrant.configure(2) do |config|
     # Install PHP
     test.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/php_install",
-      :env => vm_config['box']
+      :env => vm_config
 
     if vm_config['ssl_enabled'] then
       test.vm.provision "shell",

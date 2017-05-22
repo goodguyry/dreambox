@@ -8,6 +8,11 @@ class String
   def bold;    "\e[1m#{self}\e[22m" end
 end
 
+def print_error(message)
+   puts "===> Dreambox config: #{message}".bold.red
+   abort "     See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".bold.yellow
+end
+
 module Config
   vagrant_dir = File.expand_path(Dir.pwd)
 
@@ -31,6 +36,27 @@ module Config
   VM_CONFIG['ssl_enabled'] = false
 
   # Collect settings for each site
+  # Allowed php values
+  php_versions = ['5', '7']
+  php_dirs = ['php56', 'php70']
+
+  # Set default 'box' values
+  box_defaults = Hash.new
+  box_defaults['name'] = 'dreambox'
+  box_defaults['php'] = php_versions[0]
+
+  # Merge the default 'box' values with those from vm-config
+  # VM_CONFIG = box_defaults.merge(VM_CONFIG)
+  box_defaults.merge(VM_CONFIG)
+
+  # Abort of the php version isn't one of the two specific options
+  if ! php_versions.include?(VM_CONFIG['php']) then
+    print_error "Accepted `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'"
+  end
+
+  # Test the PHP version and set the PHP directory
+  VM_CONFIG['php_dir'] = php_versions[0] === VM_CONFIG['php'] ? php_dirs[0] : php_dirs[1]
+
   VM_CONFIG['sites'].each do |site, items|
     if ! items.kind_of? Hash then
       items = Hash.new
@@ -82,9 +108,6 @@ module Config
   if ! php_versions.include?(VM_CONFIG['box']['php']) then
     abort "===> Dreambox config: Acceptable `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'".bold.red
   end
-
-  # Test the PHP version and set the PHP directory
-  VM_CONFIG['box']['php_dir'] = php_versions[0] === VM_CONFIG['box']['php'] ? php_dirs[0] : php_dirs[1]
 
   if VM_CONFIG['debug'] then
     puts "Dreambox Debug:".bold.yellow
