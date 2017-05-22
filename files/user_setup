@@ -42,6 +42,12 @@ function do_exit {
   exit 1
 }
 
+##
+# [host]       The first host listed for the site.
+# [root_path]  The path to the site root.
+# [vhost_file] The path to the vhost files for the site.
+# [box_name]   The root config name; used as the certificate and key file names.
+##
 if [[ -n $host && -n $root_path && -n $vhost_file && -n $box_name ]]; then
   # Set the new vhost conf file in place
   cp /tmp/files/http/httpd-vhosts.conf "${vhost_file}"

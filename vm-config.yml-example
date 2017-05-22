@@ -11,3 +11,4 @@ sites:
       - dreambox.test
       - www.dreambox.test
     # ssl: true
+debug: true

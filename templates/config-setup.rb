@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'yaml'
 
+# Helper class for formatting message text
 class String
   def red;     "\e[31m#{self}\e[0m" end
   def green;   "\e[32m#{self}\e[0m" end
@@ -8,6 +9,7 @@ class String
   def bold;    "\e[1m#{self}\e[22m" end
 end
 
+# Helper function for printing error messages
 def print_error(message)
    puts "===> Dreambox config: #{message}".bold.red
    abort "     See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".bold.yellow
@@ -31,6 +33,7 @@ module Config
     print_error "Config file '#{vm_config_file_path}' not found."
   end
 
+  # Set config defaults
   VM_CONFIG['hosts'] = Array.new
   VM_CONFIG['ssl_enabled'] = false
 
@@ -119,6 +122,7 @@ module Config
     puts "===> Dreambox config: Missing hosts list; SSL disabled.".bold.yellow
   end
 
+  # Debug formatting
   if VM_CONFIG['debug'] then
     puts ''
     puts "===> Dreambox Debug:".bold.yellow

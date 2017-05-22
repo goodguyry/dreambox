@@ -3,7 +3,9 @@
 # Create the SSL certificate, then finish setup
 #
 open_ssl_conf='/usr/lib/ssl/dreambox-openssl.cnf'
+# Create an array from the hosts string
 IFS=',' read -r -a HOST_LIST <<< "${hosts}"
+# Use the first host as the main host
 HOST="${HOST_LIST[0]}"
 
 # Check for a saved certificate and key
@@ -12,7 +14,7 @@ if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; the
   echo "Using saved certs from /vagrant/certs/"
   cp -f /vagrant/certs/"${name}".* /usr/local/apache2/conf/
 else
-  # Build the hosts strings
+  # Build the hosts DNS strings
   for (( i=1; i<=${#HOST_LIST[@]}; i++ )); do
     echo "DNS.${i} = ${HOST_LIST[$i-1]}" >> "${open_ssl_conf}"
   done
