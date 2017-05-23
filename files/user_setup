@@ -171,7 +171,7 @@ if [[ $status -eq 2 ]]; then
   echo
   echo "Enter the name of the directory within which DreamBox will find your"
   echo "site's files, relative to your Vagrantfile (or press return for '$DEFAULT_PROJECT_DIR')."
-esca  echo
+  echo
 
   # > Prompt for project directory
   while [[ $status -eq 2 ]]; do
