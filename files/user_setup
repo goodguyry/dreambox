@@ -94,6 +94,7 @@ if [[ -n $DREAMBOX_USER_NAME && -n $DREAMBOX_SITE_ROOT && -n $DREAMBOX_PROJECT_D
   USER_NAME="$DREAMBOX_USER_NAME"
   USER_DIR="$USER_DIR/$USER_NAME"
   SITE_ROOT="$USER_DIR/$DREAMBOX_SITE_ROOT"
+  PUBLIC_SITE_ROOT="$SITE_ROOT"
   PROJECT_ROOT="/vagrant/$DREAMBOX_PROJECT_DIR"
   CERT_NAME="${DREAMBOX_SITE_NAME}"
 
@@ -102,6 +103,9 @@ if [[ -n $DREAMBOX_USER_NAME && -n $DREAMBOX_SITE_ROOT && -n $DREAMBOX_PROJECT_D
   status=4
 fi
 
+if [[ -n $DREAMBOX_PUBLIC_SITE_ROOT ]]; then
+  PUBLIC_SITE_ROOT="$SITE_ROOT/$DREAMBOX_PUBLIC_SITE_ROOT"
+fi
 
 if [[ $status -eq 0 ]]; then
   echo
@@ -128,6 +132,12 @@ if [[ $status -eq 0 ]]; then
   done
 fi
 
+useradd -g users -s /bin/bash $USER_NAME -u $DREAMBOX_UID
+cp -R /home/vagrant/.ssh /home/$USER_NAME/.ssh
+echo -e "vagrant\nvagrant" | (passwd $USER_NAME)
+cp /home/vagrant/.profile /home/$USER_NAME/.profile
+echo "$USER_NAME  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+chown -R $USER_NAME /home/$USER_NAME
 
 if [[ $status -eq 1 ]]; then
   echo
@@ -145,6 +155,7 @@ if [[ $status -eq 1 ]]; then
     if [[ "x$REPLY" != "x" ]]; then
       # Build path: /home/user/site
       SITE_ROOT="$USER_DIR/$REPLY"
+      PUBLIC_SITE_ROOT = "$SITE_ROOT"
       status=2;
       unset REPLY
     else
@@ -208,7 +219,7 @@ if [[ $status -eq 4 ]]; then
   [[ $ENABLE_SSL ]] && source ssl_setup;
 
   # Set Apache directory
-  ESCAPED_SITE_ROOT=$(echo "$SITE_ROOT" | sed 's/\(\W\)/\\\1/g');
+  ESCAPED_SITE_ROOT=$(echo "$PUBLIC_SITE_ROOT" | sed 's/\(\W\)/\\\1/g');
   sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ $VHOST_CONF;
   e_catch $? "httpd-vhosts.conf update" --clean
 

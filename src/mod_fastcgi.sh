@@ -21,8 +21,10 @@ apt-get -y install make checkinstall zip;
 cd /usr/local/src;
 
 # Download mod_fastcgi
-# wget http://www.fastcgi.com/dist/"$MOD_NAME".tar.gz;
-wget https://fossies.org/linux/www/apache_httpd_modules/"$MOD_NAME".tar.gz;
+# dead: wget http://www.fastcgi.com/dist/"$MOD_NAME".tar.gz;
+# dead: wget https://fossies.org/linux/www/apache_httpd_modules/"$MOD_NAME".tar.gz;
+# New link ripped from https://github.com/Homebrew/homebrew-apache/commit/0ee1dd9012f
+wget https://dl.bintray.com/homebrew/mirror/"$MOD_NAME".tar.gz;
 
 # Unpack the files
 tar xvfz "$MOD_NAME".tar.gz;
