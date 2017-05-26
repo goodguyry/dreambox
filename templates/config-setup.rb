@@ -81,7 +81,7 @@ module Config
     end
 
     # Build paths here rather than in a provisioner
-    items['root_path'] = "/home/#{items['username']}/#{items['web_root']}"
+    items['root_path'] = "/home/#{items['username']}/#{items['root']}"
     items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['host']}.conf"
 
     # If SSL is enabled globally and not disabled locally, or if enabled locally
@@ -141,7 +141,7 @@ module Config
     VM_CONFIG['sites'].each do |site, items|
       puts "===> #{site}: username     #{items['username']}".bold
       puts "     #{site}: root_path    #{items['root_path']}".bold
-      puts "     #{site}: web_root     #{items['web_root']}".bold
+      puts "     #{site}: root         #{items['root']}".bold
       puts "     #{site}: local_root   #{items['local_root']}".bold
       if 0 < "#{items['ssl']}".length then
         puts "     #{site}: ssl          #{items['ssl']}".bold
