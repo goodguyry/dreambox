@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+$vm_config_file = 'vm-config.yml'
+
 require_relative File.join(File.expand_path(Dir.pwd), 'templates/config-setup.rb')
 vm_config = Config::VM_CONFIG
 
@@ -50,7 +52,13 @@ Vagrant.configure(2) do |config|
     # Install PHP
     test.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/php_install",
-      :env => vm_config['box']
+      :env => vm_config
+
+    if vm_config['ssl_enabled'] then
+      test.vm.provision "shell",
+        inline: "/bin/bash /usr/local/bin/ssl_setup",
+        :env => vm_config
+    end
 
     vm_config['sites'].each do |site, conf|
       # Sets up the sync folder

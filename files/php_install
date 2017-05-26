@@ -1,12 +1,12 @@
 #! /bin/bash
 
 # Defaults:
-# - php_version: 5
+# - php: 5
 # - php_dir: php56
 
-echo "Installing PHP v${php_version}"
-if [[ /usr/local/src/php_"${php_version}"*.deb ]]; then
-  dpkg -i /usr/local/src/php_"${php_version}"*.deb > /dev/null 2>&1
+echo "Installing PHP v${php}"
+if [[ /usr/local/src/php_"${php}"*.deb ]]; then
+  dpkg -i /usr/local/src/php_"${php}"*.deb > /dev/null 2>&1
 else
   exit 1
 fi

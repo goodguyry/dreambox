@@ -1,12 +1,14 @@
-box:
-  php: '7'
-  name: 'dreambox'
+name: 'dreambox'
+php: '7'
+ssl: true
 
 sites:
   'dreambox': # Can be anything
     username: db_user
     web_root: dreambox.com
     local_root: web
-    host: dreambox.test
-    config:
-    - ssl
+    hosts:
+      - dreambox.test
+      - www.dreambox.test
+    # ssl: true
+debug: true
