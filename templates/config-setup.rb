@@ -65,6 +65,14 @@ module Config
       items = Hash.new
     end
 
+    # Check for required values before proceeding
+    required = ['username', 'root', 'local_root', 'host']
+    required.each do |property|
+      if ! (items[property].kind_of? String) then
+        print_error "Missing #{property} for site #{site}."
+      end
+    end
+
     # Establish site defaults
     defaults = Hash.new
     defaults['box_name'] = VM_CONFIG['name']
