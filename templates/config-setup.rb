@@ -67,22 +67,38 @@ module Config
 
     # Establish site defaults
     defaults = Hash.new
-    defaults['local_root'] = 'www'
     defaults['box_name'] = VM_CONFIG['name']
 
-    # Set the site host value
-    if ! defined?(items['host']) || ! (items['host'].kind_of? String) then
-      if (items['hosts'].kind_of? Array) && 0 < items['hosts'].length then
-        # Add first `hosts` value for the `host` property
-        items['host'] = items['hosts'][0]
-      else
-        print_error "Missing `host` and/or `hosts` values."
+    # Add the site's `host` to the root 'hosts' property
+    if defined?(items['host']) && (items['host'].kind_of? String) then
+      # De-dup hosts values
+      if ! VM_CONFIG['hosts'].include?(items['host']) then
+        VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*items['host'])
       end
+    else
+      print_error "Missing or invalid `host` value for site '#{site}'."
     end
 
     # Build paths here rather than in a provisioner
     items['root_path'] = "/home/#{items['username']}/#{items['root']}"
     items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['host']}.conf"
+
+    # Combine aliases into a space-separated string
+    # Also add the to the root 'hosts' property
+    if (items['aliases'].kind_of? Array) then
+      if items['aliases'].length then
+        # Add each of the site's hosts to the root 'hosts' property
+        items['aliases'].each do |the_alias|
+          # De-dup hosts values
+          if ! VM_CONFIG['hosts'].include?(the_alias) then
+            VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*the_alias)
+          end
+        end
+        items['aliases'] = items['aliases'].join(' ')
+      else
+        print_error "Expected `aliases` value to be an Array for site '#{site}'."
+      end
+    end
 
     # If SSL is enabled globally and not disabled locally, or if enabled locally
     if (VM_CONFIG['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
@@ -91,19 +107,6 @@ module Config
       # Ensure the site SSL setting is enabled
       # If it's enabled globally, but not at the site, ssl_setup will fail
       items['ssl'] = true
-      # Add the site's main host to the root `hosts` property
-      if defined?(items['host']) then
-        VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*items['host'])
-      end
-      # Add each of the site's hosts to the root 'hosts' property
-      if items['hosts'].kind_of? Array then
-        items['hosts'].each do |host|
-          # De-dup hosts values
-          if ! VM_CONFIG['hosts'].include?(host) then
-            VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*host)
-          end
-        end
-      end
     end
 
     # Delete properties we no longer need
@@ -145,6 +148,9 @@ module Config
       puts "     #{site}: local_root   #{items['local_root']}".bold
       if 0 < "#{items['ssl']}".length then
         puts "     #{site}: ssl          #{items['ssl']}".bold
+      end
+      if 0 < "#{items['aliases']}".length then
+        puts "     #{site}: aliases      #{items['aliases']}".bold
       end
       puts "     #{site}: box_name     #{items['box_name']}".bold
       puts "     #{site}: host         #{items['host']}".bold
