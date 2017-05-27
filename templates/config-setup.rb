@@ -64,13 +64,13 @@ module Config
     defaults['box_name'] = VM_CONFIG['name']
 
     # Add the site's `host` to the root 'hosts' property
-    if defined?(items['host']) && (items['host'].kind_of? String) then
+    if items['host'].kind_of? String then
       # De-dup hosts values
       if ! VM_CONFIG['hosts'].include?(items['host']) then
         VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*items['host'])
       end
     else
-      print_error("Missing or invalid `host` value for site '#{site}'.", true)
+      print_error("Invalid `host` value for site '#{site}'.", true)
     end
 
     # Build paths here rather than in a provisioner
