@@ -36,7 +36,6 @@ module Config
   box_defaults['php'] = php_versions[0]
 
   # Merge the default 'box' values with those from vm-config
-  # VM_CONFIG = box_defaults.merge(VM_CONFIG)
   box_defaults.merge(VM_CONFIG)
 
   # Abort of the php version isn't one of the two specific options
@@ -44,7 +43,7 @@ module Config
     print_error("Accepted `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'", true)
   end
 
-  # Test the PHP version and set the PHP directory
+  # Set the PHP directory
   VM_CONFIG['php_dir'] = php_versions[0] === VM_CONFIG['php'] ? php_dirs[0] : php_dirs[1]
 
   VM_CONFIG['sites'].each do |site, items|
@@ -52,7 +51,7 @@ module Config
       items = Hash.new
     end
 
-    # Check for required values before proceeding
+    # Check for required site properties before proceeding
     required = ['username', 'root', 'local_root', 'host']
     required.each do |property|
       if ! (items[property].kind_of? String) then
@@ -78,11 +77,10 @@ module Config
     items['root_path'] = "/home/#{items['username']}/#{items['root']}"
     items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['host']}.conf"
 
-    # Combine aliases into a space-separated string
-    # Also add the to the root 'hosts' property
+    # Add each of the site's hosts to the root 'hosts' property
+    # Also combine aliases into a space-separated string
     if (items['aliases'].kind_of? Array) then
       if items['aliases'].length then
-        # Add each of the site's hosts to the root 'hosts' property
         items['aliases'].each do |the_alias|
           # De-dup hosts values
           if ! VM_CONFIG['hosts'].include?(the_alias) then
@@ -104,14 +102,11 @@ module Config
       items['ssl'] = true
     end
 
-    # Delete properties we no longer need
-    VM_CONFIG['sites'][site].delete('hosts')
-
     # Merge in settings
     VM_CONFIG['sites'][site] = defaults.merge(items)
   end
 
-  # Merge hosts into string in a root 'hosts' property
+  # Merge the root 'hosts' property into comma-separated string
   VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
 
   # One last check to make sure we have hosts
@@ -124,7 +119,7 @@ module Config
     print_error("Missing hosts list; SSL disabled.", false)
   end
 
-  # Debug formatting
+  # Print debug information
   if VM_CONFIG['debug'] then
     print_debug_info(VM_CONFIG, vm_config_file_path)
   end
