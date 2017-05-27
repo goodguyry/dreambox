@@ -7,9 +7,14 @@ class String
 end
 
 # Helper function for printing error messages
-def print_error(message)
-   puts "===> Dreambox config: #{message}".bold.red
-   abort "     See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".bold.yellow
+def print_error(message, fatal)
+  prefix = '===> Dreambox config'
+  if (fatal) then
+    puts "#{prefix}: #{message}".bold.red
+    abort "     See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".bold.yellow
+  else
+    puts "#{prefix}: #{message}".bold.yellow
+  end
 end
 
 # Print debug info

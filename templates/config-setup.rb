@@ -18,7 +18,7 @@ module Config
   if File.file?(vm_config_file_path) then
     VM_CONFIG = YAML.load_file(vm_config_file_path)
   else
-    print_error "Config file '#{vm_config_file_path}' not found."
+    print_error("Config file '#{vm_config_file_path}' not found.", true)
   end
 
   # Set config defaults
@@ -41,7 +41,7 @@ module Config
 
   # Abort of the php version isn't one of the two specific options
   if ! php_versions.include?(VM_CONFIG['php']) then
-    print_error "Accepted `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'"
+    print_error("Accepted `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'", true)
   end
 
   # Test the PHP version and set the PHP directory
@@ -56,7 +56,7 @@ module Config
     required = ['username', 'root', 'local_root', 'host']
     required.each do |property|
       if ! (items[property].kind_of? String) then
-        print_error "Missing #{property} for site #{site}."
+        print_error("Missing #{property} for site #{site}.", true)
       end
     end
 
@@ -71,7 +71,7 @@ module Config
         VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*items['host'])
       end
     else
-      print_error "Missing or invalid `host` value for site '#{site}'."
+      print_error("Missing or invalid `host` value for site '#{site}'.", true)
     end
 
     # Build paths here rather than in a provisioner
@@ -91,7 +91,7 @@ module Config
         end
         items['aliases'] = items['aliases'].join(' ')
       else
-        print_error "Expected `aliases` value to be an Array for site '#{site}'."
+        print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
       end
     end
 
@@ -121,7 +121,7 @@ module Config
     VM_CONFIG['sites'].each do |site, items|
       items['ssl'] = false
     end
-    puts "===> Dreambox config: Missing hosts list; SSL disabled.".bold.yellow
+    print_error("Missing hosts list; SSL disabled.", false)
   end
 
   # Debug formatting
