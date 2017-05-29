@@ -76,7 +76,8 @@ module Config
     end
 
     # Build paths here rather than in a provisioner
-    items['root_path'] = "/home/#{items['username']}/#{items['root']}"
+    path_end = (items['public'].kind_of? String) ? File.join(items['root'], items['public']) : items['root']
+    items['root_path'] = '/home/' + File.join(items['username'], path_end)
     items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['host']}.conf"
 
     # Add each of the site's hosts to the root 'hosts' property
