@@ -103,18 +103,19 @@ module Config
     # Each subdomain is transformed into it's own site, based on the parent site's config values
     if (items['subdomains'].kind_of? Hash) then
       items['subdomains'].each do |sub, path|
-        subdomains["#{sub}.#{site}"] = {
+        subdomain_name = "#{sub}.#{site}"
+        subdomains[subdomain_name] = {
           'username' => items['username'],
           'root_path' => File.join(items['root_path'], trim_slashes(path)),
           'is_subdomain' => true,
-          'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{sub}.#{site}.conf"),
+          'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
           'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
           'ssl' => items['ssl'],
           'box_name' => VM_CONFIG['name']
         }
         # De-dup and add to root hosts property
-        if ! VM_CONFIG['hosts'].include?(subdomains["#{sub}.#{site}"]['host']) then
-          VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*subdomains["#{sub}.#{site}"]['host'])
+        if ! VM_CONFIG['hosts'].include?(subdomains[subdomain_name]['host']) then
+          VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*subdomains[subdomain_name]['host'])
         end
       end
     end
