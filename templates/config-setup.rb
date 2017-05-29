@@ -66,6 +66,7 @@ module Config
     # Establish site defaults
     defaults = Hash.new
     defaults['box_name'] = VM_CONFIG['name']
+    defaults['is_subdomain'] = false
 
     # Add the site's `host` to the root 'hosts' property
     if items['host'].kind_of? String then
