@@ -17,6 +17,19 @@ def print_error(message, fatal)
   end
 end
 
+# Helper functions for trimming unwanted slashes
+def trim_slashes(str)
+  return trim_ending_slash(trim_beginning_slash(str))
+end
+
+def trim_ending_slash(str)
+  return ('/' == str[-1..-1]) ? str[0..-2] : str
+end
+
+def trim_beginning_slash(str)
+  return ('/' == str[0..0]) ? str[1..-1] : str
+end
+
 # Print debug info
 def print_debug_info(config, file)
   puts ''

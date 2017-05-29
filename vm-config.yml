@@ -6,7 +6,7 @@ sites:
   'dreambox':
     username: 'db_user' # required
     root: 'dreambox.com' # required
-    public: 'html'
+    public: 'public'
     local_root: 'web/' # required
     host: 'www.dreambox.test' # required
     aliases:
@@ -19,7 +19,7 @@ sites:
     root: example.com
     local_root: web
     host: example.dev
-    subdomains: { 'help': 'app/help/' }
+    subdomains: { 'help': '/app/help/' }
     ssl: false
 
 debug: true

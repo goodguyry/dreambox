@@ -58,6 +58,8 @@ module Config
     required.each do |property|
       if ! (items[property].kind_of? String) then
         print_error("Missing #{property} for site #{site}.", true)
+      else
+        items[property] = trim_slashes(items[property])
       end
     end
 
@@ -76,7 +78,7 @@ module Config
     end
 
     # Build paths here rather than in a provisioner
-    path_end = (items['public'].kind_of? String) ? File.join(items['root'], items['public']) : items['root']
+    path_end = (items['public'].kind_of? String) ? File.join(items['root'], trim_slashes(items['public'])) : items['root']
     items['root_path'] = '/home/' + File.join(items['username'], path_end)
     items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['host']}.conf"
 
@@ -102,7 +104,7 @@ module Config
       items['subdomains'].each do |sub, path|
         subdomains["#{sub}.#{site}"] = {
           'username' => items['username'],
-          'root_path' => File.join(items['root_path'], path),
+          'root_path' => File.join(items['root_path'], trim_slashes(path)),
           'is_subdomain' => true,
           'vhost_file' => "/usr/local/apache2/conf/vhosts/#{sub}.#{site}.conf",
           'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
