@@ -44,7 +44,7 @@ module Config
   end
 
   # Set the PHP directory
-  VM_CONFIG['php_dir'] = php_versions[0] === VM_CONFIG['php'] ? php_dirs[0] : php_dirs[1]
+  VM_CONFIG['php_dir'] = php_dirs[php_versions.index(VM_CONFIG['php'])]
 
   subdomains = Hash.new
 

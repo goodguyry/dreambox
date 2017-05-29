@@ -24,6 +24,7 @@ def print_debug_info(config, file)
   puts "     Config File:   #{file}".bold
   puts "     Box Name:      #{config['name']}".bold
   puts "     PHP Version:   #{config['php']}".bold
+  puts "     PHP Dir:       #{config['php_dir']}".bold
   puts "     SSL Enabled:   #{config['ssl_enabled']}".bold
   if 0 < "#{config['hosts']}".length then
     puts "     Hosts:         #{config['hosts']}".bold
