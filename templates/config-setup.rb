@@ -3,14 +3,14 @@ require 'yaml'
 require_relative 'config-utilities.rb'
 
 module Config
-  vm_config_file = $vm_config_file
+  vm_config_file = $vm_config_file || 'vm-config.yml'
   vagrant_dir = File.expand_path(Dir.pwd)
 
   # Build the config filepath
-  if defined?(vm_config_file)
+  if (defined?(vm_config_file)) && (vm_config_file.kind_of? String) then
     vm_config_file_path = File.join(vagrant_dir, vm_config_file)
   else
-    vm_config_file_path = File.join(vagrant_dir, 'vm-config.yml')
+    print_error("There was an error with `$vm_config_file` declaration: '#{vm_config_file}'", true)
   end
 
   # Load the config file if found
