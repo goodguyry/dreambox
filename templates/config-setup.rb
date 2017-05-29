@@ -80,7 +80,7 @@ module Config
     # Build paths here rather than in a provisioner
     path_end = (items['public'].kind_of? String) ? File.join(items['root'], trim_slashes(items['public'])) : items['root']
     items['root_path'] = File.join('/home/', items['username'], path_end)
-    items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{items['host']}.conf")
+    items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
     # Add each of the site's hosts to the root 'hosts' property
     # Also combine aliases into a space-separated string

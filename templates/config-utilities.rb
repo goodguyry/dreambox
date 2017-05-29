@@ -59,6 +59,7 @@ def print_debug_info(config, file)
     end
     puts "     #{site}: box_name     #{items['box_name']}".bold
     puts "     #{site}: host         #{items['host']}".bold
+    puts "     #{site}: vhost_file    #{items['vhost_file']}".bold
     puts ''
   end
   puts ''
