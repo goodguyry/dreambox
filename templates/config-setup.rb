@@ -46,6 +46,8 @@ module Config
   # Set the PHP directory
   VM_CONFIG['php_dir'] = php_versions[0] === VM_CONFIG['php'] ? php_dirs[0] : php_dirs[1]
 
+  subdomains = Hash.new
+
   VM_CONFIG['sites'].each do |site, items|
     if ! items.kind_of? Hash then
       items = Hash.new
@@ -93,6 +95,26 @@ module Config
       end
     end
 
+    # Collect and merge site subdomains
+    # Each subdomain is transformed into it's own site, based on the parent site's config values
+    if (items['subdomains'].kind_of? Hash) then
+      items['subdomains'].each do |sub, path|
+        subdomains["#{sub}.#{site}"] = {
+          'username' => items['username'],
+          'root_path' => File.join(items['root_path'], path),
+          'is_subdomain' => true,
+          'vhost_file' => "/usr/local/apache2/conf/vhosts/#{sub}.#{site}.conf",
+          'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
+          'ssl' => items['ssl'],
+          'box_name' => VM_CONFIG['name']
+        }
+        # De-dup and add to root hosts property
+        if ! VM_CONFIG['hosts'].include?(subdomains["#{sub}.#{site}"]['host']) then
+          VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*subdomains["#{sub}.#{site}"]['host'])
+        end
+      end
+    end
+
     # If SSL is enabled globally and not disabled locally, or if enabled locally
     if (VM_CONFIG['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
       # Enable the root SSL setting if not already enabled
@@ -105,6 +127,10 @@ module Config
     # Merge in settings
     VM_CONFIG['sites'][site] = defaults.merge(items)
   end
+
+  # Merge subdomain sites into `sites` hash
+  # Done here to avoid unexpected looping /shrug
+  VM_CONFIG['sites'] = VM_CONFIG['sites'].merge(subdomains)
 
   # Merge the root 'hosts' property into comma-separated string
   VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')

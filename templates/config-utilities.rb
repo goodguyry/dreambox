@@ -30,7 +30,10 @@ def print_debug_info(config, file)
   end
   puts ''
   config['sites'].each do |site, items|
-    puts "===> #{site}: username     #{items['username']}".bold
+    if items['is_subdomain'] then
+      puts "===> #{site}: is_subdomain  #{items['is_subdomain']}".bold
+    end
+    puts "     #{site}: username     #{items['username']}".bold
     puts "     #{site}: root_path    #{items['root_path']}".bold
     puts "     #{site}: root         #{items['root']}".bold
     puts "     #{site}: local_root   #{items['local_root']}".bold

@@ -11,16 +11,15 @@ sites:
     host: 'www.dreambox.test' # required
     aliases:
       - 'dreambox.test'
-      - '*.dreambox.test'
     subdomains:
       app: 'app/'
-      help: 'app/help/'
     # ssl: true
   'example':
     username: example_user
     root: example.com
     local_root: web
     host: example.dev
+    subdomains: { 'help': 'app/help/' }
     ssl: false
 
 debug: true
