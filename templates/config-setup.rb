@@ -79,8 +79,8 @@ module Config
 
     # Build paths here rather than in a provisioner
     path_end = (items['public'].kind_of? String) ? File.join(items['root'], trim_slashes(items['public'])) : items['root']
-    items['root_path'] = '/home/' + File.join(items['username'], path_end)
-    items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['host']}.conf"
+    items['root_path'] = File.join('/home/', items['username'], path_end)
+    items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{items['host']}.conf")
 
     # Add each of the site's hosts to the root 'hosts' property
     # Also combine aliases into a space-separated string
@@ -106,7 +106,7 @@ module Config
           'username' => items['username'],
           'root_path' => File.join(items['root_path'], trim_slashes(path)),
           'is_subdomain' => true,
-          'vhost_file' => "/usr/local/apache2/conf/vhosts/#{sub}.#{site}.conf",
+          'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{sub}.#{site}.conf"),
           'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
           'ssl' => items['ssl'],
           'box_name' => VM_CONFIG['name']
