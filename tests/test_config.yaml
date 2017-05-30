@@ -1,0 +1,25 @@
+name: 'dreambox-tests'
+php: '7'
+ssl: true
+host: main-host.dev
+
+sites:
+  'dreambox':
+    username: 'db_user'
+    root: 'dreambox.com'
+    public: 'public'
+    local_root: 'web/'
+    host: 'www.dreambox.test'
+    aliases:
+      - 'dreambox.test'
+    subdomains:
+      app: 'app/'
+  'example':
+    username: example_user
+    root: example.com
+    local_root: web
+    host: example.dev
+    subdomains: { 'help': '/app/help/' }
+    ssl: false
+
+# debug: true
