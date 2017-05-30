@@ -99,6 +99,15 @@ module Config
       end
     end
 
+    # If SSL is enabled globally and not disabled locally, or if enabled locally
+    if (VM_CONFIG['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
+      # Enable the root SSL setting if not already enabled
+      VM_CONFIG['ssl_enabled'] = true
+      # Ensure the site SSL setting is enabled
+      # If it's enabled globally, but not at the site, ssl_setup will fail
+      items['ssl'] = true
+    end
+
     # Collect and merge site subdomains
     # Each subdomain is transformed into it's own site, based on the parent site's config values
     if (items['subdomains'].kind_of? Hash) then
@@ -118,15 +127,6 @@ module Config
           VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*subdomains[subdomain_name]['host'])
         end
       end
-    end
-
-    # If SSL is enabled globally and not disabled locally, or if enabled locally
-    if (VM_CONFIG['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
-      # Enable the root SSL setting if not already enabled
-      VM_CONFIG['ssl_enabled'] = true
-      # Ensure the site SSL setting is enabled
-      # If it's enabled globally, but not at the site, ssl_setup will fail
-      items['ssl'] = true
     end
 
     # Merge in settings
