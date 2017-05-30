@@ -2,3 +2,4 @@
 *.box
 certs
 web
+templates/dns-hosts.txt

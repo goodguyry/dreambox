@@ -137,15 +137,21 @@ module Config
   # Done here to avoid unexpected looping /shrug
   VM_CONFIG['sites'] = VM_CONFIG['sites'].merge(subdomains)
 
-  # One last check to make sure we have hosts
-  # If not, force disable SSL
+  # Collect and transform host values
   if VM_CONFIG['hosts'].length then
+    # Save the first `hosts` index if no root `host` is declared
     if (! VM_CONFIG['host'].kind_of? String) then
       VM_CONFIG['host'] = VM_CONFIG['hosts'][0]
     end
-    # Merge the root 'hosts' property into comma-separated string
+    # Build a DNS host file to `cat` into SSL config
+    dns_hosts = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
+    VM_CONFIG['hosts'].each.with_index(1) do |host, index|
+      File.open(dns_hosts, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
+    end
+    # Merge the root `hosts` property into a comma-separated string
     VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
   else
+    # If no hosts, force disable SSL at the root and all sites
     VM_CONFIG['ssl_enabled'] = false
     VM_CONFIG['sites'].each do |site, items|
       items['ssl'] = false

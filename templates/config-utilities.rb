@@ -45,6 +45,10 @@ def print_debug_info(config, file)
   if 0 < "#{config['hosts']}".length then
     puts "     Hosts:         #{config['hosts']}".bold
   end
+  dns_hosts_file = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
+  if File.exist?(dns_hosts_file) then
+    puts "     DNS Hosts File:  #{dns_hosts_file}".bold
+  end
   puts ''
   config['sites'].each do |site, items|
     if items['is_subdomain'] then
