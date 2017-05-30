@@ -20,8 +20,10 @@ Vagrant.configure(2) do |config|
   end
 
   vm_config['sites'].each do |site, conf|
-    # Sets up the sync folder
-    config.vm.synced_folder conf['local_root'], conf['root_path']
+    if (! conf['is_subdomain']) then
+      # Sets up the sync folder
+      config.vm.synced_folder conf['local_root'], conf['root_path']
+    end
     # Runs user_setup
     config.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/user_setup",

@@ -1,29 +1,16 @@
 #!/usr/bin/env ruby
 require 'yaml'
-
-# Helper class for formatting message text
-class String
-  def red;     "\e[31m#{self}\e[0m" end
-  def green;   "\e[32m#{self}\e[0m" end
-  def yellow;  "\e[33m#{self}\e[0m" end
-  def bold;    "\e[1m#{self}\e[22m" end
-end
-
-# Helper function for printing error messages
-def print_error(message)
-   puts "===> Dreambox config: #{message}".bold.red
-   abort "     See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".bold.yellow
-end
+require_relative 'config-utilities.rb'
 
 module Config
-  vm_config_file = $vm_config_file
+  vm_config_file = $vm_config_file || 'vm-config.yml'
   vagrant_dir = File.expand_path(Dir.pwd)
 
   # Build the config filepath
-  if defined?(vm_config_file)
+  if (defined?(vm_config_file)) && (vm_config_file.kind_of? String) then
     vm_config_file_path = File.join(vagrant_dir, vm_config_file)
   else
-    vm_config_file_path = File.join(vagrant_dir, 'vm-config.yml')
+    print_error("There was an error with `$vm_config_file` declaration: '#{vm_config_file}'", true)
   end
 
   # Load the config file if found
@@ -31,7 +18,7 @@ module Config
   if File.file?(vm_config_file_path) then
     VM_CONFIG = YAML.load_file(vm_config_file_path)
   else
-    print_error "Config file '#{vm_config_file_path}' not found."
+    print_error("Config file '#{vm_config_file_path}' not found.", true)
   end
 
   # Set config defaults
@@ -49,40 +36,68 @@ module Config
   box_defaults['php'] = php_versions[0]
 
   # Merge the default 'box' values with those from vm-config
-  # VM_CONFIG = box_defaults.merge(VM_CONFIG)
   box_defaults.merge(VM_CONFIG)
 
   # Abort of the php version isn't one of the two specific options
   if ! php_versions.include?(VM_CONFIG['php']) then
-    print_error "Accepted `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'"
+    print_error("Accepted `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'", true)
   end
 
-  # Test the PHP version and set the PHP directory
-  VM_CONFIG['php_dir'] = php_versions[0] === VM_CONFIG['php'] ? php_dirs[0] : php_dirs[1]
+  # Set the PHP directory
+  VM_CONFIG['php_dir'] = php_dirs[php_versions.index(VM_CONFIG['php'])]
+
+  subdomains = Hash.new
 
   VM_CONFIG['sites'].each do |site, items|
     if ! items.kind_of? Hash then
       items = Hash.new
     end
 
-    # Establish site defaults
-    defaults = Hash.new
-    defaults['local_root'] = 'www'
-    defaults['box_name'] = VM_CONFIG['name']
-
-    # Set the site host value
-    if ! defined?(items['host']) || ! (items['host'].kind_of? String) then
-      if (items['hosts'].kind_of? Array) && 0 < items['hosts'].length then
-        # Add first `hosts` value for the `host` property
-        items['host'] = items['hosts'][0]
+    # Check for required site properties before proceeding
+    required = ['username', 'root', 'local_root', 'host']
+    required.each do |property|
+      if ! (items[property].kind_of? String) then
+        print_error("Missing #{property} for site #{site}.", true)
       else
-        print_error "Missing `host` and/or `hosts` values."
+        items[property] = trim_slashes(items[property])
       end
     end
 
+    # Establish site defaults
+    defaults = Hash.new
+    defaults['box_name'] = VM_CONFIG['name']
+    defaults['is_subdomain'] = false
+
+    # Add the site's `host` to the root 'hosts' property
+    if items['host'].kind_of? String then
+      # De-dup hosts values
+      if ! VM_CONFIG['hosts'].include?(items['host']) then
+        VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*items['host'])
+      end
+    else
+      print_error("Invalid `host` value for site '#{site}'.", true)
+    end
+
     # Build paths here rather than in a provisioner
-    items['root_path'] = "/home/#{items['username']}/#{items['web_root']}"
-    items['vhost_file'] = "/usr/local/apache2/conf/vhosts/#{items['host']}.conf"
+    path_end = (items['public'].kind_of? String) ? File.join(items['root'], trim_slashes(items['public'])) : items['root']
+    items['root_path'] = File.join('/home/', items['username'], path_end)
+    items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
+
+    # Add each of the site's hosts to the root 'hosts' property
+    # Also combine aliases into a space-separated string
+    if (items['aliases'].kind_of? Array) then
+      if items['aliases'].length then
+        items['aliases'].each do |the_alias|
+          # De-dup hosts values
+          if ! VM_CONFIG['hosts'].include?(the_alias) then
+            VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*the_alias)
+          end
+        end
+        items['aliases'] = items['aliases'].join(' ')
+      else
+        print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
+      end
+    end
 
     # If SSL is enabled globally and not disabled locally, or if enabled locally
     if (VM_CONFIG['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
@@ -91,65 +106,64 @@ module Config
       # Ensure the site SSL setting is enabled
       # If it's enabled globally, but not at the site, ssl_setup will fail
       items['ssl'] = true
-      # Add the site's main host to the root `hosts` property
-      if defined?(items['host']) then
-        VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*items['host'])
-      end
-      # Add each of the site's hosts to the root 'hosts' property
-      if items['hosts'].kind_of? Array then
-        items['hosts'].each do |host|
-          # De-dup hosts values
-          if ! VM_CONFIG['hosts'].include?(host) then
-            VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*host)
-          end
+    end
+
+    # Collect and merge site subdomains
+    # Each subdomain is transformed into it's own site, based on the parent site's config values
+    if (items['subdomains'].kind_of? Hash) then
+      items['subdomains'].each do |sub, path|
+        subdomain_name = "#{sub}.#{site}"
+        subdomains[subdomain_name] = {
+          'username' => items['username'],
+          'root_path' => File.join(items['root_path'], trim_slashes(path)),
+          'is_subdomain' => true,
+          'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
+          'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
+          'ssl' => items['ssl'],
+          'box_name' => VM_CONFIG['name']
+        }
+        # De-dup and add to root hosts property
+        if ! VM_CONFIG['hosts'].include?(subdomains[subdomain_name]['host']) then
+          VM_CONFIG['hosts'] = VM_CONFIG['hosts'].push(*subdomains[subdomain_name]['host'])
         end
       end
     end
-
-    # Delete properties we no longer need
-    VM_CONFIG['sites'][site].delete('hosts')
 
     # Merge in settings
     VM_CONFIG['sites'][site] = defaults.merge(items)
   end
 
-  # Merge hosts into string in a root 'hosts' property
-  VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
+  # Merge subdomain sites into `sites` hash
+  # Done here to avoid unexpected looping /shrug
+  VM_CONFIG['sites'] = VM_CONFIG['sites'].merge(subdomains)
 
-  # One last check to make sure we have hosts
-  # If not, force disable SSL
-  if 1 > VM_CONFIG['hosts'].length then
+  # Collect and transform host values
+  if VM_CONFIG['hosts'].length then
+    # Save the first `hosts` index if no root `host` is declared
+    if (! VM_CONFIG['host'].kind_of? String) then
+      VM_CONFIG['host'] = VM_CONFIG['hosts'][0]
+    end
+    # Build a DNS host file to `cat` into SSL config
+    dns_hosts = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
+    if File.exist?(dns_hosts) then
+      File.delete(dns_hosts)
+    end
+    VM_CONFIG['hosts'].each.with_index(1) do |host, index|
+      File.open(dns_hosts, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
+    end
+    # Merge the root `hosts` property into a comma-separated string
+    VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
+  else
+    # If no hosts, force disable SSL at the root and all sites
     VM_CONFIG['ssl_enabled'] = false
     VM_CONFIG['sites'].each do |site, items|
       items['ssl'] = false
     end
-    puts "===> Dreambox config: Missing hosts list; SSL disabled.".bold.yellow
+    print_error("Missing hosts list; SSL disabled.", false)
   end
 
-  # Debug formatting
+  # Print debug information
   if VM_CONFIG['debug'] then
-    puts ''
-    puts "===> Dreambox Debug:".bold.yellow
-    puts "     Config File:   #{vm_config_file_path}".bold
-    puts "     Box Name:      #{VM_CONFIG['name']}".bold
-    puts "     PHP Version:   #{VM_CONFIG['php']}".bold
-    puts "     SSL Enabled:   #{VM_CONFIG['ssl_enabled']}".bold
-    if 0 < "#{VM_CONFIG['hosts']}".length then
-      puts "     Hosts:         #{VM_CONFIG['hosts']}".bold
-    end
-    puts ''
-    VM_CONFIG['sites'].each do |site, items|
-      puts "===> #{site}: username     #{items['username']}".bold
-      puts "     #{site}: root_path    #{items['root_path']}".bold
-      puts "     #{site}: web_root     #{items['web_root']}".bold
-      puts "     #{site}: local_root   #{items['local_root']}".bold
-      if 0 < "#{items['ssl']}".length then
-        puts "     #{site}: ssl          #{items['ssl']}".bold
-      end
-      puts "     #{site}: box_name     #{items['box_name']}".bold
-      puts "     #{site}: host         #{items['host']}".bold
-      puts ''
-    end
-    puts ''
+    print_debug_info(VM_CONFIG, vm_config_file_path)
   end
 end
