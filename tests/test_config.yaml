@@ -4,21 +4,21 @@ ssl: true
 host: main-host.dev
 
 sites:
-  'dreambox':
-    username: 'db_user'
-    root: 'dreambox.com'
+  'full':
+    username: 'fc_user'
+    root: 'fullconfig.com'
     public: 'public'
     local_root: 'web/'
-    host: 'www.dreambox.test'
+    host: 'www.fullconfig.dev'
     aliases:
-      - 'dreambox.test'
+      - 'fullconfig.dev'
     subdomains:
       app: 'app/'
-  'example':
-    username: example_user
-    root: example.com
+  'minimal':
+    username: mc_user
+    root: minimalconfig.com
     local_root: web
-    host: example.dev
+    host: minimalconfig.dev
     subdomains: { 'help': '/app/help/' }
     ssl: false
 
