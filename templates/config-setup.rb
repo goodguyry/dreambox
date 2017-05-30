@@ -137,12 +137,15 @@ module Config
   # Done here to avoid unexpected looping /shrug
   VM_CONFIG['sites'] = VM_CONFIG['sites'].merge(subdomains)
 
-  # Merge the root 'hosts' property into comma-separated string
-  VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
-
   # One last check to make sure we have hosts
   # If not, force disable SSL
-  if 1 > VM_CONFIG['hosts'].length then
+  if VM_CONFIG['hosts'].length then
+    if (! VM_CONFIG['host'].kind_of? String) then
+      VM_CONFIG['host'] = VM_CONFIG['hosts'][0]
+    end
+    # Merge the root 'hosts' property into comma-separated string
+    VM_CONFIG['hosts'] = VM_CONFIG['hosts'].join(',')
+  else
     VM_CONFIG['ssl_enabled'] = false
     VM_CONFIG['sites'].each do |site, items|
       items['ssl'] = false

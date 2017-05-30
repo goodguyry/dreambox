@@ -1,6 +1,7 @@
 name: 'dreambox'
 php: '7'
 ssl: true
+# host: main-host.dev
 
 sites:
   'dreambox':

@@ -36,6 +36,9 @@ def print_debug_info(config, file)
   puts "===> Dreambox Debug:".bold.yellow
   puts "     Config File:   #{file}".bold
   puts "     Box Name:      #{config['name']}".bold
+  if config['host'].kind_of? String then
+    puts "     Host:          #{config['host']}".bold
+  end
   puts "     PHP Version:   #{config['php']}".bold
   puts "     PHP Dir:       #{config['php_dir']}".bold
   puts "     SSL Enabled:   #{config['ssl_enabled']}".bold
