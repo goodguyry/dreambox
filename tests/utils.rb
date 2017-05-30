@@ -23,3 +23,14 @@ def expect_value(pointer, value, expected)
   @tests_run += 1
 end
 
+def print_stats
+  puts ''
+  puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
+  puts "==> #{@failing.length}/#{@tests_run} tests failed".bold.red
+
+  if (@failing.length) then
+    @failing.each do |failed|
+      print_failed_test(failed)
+    end
+  end
+end

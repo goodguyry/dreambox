@@ -12,12 +12,4 @@ expect_type('box.name', vm_config['name'], String)
 expect_value('box.name', vm_config['name'], 'dreambox-tests')
 
 # Test stats output
-puts ''
-puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
-puts "==> #{@failing.length}/#{@tests_run} tests failed".bold.red
-
-if (@failing.length) then
-  @failing.each do |failed|
-    print_failed_test(failed)
-  end
-end
+print_stats
