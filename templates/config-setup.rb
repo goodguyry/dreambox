@@ -145,6 +145,9 @@ module Config
     end
     # Build a DNS host file to `cat` into SSL config
     dns_hosts = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
+    if File.exist?(dns_hosts) then
+      File.delete(dns_hosts)
+    end
     VM_CONFIG['hosts'].each.with_index(1) do |host, index|
       File.open(dns_hosts, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
     end
