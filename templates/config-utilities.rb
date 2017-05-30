@@ -54,16 +54,14 @@ def print_debug_info(config, file)
     if items['is_subdomain'] then
       puts "===> #{site}: is_subdomain  #{items['is_subdomain']}".bold
     end
-    puts "     #{site}: username     #{items['username']}".bold
+    puts "===> #{site}: username     #{items['username']}".bold
     puts "     #{site}: root_path    #{items['root_path']}".bold
     puts "     #{site}: root         #{items['root']}".bold
     puts "     #{site}: local_root   #{items['local_root']}".bold
-    if 0 < "#{items['ssl']}".length then
+    if items['ssl'] then
       puts "     #{site}: ssl          #{items['ssl']}".bold
     end
-    if 0 < "#{items['aliases']}".length then
-      puts "     #{site}: aliases      #{items['aliases']}".bold
-    end
+    puts "     #{site}: aliases      #{items['aliases']}".bold
     puts "     #{site}: box_name     #{items['box_name']}".bold
     puts "     #{site}: host         #{items['host']}".bold
     puts "     #{site}: vhost_file    #{items['vhost_file']}".bold
