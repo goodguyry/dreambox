@@ -159,6 +159,7 @@ expect_value(
 # Global Test
 #
 # DNS Hosts file
+#
 file_contents_array = File.open(dns_hosts_file, 'r').read.split("\n")
 test_contents = [
   'DNS.1 = www.fullconfig.dev',
@@ -177,7 +178,7 @@ expect_value(
 # Utility function
 #
 # trim_slashes
-# Remove slashes from a given directory path
+#
 expect_value(
   'trim_slashes',
   trim_slashes('/path/to/directory/'),
@@ -187,7 +188,7 @@ expect_value(
 # Utility function
 #
 # trim_ending_slash
-# Remove the last slash from a given directory path
+#
 expect_value(
   'trim_ending_slash',
   trim_ending_slash('/path/to/directory/'),
@@ -197,7 +198,7 @@ expect_value(
 # Utility function
 #
 # trim_beginning_slash
-# Remove the first slash from a given directory path
+#
 expect_value(
   'trim_beginning_slash',
   trim_beginning_slash('/path/to/directory/'),
