@@ -1,9 +1,10 @@
-$vm_config_file = 'tests/test_config.yaml'
+config_file = 'tests/test_config.yaml'
 
-require_relative 'utils.rb'
-require_relative '../templates/config-setup.rb'
+require_relative 'helpers.rb'
+require_relative '../templates/class_config.rb'
 
-test_config = Config::VM_CONFIG
+testing = Config.new(config_file, 'dns-hosts.txt')
+# testing.collect()
 
 @tests_run = 0;
 @failing = []
@@ -17,7 +18,7 @@ test_config = Config::VM_CONFIG
 #
 expect_value(
   'box.php_dir',
-  test_config['php_dir'],
+  testing.config['php_dir'],
   'php70'
 )
 
@@ -28,7 +29,7 @@ expect_value(
 #
 expect_value(
   'box.ssl_enabled',
-  test_config['ssl_enabled'],
+  testing.config['ssl_enabled'],
   true
 )
 
@@ -39,7 +40,7 @@ expect_value(
 #
 expect_value(
   'box.hosts',
-  test_config['hosts'],
+  testing.config['hosts'],
   'www.fullconfig.dev,fullconfig.dev,app.fullconfig.dev,minimalconfig.dev,help.minimalconfig.dev'
 )
 
@@ -51,7 +52,7 @@ expect_value(
 #
 expect_value(
   'sites.full.root_path',
-  test_config['sites']['full']['root_path'],
+  testing.config['sites']['full']['root_path'],
   '/home/fc_user/fullconfig.com/public'
 )
 
@@ -62,7 +63,7 @@ expect_value(
 #
 expect_value(
   'sites.minimalconfig.root_path',
-  test_config['sites']['minimal']['root_path'],
+  testing.config['sites']['minimal']['root_path'],
   '/home/mc_user/minimalconfig.com'
 )
 
@@ -73,7 +74,7 @@ expect_value(
 #
 expect_value(
   'sites.app.full.root_path',
-  test_config['sites']['app.full']['root_path'],
+  testing.config['sites']['app.full']['root_path'],
   '/home/fc_user/fullconfig.com/public/app'
 )
 
@@ -84,7 +85,7 @@ expect_value(
 #
 expect_value(
   'sites.help.minimal.root_path',
-  test_config['sites']['help.minimal']['root_path'],
+  testing.config['sites']['help.minimal']['root_path'],
   '/home/mc_user/minimalconfig.com/app/help'
 )
 
@@ -95,7 +96,7 @@ expect_value(
 #
 expect_value(
   'sites.full.vhost_file',
-  test_config['sites']['full']['vhost_file'],
+  testing.config['sites']['full']['vhost_file'],
   '/usr/local/apache2/conf/vhosts/full.conf'
 )
 
@@ -105,7 +106,7 @@ expect_value(
 #
 expect_value(
   'sites.app.full.vhost_file',
-  test_config['sites']['app.full']['vhost_file'],
+  testing.config['sites']['app.full']['vhost_file'],
   '/usr/local/apache2/conf/vhosts/app.full.conf'
 )
 
@@ -117,7 +118,7 @@ expect_value(
 #
 expect_value(
   'sites.help.minimal.host',
-  test_config['sites']['help.minimal']['host'],
+  testing.config['sites']['help.minimal']['host'],
   'help.minimalconfig.dev'
 )
 
@@ -128,7 +129,7 @@ expect_value(
 #
 expect_value(
   'sites.app.full.host',
-  test_config['sites']['app.full']['host'],
+  testing.config['sites']['app.full']['host'],
   'app.fullconfig.dev'
 )
 
@@ -139,7 +140,7 @@ expect_value(
 #
 expect_value(
   'sites.app.full.ssl',
-  test_config['sites']['app.full']['ssl'],
+  testing.config['sites']['app.full']['ssl'],
   true
 )
 
@@ -150,7 +151,7 @@ expect_value(
 #
 expect_value(
   'sites.help.minimal.ssl',
-  test_config['sites']['help.minimal']['ssl'],
+  testing.config['sites']['help.minimal']['ssl'],
   false
 )
 
