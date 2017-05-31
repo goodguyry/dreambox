@@ -175,6 +175,7 @@ expect_value(
   test_contents
 )
 
+
 # Utility function
 #
 # trim_slashes
@@ -182,6 +183,17 @@ expect_value(
 expect_value(
   'trim_slashes',
   trim_slashes('/path/to/directory/'),
+  'path/to/directory'
+)
+
+# Utility function
+#
+# trim_slashes
+# Path has no beginning or ending slash
+#
+expect_value(
+  'trim_slashes - no slashes',
+  trim_slashes('path/to/directory'),
   'path/to/directory'
 )
 
@@ -197,11 +209,23 @@ expect_value(
 
 # Utility function
 #
-# trim_beginning_slash
+# trim_ending_slash
+# Path has no ending slash
 #
 expect_value(
-  'trim_beginning_slash',
-  trim_beginning_slash('/path/to/directory/'),
+  'trim_ending_slash - no ending slash',
+  trim_ending_slash('/path/to/directory'),
+  '/path/to/directory'
+)
+
+# Utility function
+#
+# trim_beginning_slash
+# Path has no beginning slash
+#
+expect_value(
+  'trim_beginning_slash - no beginning slash',
+  trim_beginning_slash('path/to/directory/'),
   'path/to/directory/'
 )
 
