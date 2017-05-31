@@ -1,5 +1,0 @@
-DNS.1 = www.fullconfig.dev
-DNS.2 = fullconfig.dev
-DNS.3 = app.fullconfig.dev
-DNS.4 = minimalconfig.dev
-DNS.5 = help.minimalconfig.dev
