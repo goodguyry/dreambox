@@ -174,6 +174,36 @@ expect_value(
   test_contents
 )
 
+# Utility function
+#
+# trim_slashes
+# Remove slashes from a given directory path
+expect_value(
+  'trim_slashes',
+  trim_slashes('/path/to/directory/'),
+  'path/to/directory'
+)
+
+# Utility function
+#
+# trim_ending_slash
+# Remove the last slash from a given directory path
+expect_value(
+  'trim_ending_slash',
+  trim_ending_slash('/path/to/directory/'),
+  '/path/to/directory'
+)
+
+# Utility function
+#
+# trim_beginning_slash
+# Remove the first slash from a given directory path
+expect_value(
+  'trim_beginning_slash',
+  trim_beginning_slash('/path/to/directory/'),
+  'path/to/directory/'
+)
+
 
 # Test stats output
 print_stats
