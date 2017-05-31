@@ -26,9 +26,9 @@ end
 def print_stats
   puts ''
   puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
-  puts "==> #{@failing.length}/#{@tests_run} tests failed".bold.red
 
-  if (@failing.length) then
+  if (@failing.length > 0) then
+    puts "==> #{@failing.length}/#{@tests_run} tests failed".bold.red
     @failing.each do |failed|
       print_failed_test(failed)
     end
