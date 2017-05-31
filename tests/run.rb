@@ -3,8 +3,8 @@ config_file = 'tests/test_config.yaml'
 require_relative 'helpers.rb'
 require_relative '../templates/class_config.rb'
 
-testing = Config.new(config_file, 'dns-hosts.txt')
-# testing.collect()
+dns_hosts_file = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
+testing = Config.new(config_file, dns_hosts_file)
 
 @tests_run = 0;
 @failing = []
@@ -159,7 +159,7 @@ expect_value(
 # Global Test
 #
 # DNS Hosts file
-file_contents_array = File.open(File.join(File.dirname(__FILE__), 'dns-hosts.txt'), 'r').read.split("\n")
+file_contents_array = File.open(dns_hosts_file, 'r').read.split("\n")
 test_contents = [
   'DNS.1 = www.fullconfig.dev',
   'DNS.2 = fullconfig.dev',

@@ -10,7 +10,6 @@ class Config
     @config_file = config_file
     @hosts_file = hosts_file
 
-    # vm_config_file = config_file
     vagrant_dir = File.expand_path(Dir.pwd)
 
     # Build the config filepath
@@ -151,12 +150,11 @@ class Config
         @config['host'] = @config['hosts'][0]
       end
       # Build a DNS host file to `cat` into SSL config
-      dns_hosts = File.join(File.dirname(__FILE__), @hosts_file)
-      if File.exist?(dns_hosts) then
-        File.delete(dns_hosts)
+      if File.exist?(@hosts_file) then
+        File.delete(@hosts_file)
       end
       @config['hosts'].each.with_index(1) do |host, index|
-        File.open(dns_hosts, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
+        File.open(@hosts_file, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
       end
       # Merge the root `hosts` property into a comma-separated string
       @config['hosts'] = @config['hosts'].join(',')

@@ -7,7 +7,9 @@
 require_relative File.join(File.expand_path(Dir.pwd), 'templates/class_config.rb')
 
 dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
-dreambox = Config.new(dreambox_config_file, 'dns-hosts.txt')
+dns_hosts_file = File.join(File.expand_path(Dir.pwd), 'templates/dns-hosts.txt')
+
+dreambox = Config.new(dreambox_config_file, dns_hosts_file)
 
 Vagrant.configure(2) do |config|
   config.vm.box = "hashicorp/precise64"

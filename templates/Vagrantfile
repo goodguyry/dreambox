@@ -4,7 +4,9 @@
 require_relative 'class_config.rb'
 
 dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
-dreambox = Config.new(dreambox_config_file, 'dns-hosts.txt')
+dns_hosts_file = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
+
+dreambox = Config.new(dreambox_config_file, dns_hosts_file)
 
 Vagrant.configure(2) do |config|
   # Start bash as a non-login shell
