@@ -1,6 +1,6 @@
 # Helper function for printing error messages
 def print_failed_test(message)
-  puts "\n==> #{message}".bold.red
+  puts "\nFailed #{message}".bold.red
 end
 
 # Test for expected type
