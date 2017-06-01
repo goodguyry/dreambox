@@ -3,9 +3,19 @@
 require 'yaml'
 require_relative 'utilities.rb'
 
+# Config class
+#
+# The Config class collects and transforms the config file's values to prepare them
+# for the Dreambox provisioning scripts.
 class Config
   attr_accessor :config
 
+  # Class initialization
+  #
+  # This method does all the heavy lifting
+  #
+  # @param String {config_file} The path to the config file
+  # @param String {hosts_file} The location at which to create the DNS Hosts file
   def initialize(config_file, hosts_file)
     @config_file = config_file
     @hosts_file = hosts_file
@@ -19,8 +29,7 @@ class Config
       print_error("There was an error with `config_file` declaration: '#{@config_file}'", true)
     end
 
-    # Load the config file if found
-    # Otherwise abort with message
+    # Load the config file if found, otherwise abort
     if File.file?(@vm_config_file_path) then
       @config = YAML.load_file(@vm_config_file_path)
     else
@@ -31,9 +40,9 @@ class Config
     @config['hosts'] = Array.new
     @config['ssl_enabled'] = false
 
-    # Collect settings for each site
-    # Allowed php values
+    # Allowed PHP values
     php_versions = ['5', '7']
+    # Associated PHP install directories
     php_dirs = ['php56', 'php70']
 
     # Set default 'box' values
@@ -52,14 +61,20 @@ class Config
     # Set the PHP directory
     @config['php_dir'] = php_dirs[php_versions.index(@config['php'])]
 
+    # To collect subdomains
+    # These will be transformed into sites at the end
     subdomains = Hash.new
 
+    # Collect settings for each site
     @config['sites'].each do |site, items|
       if ! items.kind_of? Hash then
         items = Hash.new
       end
 
       # Check for required site properties before proceeding
+      # If found, remove any errant slashes
+      # We allow slashes in the config file to increase readability
+      # @TODO Switch this to be affirmative, else abort
       required = ['username', 'root', 'local_root', 'host']
       required.each do |property|
         if ! (items[property].kind_of? String) then
@@ -74,9 +89,11 @@ class Config
       defaults['box_name'] = @config['name']
       defaults['is_subdomain'] = false
 
-      # Add the site's `host` to the root 'hosts' property
+      # Add the site's `host` to the root [hosts] property
+      # @TODO: No need to check for type here
       if items['host'].kind_of? String then
         # De-dup hosts values
+        # @TODO: Create a method for this
         if ! @config['hosts'].include?(items['host']) then
           @config['hosts'] = @config['hosts'].push(*items['host'])
         end
@@ -84,17 +101,22 @@ class Config
         print_error("Invalid `host` value for site '#{site}'.", true)
       end
 
+      # Account for a `public` folder if set
+      path_end = (items['public'].kind_of? String) ?
+        File.join(items['root'], trim_slashes(items['public'])) :
+        items['root']
+
       # Build paths here rather than in a provisioner
-      path_end = (items['public'].kind_of? String) ? File.join(items['root'], trim_slashes(items['public'])) : items['root']
       items['root_path'] = File.join('/home/', items['username'], path_end)
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
-      # Add each of the site's hosts to the root 'hosts' property
-      # Also combine aliases into a space-separated string
+      # Add each of the site's hosts to the root [hosts] property
+      # Also combine `aliases` into a space-separated string
       if (items['aliases'].kind_of? Array) then
         if items['aliases'].length then
           items['aliases'].each do |the_alias|
             # De-dup hosts values
+            # @TODO: Create a method for this
             if ! @config['hosts'].include?(the_alias) then
               @config['hosts'] = @config['hosts'].push(*the_alias)
             end
@@ -129,6 +151,7 @@ class Config
             'box_name' => @config['name']
           }
           # De-dup and add to root hosts property
+          # @TODO: Create a method for this
           if ! @config['hosts'].include?(subdomains[subdomain_name]['host']) then
             @config['hosts'] = @config['hosts'].push(*subdomains[subdomain_name]['host'])
           end
@@ -149,17 +172,23 @@ class Config
       if (! @config['host'].kind_of? String) then
         @config['host'] = @config['hosts'][0]
       end
-      # Build a DNS host file to `cat` into SSL config
+
+      # Delete an existing DNS Hosts file
       if File.exist?(@hosts_file) then
         File.delete(@hosts_file)
       end
+
+      # Write the DNS Hosts file
+      # To be contatenated onto openssl.cnf during SSL setup
       @config['hosts'].each.with_index(1) do |host, index|
         File.open(@hosts_file, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
       end
+
       # Merge the root `hosts` property into a comma-separated string
       @config['hosts'] = @config['hosts'].join(',')
     else
-      # If no hosts, force disable SSL at the root and all sites
+      # No hosts
+      # Force disable SSL at the root and all sites
       @config['ssl_enabled'] = false
       @config['sites'].each do |site, items|
         items['ssl'] = false
