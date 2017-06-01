@@ -1,10 +1,15 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-$vm_config_file = 'vm-config.yml'
+# config_file = 'vm-config.yml-example'
 
-require_relative File.join(File.expand_path(Dir.pwd), 'templates/config-setup.rb')
-vm_config = Config::VM_CONFIG
+# Shoehorn the config file into our test Vagrantfile
+require_relative File.join(File.expand_path(Dir.pwd), 'templates/class_config.rb')
+
+dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
+dns_hosts_file = File.join(File.expand_path(Dir.pwd), 'templates/dns-hosts.txt')
+
+dreambox = Config.new(dreambox_config_file, dns_hosts_file)
 
 Vagrant.configure(2) do |config|
   config.vm.box = "hashicorp/precise64"
@@ -52,15 +57,15 @@ Vagrant.configure(2) do |config|
     # Install PHP
     test.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/php_install",
-      :env => vm_config
+      :env => dreambox.config
 
-    if vm_config['ssl_enabled'] then
+    if dreambox.config['ssl_enabled'] then
       test.vm.provision "shell",
         inline: "/bin/bash /usr/local/bin/ssl_setup",
-        :env => vm_config
+        :env => dreambox.config
     end
 
-    vm_config['sites'].each do |site, conf|
+    dreambox.config['sites'].each do |site, conf|
       # Sets up the sync folder
       test.vm.synced_folder conf['local_root'], conf['root_path']
       # Runs user_setup

@@ -34,37 +34,38 @@ end
 def print_debug_info(config, file)
   puts ''
   puts "===> Dreambox Debug:".bold.yellow
-  puts "     Config File:   #{file}".bold
-  puts "     Box Name:      #{config['name']}".bold
+  printf "%-20s %s\n", 'Config File', file
+  printf "%-20s %s\n", 'Box Name', config['name']
   if config['host'].kind_of? String then
-    puts "     Host:          #{config['host']}".bold
+    printf "%-20s %s\n", 'Host', config['host']
   end
-  puts "     PHP Version:   #{config['php']}".bold
-  puts "     PHP Dir:       #{config['php_dir']}".bold
-  puts "     SSL Enabled:   #{config['ssl_enabled']}".bold
+  printf "%-20s %s\n", 'PHP Version', config['php']
+  printf "%-20s %s\n", 'PHP Dir', config['php_dir']
+  printf "%-20s %s\n", 'SSL Enabled', config['ssl_enabled']
   if 0 < "#{config['hosts']}".length then
-    puts "     Hosts:         #{config['hosts']}".bold
+    printf "%-20s %s\n", 'Hosts', config['hosts']
   end
   dns_hosts_file = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
   if File.exist?(dns_hosts_file) then
-    puts "     DNS Hosts File:  #{dns_hosts_file}".bold
+    printf "%-20s %s\n", 'DNS Hosts File', dns_hosts_file
   end
   puts ''
   config['sites'].each do |site, items|
+    puts "===> #{site}:".bold.yellow
     if items['is_subdomain'] then
-      puts "===> #{site}: is_subdomain  #{items['is_subdomain']}".bold
+      printf "%-20s %s\n", 'is_subdomain', items['is_subdomain']
     end
-    puts "===> #{site}: username     #{items['username']}".bold
-    puts "     #{site}: root_path    #{items['root_path']}".bold
-    puts "     #{site}: root         #{items['root']}".bold
-    puts "     #{site}: local_root   #{items['local_root']}".bold
+    printf "%-20s %s\n", 'username', items['username']
+    printf "%-20s %s\n", 'root_path', items['root_path']
+    printf "%-20s %s\n", 'root', items['root']
+    printf "%-20s %s\n", 'local_root', items['local_root']
     if items['ssl'] then
-      puts "     #{site}: ssl          #{items['ssl']}".bold
+      printf "%-20s %s\n", 'ssl', items['ssl']
     end
-    puts "     #{site}: aliases      #{items['aliases']}".bold
-    puts "     #{site}: box_name     #{items['box_name']}".bold
-    puts "     #{site}: host         #{items['host']}".bold
-    puts "     #{site}: vhost_file    #{items['vhost_file']}".bold
+    printf "%-20s %s\n", 'aliases', items['aliases']
+    printf "%-20s %s\n", 'box_name', items['box_name']
+    printf "%-20s %s\n", 'host', items['host']
+    printf "%-20s %s\n", 'vhost_file', items['vhost_file']
     puts ''
   end
   puts ''
