@@ -15,7 +15,6 @@ testing = Config.new(config_file, dns_hosts_file)
 #
 # PHP Directory
 # `php_dir`
-#
 expect_value(
   'box.php_dir',
   testing.config['php_dir'],
@@ -26,7 +25,6 @@ expect_value(
 #
 # Global SSL setting
 # `ssl_enabled`
-#
 expect_value(
   'box.ssl_enabled',
   testing.config['ssl_enabled'],
@@ -37,7 +35,6 @@ expect_value(
 #
 # @TODO Replace with test of DNS Hosts file
 # hosts list
-#
 expect_value(
   'box.hosts',
   testing.config['hosts'],
@@ -49,7 +46,6 @@ expect_value(
 #
 # Root Path
 # With public folder
-#
 expect_value(
   'sites.full.root_path',
   testing.config['sites']['full']['root_path'],
@@ -60,7 +56,6 @@ expect_value(
 #
 # Root Path
 # No public folder
-#
 expect_value(
   'sites.minimalconfig.root_path',
   testing.config['sites']['minimal']['root_path'],
@@ -71,7 +66,6 @@ expect_value(
 #
 # Root Path - Subdomain
 # With public folder
-#
 expect_value(
   'sites.app.full.root_path',
   testing.config['sites']['app.full']['root_path'],
@@ -82,7 +76,6 @@ expect_value(
 #
 # Root Path - Subdomain
 # No public folder
-#
 expect_value(
   'sites.help.minimal.root_path',
   testing.config['sites']['help.minimal']['root_path'],
@@ -93,7 +86,6 @@ expect_value(
 # Site Test
 #
 # VHost File
-#
 expect_value(
   'sites.full.vhost_file',
   testing.config['sites']['full']['vhost_file'],
@@ -103,7 +95,6 @@ expect_value(
 # Site Test
 #
 # VHost File - Subdomain
-#
 expect_value(
   'sites.app.full.vhost_file',
   testing.config['sites']['app.full']['vhost_file'],
@@ -115,7 +106,6 @@ expect_value(
 #
 # Subdomain Host
 # Parent has bare domain
-#
 expect_value(
   'sites.help.minimal.host',
   testing.config['sites']['help.minimal']['host'],
@@ -126,7 +116,6 @@ expect_value(
 #
 # Subdomain Host
 # Parent host contains `www.`
-#
 expect_value(
   'sites.app.full.host',
   testing.config['sites']['app.full']['host'],
@@ -137,7 +126,6 @@ expect_value(
 #
 # Subdomain SSL
 # Parent has SSL enabled
-#
 expect_value(
   'sites.app.full.ssl',
   testing.config['sites']['app.full']['ssl'],
@@ -148,7 +136,6 @@ expect_value(
 #
 # Subdomain SSL
 # Parent has SSL disabled
-#
 expect_value(
   'sites.help.minimal.ssl',
   testing.config['sites']['help.minimal']['ssl'],
@@ -179,7 +166,6 @@ expect_value(
 # Utility function
 #
 # trim_slashes
-#
 expect_value(
   'trim_slashes',
   trim_slashes('/path/to/directory/'),
@@ -190,7 +176,6 @@ expect_value(
 #
 # trim_slashes
 # Path has no beginning or ending slash
-#
 expect_value(
   'trim_slashes - no slashes',
   trim_slashes('path/to/directory'),
@@ -200,7 +185,6 @@ expect_value(
 # Utility function
 #
 # trim_ending_slash
-#
 expect_value(
   'trim_ending_slash',
   trim_ending_slash('/path/to/directory/'),
@@ -211,7 +195,6 @@ expect_value(
 #
 # trim_ending_slash
 # Path has no ending slash
-#
 expect_value(
   'trim_ending_slash - no ending slash',
   trim_ending_slash('/path/to/directory'),
@@ -222,7 +205,6 @@ expect_value(
 #
 # trim_beginning_slash
 # Path has no beginning slash
-#
 expect_value(
   'trim_beginning_slash - no beginning slash',
   trim_beginning_slash('path/to/directory/'),
