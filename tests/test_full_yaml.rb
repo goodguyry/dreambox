@@ -133,7 +133,6 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   # Global Test
   #
   # DNS Hosts file
-  #
   {
     'name' => 'DNS Hosts file',
     'expect' => File.open(full_dns_hosts_file, 'r').read.split("\n"),
@@ -144,53 +143,5 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
       'DNS.4 = minimalconfig.dev',
       'DNS.5 = help.minimalconfig.dev',
     ],
-  },
-
-  # Utility function
-  #
-  # trim_slashes
-  {
-    'name' => 'trim_slashes',
-    'expect' => 'path/to/directory',
-    'actual' => trim_slashes('/path/to/directory/'),
-  },
-
-  # Utility function
-  #
-  # trim_slashes
-  # Path has no beginning or ending slash
-  {
-    'name' => 'trim_slashes - no slashes',
-    'expect' => 'path/to/directory',
-    'actual' => trim_slashes('path/to/directory'),
-  },
-
-  # Utility function
-  #
-  # trim_ending_slash
-  {
-    'name' => 'trim_ending_slash',
-    'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory/'),
-  },
-
-  # Utility function
-  #
-  # trim_ending_slash
-  # Path has no ending slash
-  {
-    'name' => 'trim_ending_slash - no ending slash',
-    'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory'),
-  },
-
-  # Utility function
-  #
-  # trim_beginning_slash
-  # Path has no beginning slash
-  {
-    'name' => 'trim_beginning_slash - no beginning slash',
-    'expect' => 'path/to/directory/',
-    'actual' => trim_beginning_slash('path/to/directory/'),
   },
 ])
