@@ -5,6 +5,7 @@ require_relative 'class_tests.rb'
 
 # Add tests here
 require_relative 'test_full_yaml.rb'
+require_relative 'test_required_yaml.rb'
 
 # Run tests
 @tests.run

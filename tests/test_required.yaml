@@ -1,0 +1,7 @@
+php: '5'
+sites:
+  'required':
+    username: rc_user
+    root: requiredconfig.com
+    local_root: web
+    host: requiredconfig.dev
