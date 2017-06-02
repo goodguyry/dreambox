@@ -9,7 +9,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'required - box.name',
     'expect' => 'dreambox',
-    'actual' => required.config['name']
+    'actual' => required.config['name'],
   },
 
   # Gobal Test
@@ -18,7 +18,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'required - box.php',
     'expect' => '5',
-    'actual' => required.config['php']
+    'actual' => required.config['php'],
   },
 
   # Gobal Test
@@ -27,7 +27,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'required - box.php_dir',
     'expect' => 'php56',
-    'actual' => required.config['php_dir']
+    'actual' => required.config['php_dir'],
   },
 
   # Gobal Test
@@ -36,7 +36,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'required - box.ssl_enabled',
     'expect' => false,
-    'actual' => required.config['ssl_enabled']
+    'actual' => required.config['ssl_enabled'],
   },
 
   # Gobal Test
@@ -45,7 +45,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'required - box.hosts',
     'expect' => 'requiredconfig.dev',
-    'actual' => required.config['hosts']
+    'actual' => required.config['hosts'],
   },
 
   # Global Test
@@ -54,7 +54,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'required - DNS Hosts file exists',
     'expect' => false,
-    'actual' => File.exist?(required_dns_hosts_file)
+    'actual' => File.exist?(required_dns_hosts_file),
   },
 
 
@@ -64,7 +64,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'sites.required.root_path',
     'expect' => '/home/rc_user/requiredconfig.com',
-    'actual' => required.config['sites']['required']['root_path']
+    'actual' => required.config['sites']['required']['root_path'],
   },
 
   # Site Test
@@ -73,6 +73,6 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'sites.required.vhost_file',
     'expect' => '/usr/local/apache2/conf/vhosts/required.conf',
-    'actual' => required.config['sites']['required']['vhost_file']
-  }
+    'actual' => required.config['sites']['required']['vhost_file'],
+  },
 ])

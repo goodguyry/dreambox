@@ -10,7 +10,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'box.php_dir',
     'expect' => 'php70',
-    'actual' => testing.config['php_dir']
+    'actual' => testing.config['php_dir'],
   },
 
   # Gobal Test
@@ -20,7 +20,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'box.ssl_enabled',
     'expect' => true,
-    'actual' => testing.config['ssl_enabled']
+    'actual' => testing.config['ssl_enabled'],
   },
 
   # Gobal Test
@@ -29,7 +29,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'box.hosts',
     'expect' => 'www.fullconfig.dev,fullconfig.dev,app.fullconfig.dev,minimalconfig.dev,help.minimalconfig.dev',
-    'actual' => testing.config['hosts']
+    'actual' => testing.config['hosts'],
   },
 
   # Site Test
@@ -39,7 +39,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.full.root_path',
     'expect' => '/home/fc_user/fullconfig.com/public',
-    'actual' => testing.config['sites']['full']['root_path']
+    'actual' => testing.config['sites']['full']['root_path'],
   },
 
   # Site Test
@@ -49,7 +49,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.minimalconfig.root_path',
     'expect' => '/home/mc_user/minimalconfig.com',
-    'actual' => testing.config['sites']['minimal']['root_path']
+    'actual' => testing.config['sites']['minimal']['root_path'],
   },
 
   # Site Test
@@ -59,7 +59,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.app.full.root_path',
     'expect' => '/home/fc_user/fullconfig.com/public/app',
-    'actual' => testing.config['sites']['app.full']['root_path']
+    'actual' => testing.config['sites']['app.full']['root_path'],
   },
 
   # Site Test
@@ -69,7 +69,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.help.minimal.root_path',
     'expect' => '/home/mc_user/minimalconfig.com/app/help',
-    'actual' => testing.config['sites']['help.minimal']['root_path']
+    'actual' => testing.config['sites']['help.minimal']['root_path'],
   },
 
   # Site Test
@@ -78,7 +78,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.full.vhost_file',
     'expect' => '/usr/local/apache2/conf/vhosts/full.conf',
-    'actual' => testing.config['sites']['full']['vhost_file']
+    'actual' => testing.config['sites']['full']['vhost_file'],
   },
 
   # Site Test
@@ -87,7 +87,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.app.full.vhost_file',
     'expect' => '/usr/local/apache2/conf/vhosts/app.full.conf',
-    'actual' => testing.config['sites']['app.full']['vhost_file']
+    'actual' => testing.config['sites']['app.full']['vhost_file'],
   },
 
   # Site Test
@@ -97,7 +97,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.help.minimal.host',
     'expect' => 'help.minimalconfig.dev',
-    'actual' => testing.config['sites']['help.minimal']['host']
+    'actual' => testing.config['sites']['help.minimal']['host'],
   },
 
   # Site Test
@@ -107,7 +107,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.app.full.host',
     'expect' => 'app.fullconfig.dev',
-    'actual' => testing.config['sites']['app.full']['host']
+    'actual' => testing.config['sites']['app.full']['host'],
   },
 
   # Site Test
@@ -117,7 +117,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.app.full.ssl',
     'expect' => true,
-    'actual' => testing.config['sites']['app.full']['ssl']
+    'actual' => testing.config['sites']['app.full']['ssl'],
   },
 
   # Site Test
@@ -127,7 +127,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'sites.help.minimal.ssl',
     'expect' => false,
-    'actual' => testing.config['sites']['help.minimal']['ssl']
+    'actual' => testing.config['sites']['help.minimal']['ssl'],
   },
 
   # Global Test
@@ -142,8 +142,8 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
       'DNS.2 = fullconfig.dev',
       'DNS.3 = app.fullconfig.dev',
       'DNS.4 = minimalconfig.dev',
-      'DNS.5 = help.minimalconfig.dev'
-    ]
+      'DNS.5 = help.minimalconfig.dev',
+    ],
   },
 
   # Utility function
@@ -152,7 +152,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'trim_slashes',
     'expect' => 'path/to/directory',
-    'actual' => trim_slashes('/path/to/directory/')
+    'actual' => trim_slashes('/path/to/directory/'),
   },
 
   # Utility function
@@ -162,7 +162,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'trim_slashes - no slashes',
     'expect' => 'path/to/directory',
-    'actual' => trim_slashes('path/to/directory')
+    'actual' => trim_slashes('path/to/directory'),
   },
 
   # Utility function
@@ -171,7 +171,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'trim_ending_slash',
     'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory/')
+    'actual' => trim_ending_slash('/path/to/directory/'),
   },
 
   # Utility function
@@ -181,7 +181,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'trim_ending_slash - no ending slash',
     'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory')
+    'actual' => trim_ending_slash('/path/to/directory'),
   },
 
   # Utility function
@@ -191,6 +191,6 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   {
     'name' => 'trim_beginning_slash - no beginning slash',
     'expect' => 'path/to/directory/',
-    'actual' => trim_beginning_slash('path/to/directory/')
+    'actual' => trim_beginning_slash('path/to/directory/'),
   },
 ])
