@@ -7,7 +7,7 @@
 require_relative File.join(File.expand_path(Dir.pwd), 'templates/class_config.rb')
 
 dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
-dns_hosts_file = File.join(File.expand_path(Dir.pwd), 'templates/dns-hosts.txt')
+dns_hosts_file = File.join(File.expand_path(Dir.pwd), 'templates/dns_hosts.txt')
 
 dreambox = Config.new(dreambox_config_file, dns_hosts_file)
 
