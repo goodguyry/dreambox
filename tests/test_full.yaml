@@ -1,0 +1,23 @@
+name: 'dreambox-tests'
+php: '7'
+ssl: true
+host: main-host.dev
+
+sites:
+  'full':
+    username: 'fc_user'
+    root: 'fullconfig.com'
+    public: 'public'
+    local_root: 'web/'
+    host: 'www.fullconfig.dev'
+    aliases:
+      - 'fullconfig.dev'
+    subdomains:
+      app: 'app/'
+  'minimal':
+    username: mc_user
+    root: minimalconfig.com
+    local_root: web
+    host: minimalconfig.dev
+    subdomains: { 'help': '/app/help/' }
+    ssl: false
