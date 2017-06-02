@@ -23,8 +23,14 @@ class Tests
 
   def run
     @assertions.each do |test|
+      # Test assert condition
+      condition_met = (test['expect'] == test['actual'])
+      if (false == test['assert']) then
+        condition_met = (test['expect'] != test['actual'])
+      end
+
       # Test for equal values
-      if ! (test['expect'] == test['actual']) then
+      if ! (condition_met) then
         message = "`#{test['name']}` was '#{test['actual']}'; expected '#{test['expect']}'"
         @failing.push(message)
       else
