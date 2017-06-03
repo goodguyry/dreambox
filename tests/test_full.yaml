@@ -19,5 +19,6 @@ sites:
     root: minimalconfig.com
     local_root: web
     host: minimalconfig.dev
+    aliases: [ 'www.minimalconfig.dev' ]
     subdomains: { 'help': '/app/help/' }
     ssl: false

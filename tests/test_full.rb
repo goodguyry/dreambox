@@ -28,7 +28,7 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
   # hosts list
   {
     'name' => 'box.hosts',
-    'expect' => 'www.fullconfig.dev,fullconfig.dev,app.fullconfig.dev,minimalconfig.dev,help.minimalconfig.dev',
+    'expect' => 'www.fullconfig.dev,fullconfig.dev,app.fullconfig.dev',
     'actual' => testing.config['hosts'],
   },
 
@@ -140,8 +140,6 @@ testing = Config.new(full_config_file, full_dns_hosts_file)
       'DNS.1 = www.fullconfig.dev',
       'DNS.2 = fullconfig.dev',
       'DNS.3 = app.fullconfig.dev',
-      'DNS.4 = minimalconfig.dev',
-      'DNS.5 = help.minimalconfig.dev',
     ],
   },
 ])

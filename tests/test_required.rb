@@ -44,7 +44,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   # hosts list
   {
     'name' => 'required - box.hosts',
-    'expect' => 'requiredconfig.dev',
+    'expect' => '',
     'actual' => required.config['hosts'],
   },
 

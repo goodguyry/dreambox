@@ -89,18 +89,6 @@ class Config
       defaults['box_name'] = @config['name']
       defaults['is_subdomain'] = false
 
-      # Add the site's `host` to the root [hosts] property
-      # @TODO: No need to check for type here
-      if items['host'].kind_of? String then
-        # De-dup hosts values
-        # @TODO: Create a method for this
-        if ! @config['hosts'].include?(items['host']) then
-          @config['hosts'] = @config['hosts'].push(*items['host'])
-        end
-      else
-        print_error("Invalid `host` value for site '#{site}'.", true)
-      end
-
       # Account for a `public` folder if set
       path_end = (items['public'].kind_of? String) ?
         File.join(items['root'], trim_slashes(items['public'])) :
@@ -110,23 +98,6 @@ class Config
       items['root_path'] = File.join('/home/', items['username'], path_end)
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
-      # Add each of the site's hosts to the root [hosts] property
-      # Also combine `aliases` into a space-separated string
-      if (items['aliases'].kind_of? Array) then
-        if items['aliases'].length then
-          items['aliases'].each do |the_alias|
-            # De-dup hosts values
-            # @TODO: Create a method for this
-            if ! @config['hosts'].include?(the_alias) then
-              @config['hosts'] = @config['hosts'].push(*the_alias)
-            end
-          end
-          items['aliases'] = items['aliases'].join(' ')
-        else
-          print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
-        end
-      end
-
       # If SSL is enabled globally and not disabled locally, or if enabled locally
       if (@config['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
         # Enable the root SSL setting if not already enabled
@@ -134,6 +105,29 @@ class Config
         # Ensure the site SSL setting is enabled
         # If it's enabled globally, but not at the site, ssl_setup will fail
         items['ssl'] = true
+        # Add site host to root hosts array
+        # De-dup hosts values
+        # @TODO: Create a method for this
+        if ! @config['hosts'].include?(items['host']) then
+          @config['hosts'] = @config['hosts'].push(*items['host'])
+        end
+      end
+
+      # Add each of the site's hosts to the root [hosts] property
+      # Also combine `aliases` into a space-separated string
+      if (items['aliases'].kind_of? Array) then
+        if items['aliases'].length then
+          items['aliases'].each do |the_alias|
+            # De-dup hosts values
+            # @TODO: Create a method for this
+            if ! @config['hosts'].include?(the_alias) && items['ssl'] then
+              @config['hosts'] = @config['hosts'].push(*the_alias)
+            end
+          end
+          items['aliases'] = items['aliases'].join(' ')
+        else
+          print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
+        end
       end
 
       # Collect and merge site subdomains
@@ -150,10 +144,12 @@ class Config
             'ssl' => items['ssl'],
             'box_name' => @config['name']
           }
-          # De-dup and add to root hosts property
-          # @TODO: Create a method for this
-          if ! @config['hosts'].include?(subdomains[subdomain_name]['host']) then
-            @config['hosts'] = @config['hosts'].push(*subdomains[subdomain_name]['host'])
+          if items['ssl'] then
+            # De-dup and add to root hosts property
+            # @TODO: Create a method for this
+            if ! @config['hosts'].include?(subdomains[subdomain_name]['host']) then
+              @config['hosts'] = @config['hosts'].push(*subdomains[subdomain_name]['host'])
+            end
           end
         end
       end
