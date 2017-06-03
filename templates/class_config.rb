@@ -51,7 +51,7 @@ class Config
     box_defaults['php'] = php_versions[0]
 
     # Merge the default 'box' values with those from vm-config
-    box_defaults.merge(@config)
+    @config = box_defaults.merge(@config)
 
     # Abort of the php version isn't one of the two specific options
     if ! php_versions.include?(@config['php']) then
