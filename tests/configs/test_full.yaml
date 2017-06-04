@@ -29,6 +29,6 @@ sites:
     root: example-two.com
     local_root: web
     host: example-two.dev
-    aliases: [ 'www.example-two.dev' ] # alternative syntax
+    aliases: [ www.example-two.dev ] # alternative syntax
     subdomains: { 'help': '/app/help/' } # alternative syntax
     ssl: false
