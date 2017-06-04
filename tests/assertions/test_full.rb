@@ -1,8 +1,8 @@
-full_config_file = 'tests/configs/test_full.yaml'
-full_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_full_dns_hosts.txt')
-full = Config.new(full_config_file, full_dns_hosts_file)
+config_file = 'tests/configs/test_full.yaml'
+temp_file = File.join(File.dirname(__FILE__), 'test_full_dns_hosts.txt')
+full = Config.new(config_file, temp_file)
 
-@tests.cleanup.push(full_dns_hosts_file)
+@tests.cleanup.push(temp_file)
 
 @tests.assertions.push(*[
   # PHP Directory
@@ -99,7 +99,7 @@ full = Config.new(full_config_file, full_dns_hosts_file)
   # DNS Hosts file
   {
     'name' => 'Full: DNS Hosts file should exist and contain all SSL-enabled hosts',
-    'expect' => File.open(full_dns_hosts_file, 'r').read.split("\n"),
+    'expect' => File.open(temp_file, 'r').read.split("\n"),
     'actual' => [
       'DNS.1 = www.example.dev',
       'DNS.2 = example.dev',

@@ -1,6 +1,6 @@
-required_config_file = 'tests/configs/test_required.yaml'
-required_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_required_dns_hosts.txt')
-required = Config.new(required_config_file, required_dns_hosts_file)
+config_file = 'tests/configs/test_required.yaml'
+temp__file = File.join(File.dirname(__FILE__), 'test_required_dns_hosts.txt')
+required = Config.new(config_file, temp__file)
 
 @tests.assertions.push(*[
   # Missing box name
@@ -42,7 +42,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   {
     'name' => 'Required: DNS Hosts should not be created',
     'expect' => false,
-    'actual' => File.exist?(required_dns_hosts_file),
+    'actual' => File.exist?(temp__file),
   },
 
 
