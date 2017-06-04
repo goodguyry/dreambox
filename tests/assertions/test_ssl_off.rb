@@ -5,6 +5,10 @@
 # setting for that site, while not affecting the other
 # site.
 #
+# The root `ssl_enabled` setting, created by the Config
+# class, should be set to true to reflect that there is
+# at least one site whose SSL setting is enabled.
+#
 # The hosts list should be empty, because:
 # - Only one site has SSL enabled.
 # - The site with SSL enabled has one host declared, with
@@ -23,7 +27,7 @@ ssl_off = Config.new(config_file, temp_file)
   # Root SSL
   {
     'name' => 'SSL Off: Root `ssl_enabled` should be true',
-    'expect' => true,
+    'expect' => true, # See note in description for why
     'actual' => ssl_off.config['ssl_enabled'],
   },
 
