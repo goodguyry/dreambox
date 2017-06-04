@@ -3,75 +3,59 @@ required_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_required_dns_h
 required = Config.new(required_config_file, required_dns_hosts_file)
 
 @tests.assertions.push(*[
-  # Gobal Test
-  #
-  # Missing box name should fall back to default 'dreambox'
+  # Missing box name
   {
-    'name' => 'required - box.name',
+    'name' => "Required: Missing box name should fall back to default 'dreambox'",
     'expect' => 'dreambox',
     'actual' => required.config['name'],
   },
 
-  # Gobal Test
-  #
-  # PHP version should fall back to default '5'
+  # PHP version
   {
-    'name' => 'required - box.php',
+    'name' => "Required: PHP version should fall back to default '5'",
     'expect' => '5',
     'actual' => required.config['php'],
   },
 
-  # Gobal Test
-  #
-  # Default PHP version should select 'php_56' as the PHP directory
+  # PHP directory
   {
-    'name' => 'required - box.php_dir',
+    'name' => "Required: PHP directory should fall back to 'php_56'",
     'expect' => 'php56',
     'actual' => required.config['php_dir'],
   },
 
-  # Gobal Test
-  #
-  # Missing SSL setting should fall back to default `false`
+  # Missing SSL setting
   {
-    'name' => 'required - box.ssl_enabled',
+    'name' => 'Required: Missing SSL setting should fall back to default `false`',
     'expect' => false,
     'actual' => required.config['ssl_enabled'],
   },
 
-  # Gobal Test
-  #
-  # hosts list
+  # Hosts list
   {
-    'name' => 'required - box.hosts',
+    'name' => 'Required: Hosts list should be empty',
     'expect' => '',
     'actual' => required.config['hosts'],
   },
 
-  # Global Test
-  #
-  # DNS Hosts file
+  # DNS Hosts
   {
-    'name' => 'required - DNS Hosts file exists',
+    'name' => 'Required: DNS Hosts should not be created',
     'expect' => false,
     'actual' => File.exist?(required_dns_hosts_file),
   },
 
 
-  # Site Test
-  #
-  # Root Path
+  # Root path
   {
-    'name' => 'sites.required.root_path',
+    'name' => 'Required: Root path',
     'expect' => '/home/rc_user/requiredconfig.com',
     'actual' => required.config['sites']['required']['root_path'],
   },
 
-  # Site Test
-  #
-  # VHost File
+  # vhost.conf file path
   {
-    'name' => 'sites.required.vhost_file',
+    'name' => 'Required: vhost.conf file path',
     'expect' => '/usr/local/apache2/conf/vhosts/required.conf',
     'actual' => required.config['sites']['required']['vhost_file'],
   },

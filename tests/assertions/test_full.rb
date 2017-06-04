@@ -3,138 +3,100 @@ full_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_full_dns_hosts.txt
 full = Config.new(full_config_file, full_dns_hosts_file)
 
 @tests.assertions.push(*[
-  # Gobal Test
-  #
   # PHP Directory
-  # `php_dir`
   {
-    'name' => 'box.php_dir',
+    'name' => 'Full: PHP Directory should match config PHP version',
     'expect' => 'php70',
     'actual' => full.config['php_dir'],
   },
 
-  # Gobal Test
-  #
-  # Global SSL setting
-  # `ssl_enabled`
+  # Root SSL
   {
-    'name' => 'box.ssl_enabled',
+    'name' => 'Full: Root SSL should be enabled',
     'expect' => true,
     'actual' => full.config['ssl_enabled'],
   },
 
-  # Gobal Test
-  #
-  # hosts list
+  # Root hosts list
   {
-    'name' => 'box.hosts',
+    'name' => 'Full: Root hosts list should only contain SSL-enabled hosts',
     'expect' => 'www.fullconfig.dev,fullconfig.dev,app.fullconfig.dev',
     'actual' => full.config['hosts'],
   },
 
-  # Site Test
-  #
-  # Root Path
-  # With public folder
+  # Root path with public folder
   {
-    'name' => 'sites.full.root_path',
+    'name' => 'Full: Root path with public folder',
     'expect' => '/home/fc_user/fullconfig.com/public',
     'actual' => full.config['sites']['full']['root_path'],
   },
 
-  # Site Test
-  #
-  # Root Path
-  # No public folder
+  # Root path, no public folder
   {
-    'name' => 'sites.minimalconfig.root_path',
+    'name' => 'Full: Root path, no public folder',
     'expect' => '/home/mc_user/minimalconfig.com',
     'actual' => full.config['sites']['minimal']['root_path'],
   },
 
-  # Site Test
-  #
-  # Root Path - Subdomain
-  # With public folder
+  # Subdomain root path with public folder
   {
-    'name' => 'sites.app.full.root_path',
+    'name' => 'Full: Subdomain root path with public folder',
     'expect' => '/home/fc_user/fullconfig.com/public/app',
     'actual' => full.config['sites']['app.full']['root_path'],
   },
 
-  # Site Test
-  #
-  # Root Path - Subdomain
-  # No public folder
+  # Subdomain root path, no public folder
   {
-    'name' => 'sites.help.minimal.root_path',
+    'name' => 'Full: Subdomain root path, no public folder',
     'expect' => '/home/mc_user/minimalconfig.com/app/help',
     'actual' => full.config['sites']['help.minimal']['root_path'],
   },
 
-  # Site Test
-  #
-  # VHost File
+  # vhost.conf file path
   {
-    'name' => 'sites.full.vhost_file',
+    'name' => 'Full: vhost.conf file path',
     'expect' => '/usr/local/apache2/conf/vhosts/full.conf',
     'actual' => full.config['sites']['full']['vhost_file'],
   },
 
-  # Site Test
-  #
-  # VHost File - Subdomain
+  # Subdomain vhost.conf file path
   {
-    'name' => 'sites.app.full.vhost_file',
+    'name' => 'Full: Subdomain vhost.conf file path',
     'expect' => '/usr/local/apache2/conf/vhosts/app.full.conf',
     'actual' => full.config['sites']['app.full']['vhost_file'],
   },
 
-  # Site Test
-  #
-  # Subdomain Host
-  # Parent has bare domain
+  # Subdomain host
   {
-    'name' => 'sites.help.minimal.host',
+    'name' => 'Full: Subdomain host',
     'expect' => 'help.minimalconfig.dev',
     'actual' => full.config['sites']['help.minimal']['host'],
   },
 
-  # Site Test
-  #
-  # Subdomain Host
-  # Parent host contains `www.`
+  # Subdomain host, parent has `www.` prefix
   {
-    'name' => 'sites.app.full.host',
+    'name' => 'Full: Subdomain host, parent has `www.` prefix',
     'expect' => 'app.fullconfig.dev',
     'actual' => full.config['sites']['app.full']['host'],
   },
 
-  # Site Test
-  #
-  # Subdomain SSL
-  # Parent has SSL enabled
+  # Subdomain SSL, parent has SSL enabled
   {
-    'name' => 'sites.app.full.ssl',
+    'name' => 'Full: Subdomain SSL, parent has SSL enabled',
     'expect' => true,
     'actual' => full.config['sites']['app.full']['ssl'],
   },
 
-  # Site Test
-  #
-  # Subdomain SSL
-  # Parent has SSL disabled
+  # Subdomain SSL, parent has SSL disabled
   {
-    'name' => 'sites.help.minimal.ssl',
+    'name' => 'Full: Subdomain SSL, parent has SSL disabled',
     'expect' => false,
     'actual' => full.config['sites']['help.minimal']['ssl'],
   },
 
-  # Global Test
-  #
   # DNS Hosts file
   {
-    'name' => 'DNS Hosts file',
+    'name' => 'Full: DNS Hosts file should exist and contain all SSL-enabled hosts',
     'expect' => File.open(full_dns_hosts_file, 'r').read.split("\n"),
     'actual' => [
       'DNS.1 = www.fullconfig.dev',

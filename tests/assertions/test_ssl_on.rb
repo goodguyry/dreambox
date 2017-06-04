@@ -3,57 +3,37 @@ ssl_on_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_ssl_on_dns_hosts
 ssl_on = Config.new(ssl_on_config_file, ssl_on_dns_hosts_file)
 
 @tests.assertions.push(*[
-  # Gobal Test
-  #
-  # Global SSL setting
-  # `ssl_enabled`
+  # Root SSL should be enabled
   {
-    'name' => 'box.ssl_enabled',
+    'name' => 'SSL On: Root SSL should be enabled',
     'expect' => true,
     'actual' => ssl_on.config['ssl_enabled'],
   },
 
-  # Gobal Test
-  #
-  # hosts list
+  # Hosts list should contain only SSL-enabled hosts
   {
-    'name' => 'box.hosts',
+    'name' => 'SSL On: Hosts list should contain only SSL-enabled hosts',
     'expect' => 'ssloninherit.dev',
     'actual' => ssl_on.config['hosts'],
   },
 
-  # Site Test
-  #
-  # Site SSL inherited from root
+  # Site SSL should be inherited from root seting
   {
-    'name' => 'sites.local-oninherit.ssl',
+    'name' => 'SSL On: Site SSL should be inherited from root seting',
     'expect' => true,
     'actual' => ssl_on.config['sites']['local-oninherit']['ssl'],
   },
 
-  # Site Test
-  #
-  # Site SSL locally set to `true`
+  # Site SSL should override root setting
   {
-    'name' => 'sites.local-off.ssl',
+    'name' => 'SSL On: Site SSL should override root setting',
     'expect' => false,
     'actual' => ssl_on.config['sites']['local-off']['ssl'],
   },
 
-  # Global Test
-  #
-  # DNS Hosts file with SSL inherited from `false`
+  # DNS Hosts file should not be created
   {
-    'name' => 'DNS Hosts file',
-    'expect' => File.exist?(ssl_on_dns_hosts_file),
-    'actual' => false,
-  },
-
-  # Global Test
-  #
-  # DNS Hosts file with SSL locally set to `true`
-  {
-    'name' => 'DNS Hosts file',
+    'name' => 'SSL On: DNS Hosts file should not be created',
     'expect' => File.exist?(ssl_on_dns_hosts_file),
     'actual' => false,
   },
