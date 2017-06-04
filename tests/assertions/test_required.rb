@@ -1,4 +1,4 @@
-required_config_file = 'tests/test_required.yaml'
+required_config_file = 'tests/configs/test_required.yaml'
 required_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_required_dns_hosts.txt')
 required = Config.new(required_config_file, required_dns_hosts_file)
 
