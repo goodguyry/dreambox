@@ -14,9 +14,11 @@ class Tests
     puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
 
     if (@failing.length > 0) then
-      puts "==> #{@failing.length}/#{@tests_run} tests failed".bold.red
+      puts "==> #{@failing.length}/#{@tests_run} tests failed\n".bold.red
       @failing.each do |message|
-        puts "\nFailed #{message}".bold.red
+        printf "#{message[0]}\n"
+        printf "Expected  => %s\n", message[1]
+        printf "Actual    => %s\n\n".red, message[2]
       end
     end
   end
@@ -31,7 +33,7 @@ class Tests
 
       # Test for equal values
       if ! (condition_met) then
-        message = "`#{test['name']}` was '#{test['actual']}'; expected '#{test['expect']}'"
+        message = test['name'], test['expect'], test['actual']
         @failing.push(message)
       else
         @passing.push("`#{test['name']}` value")
