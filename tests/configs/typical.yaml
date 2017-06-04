@@ -5,7 +5,6 @@
 
 name: 'dreambox-tests'
 php: '5'
-ssl: false
 
 sites:
   'typical--one':
