@@ -13,7 +13,7 @@ ssl_on = Config.new(ssl_on_config_file, ssl_on_dns_hosts_file)
   # Hosts list should contain only SSL-enabled hosts
   {
     'name' => 'SSL On: Hosts list should contain only SSL-enabled hosts',
-    'expect' => 'ssloninherit.dev',
+    'expect' => 'example.dev',
     'actual' => ssl_on.config['hosts'],
   },
 

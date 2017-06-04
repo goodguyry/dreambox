@@ -1,6 +1,6 @@
 sites:
   'required':
-    username: rc_user
-    root: requiredconfig.com
+    username: user
+    root: example.com
     local_root: web
-    host: requiredconfig.dev
+    host: example.dev

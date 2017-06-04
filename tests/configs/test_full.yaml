@@ -5,20 +5,20 @@ host: main-host.dev
 
 sites:
   'full':
-    username: 'fc_user'
-    root: 'fullconfig.com'
-    public: 'public'
-    local_root: 'web/'
-    host: 'www.fullconfig.dev'
+    username: user
+    root: example.com
+    public: public
+    local_root: web/
+    host: www.example.dev
     aliases:
-      - 'fullconfig.dev'
+      - example.dev
     subdomains:
       app: 'app/'
   'minimal':
-    username: mc_user
-    root: minimalconfig.com
+    username: user-two
+    root: example-two.com
     local_root: web
-    host: minimalconfig.dev
-    aliases: [ 'www.minimalconfig.dev' ]
-    subdomains: { 'help': '/app/help/' }
+    host: example-two.dev
+    aliases: [ 'www.example-two.dev' ] # alternative syntax
+    subdomains: { 'help': '/app/help/' } # alternative syntax
     ssl: false

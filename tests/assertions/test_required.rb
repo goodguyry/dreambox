@@ -49,7 +49,7 @@ required = Config.new(required_config_file, required_dns_hosts_file)
   # Root path
   {
     'name' => 'Required: Root path',
-    'expect' => '/home/rc_user/requiredconfig.com',
+    'expect' => '/home/user/example.com',
     'actual' => required.config['sites']['required']['root_path'],
   },
 

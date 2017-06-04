@@ -2,13 +2,13 @@ ssl: true
 
 sites:
   'local-oninherit':
-    username: 'oninherit_user'
-    root: 'ssloninherit.com'
-    local_root: 'web/'
-    host: 'ssloninherit.dev'
+    username: user
+    root: example.com
+    local_root: web/
+    host: example.dev
   'local-off':
-    username: off_user
-    root: ssloff.com
+    username: user-two
+    root: example-two.com
     local_root: web
-    host: ssloff.dev
+    host: example-two.dev
     ssl: false

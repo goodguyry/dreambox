@@ -20,35 +20,35 @@ full = Config.new(full_config_file, full_dns_hosts_file)
   # Root hosts list
   {
     'name' => 'Full: Root hosts list should only contain SSL-enabled hosts',
-    'expect' => 'www.fullconfig.dev,fullconfig.dev,app.fullconfig.dev',
+    'expect' => 'www.example.dev,example.dev,app.example.dev',
     'actual' => full.config['hosts'],
   },
 
   # Root path with public folder
   {
     'name' => 'Full: Root path with public folder',
-    'expect' => '/home/fc_user/fullconfig.com/public',
+    'expect' => '/home/user/example.com/public',
     'actual' => full.config['sites']['full']['root_path'],
   },
 
   # Root path, no public folder
   {
     'name' => 'Full: Root path, no public folder',
-    'expect' => '/home/mc_user/minimalconfig.com',
+    'expect' => '/home/user-two/example-two.com',
     'actual' => full.config['sites']['minimal']['root_path'],
   },
 
   # Subdomain root path with public folder
   {
     'name' => 'Full: Subdomain root path with public folder',
-    'expect' => '/home/fc_user/fullconfig.com/public/app',
+    'expect' => '/home/user/example.com/public/app',
     'actual' => full.config['sites']['app.full']['root_path'],
   },
 
   # Subdomain root path, no public folder
   {
     'name' => 'Full: Subdomain root path, no public folder',
-    'expect' => '/home/mc_user/minimalconfig.com/app/help',
+    'expect' => '/home/user-two/example-two.com/app/help',
     'actual' => full.config['sites']['help.minimal']['root_path'],
   },
 
@@ -69,14 +69,14 @@ full = Config.new(full_config_file, full_dns_hosts_file)
   # Subdomain host
   {
     'name' => 'Full: Subdomain host',
-    'expect' => 'help.minimalconfig.dev',
+    'expect' => 'help.example-two.dev',
     'actual' => full.config['sites']['help.minimal']['host'],
   },
 
   # Subdomain host, parent has `www.` prefix
   {
     'name' => 'Full: Subdomain host, parent has `www.` prefix',
-    'expect' => 'app.fullconfig.dev',
+    'expect' => 'app.example.dev',
     'actual' => full.config['sites']['app.full']['host'],
   },
 
@@ -99,9 +99,9 @@ full = Config.new(full_config_file, full_dns_hosts_file)
     'name' => 'Full: DNS Hosts file should exist and contain all SSL-enabled hosts',
     'expect' => File.open(full_dns_hosts_file, 'r').read.split("\n"),
     'actual' => [
-      'DNS.1 = www.fullconfig.dev',
-      'DNS.2 = fullconfig.dev',
-      'DNS.3 = app.fullconfig.dev',
+      'DNS.1 = www.example.dev',
+      'DNS.2 = example.dev',
+      'DNS.3 = app.example.dev',
     ],
   },
 ])
