@@ -1,0 +1,14 @@
+ssl: false
+
+sites:
+  'local-offinherit':
+    username: 'offinherit_user'
+    root: 'ssloffinherit.com'
+    local_root: 'web/'
+    host: 'ssloffinherit.dev'
+  'local-on':
+    username: on_user
+    root: sslon.com
+    local_root: web
+    host: sslon.dev
+    ssl: true
