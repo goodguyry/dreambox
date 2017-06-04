@@ -2,6 +2,8 @@ ssl_off_config_file = 'tests/configs/test_ssl_off.yaml'
 ssl_off_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_ssl_off_dns_hosts.txt')
 ssl_off = Config.new(ssl_off_config_file, ssl_off_dns_hosts_file)
 
+@tests.cleanup.push(ssl_off_dns_hosts_file)
+
 @tests.assertions.push(*[
   # Root SSL
   {

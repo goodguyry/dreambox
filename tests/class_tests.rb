@@ -1,10 +1,12 @@
 class Tests
   attr_accessor :assertions
+  attr_accessor :cleanup
 
   def initialize
     @assertions = Array.new
     @failing = Array.new
     @passing = Array.new
+    @cleanup = Array.new
     @tests_run = 0
   end
 
@@ -19,6 +21,14 @@ class Tests
         printf "#{message[0]}\n"
         printf "Expected  => %s\n", message[1]
         printf "Actual    => %s\n\n".red, message[2]
+      end
+    end
+  end
+
+  def run_cleanup
+    @cleanup.each do |file|
+      if File.exist?(file) then
+        File.delete(file)
       end
     end
   end
@@ -40,5 +50,7 @@ class Tests
       end
       @tests_run += 1
     end
+    # Delete temporary test files
+    run_cleanup
   end
 end

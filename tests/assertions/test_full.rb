@@ -2,6 +2,8 @@ full_config_file = 'tests/configs/test_full.yaml'
 full_dns_hosts_file = File.join(File.dirname(__FILE__), 'test_full_dns_hosts.txt')
 full = Config.new(full_config_file, full_dns_hosts_file)
 
+@tests.cleanup.push(full_dns_hosts_file)
+
 @tests.assertions.push(*[
   # PHP Directory
   {
