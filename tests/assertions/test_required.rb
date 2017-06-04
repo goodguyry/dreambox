@@ -5,7 +5,7 @@
 # - SSL disabled
 # - 'dreambox' box name
 
-config_file = 'tests/configs/test_required.yaml'
+config_file = 'tests/configs/required.yaml'
 temp__file = File.join(File.dirname(__FILE__), 'test_required_dns_hosts.txt')
 required = Config.new(config_file, temp__file)
 

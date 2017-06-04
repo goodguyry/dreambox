@@ -8,7 +8,7 @@
 #   property, so the site's host doesn't need to be repurposed
 #   as the root host.
 
-config_file = 'tests/configs/test_full.yaml'
+config_file = 'tests/configs/full.yaml'
 temp_file = File.join(File.dirname(__FILE__), 'test_full_dns_hosts.txt')
 full = Config.new(config_file, temp_file)
 

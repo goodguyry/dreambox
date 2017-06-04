@@ -17,7 +17,7 @@
 #   declared on the config root `host` property, the host
 #   list would not be empty.
 
-config_file = 'tests/configs/test_ssl_off.yaml'
+config_file = 'tests/configs/ssl_off.yaml'
 temp_file = File.join(File.dirname(__FILE__), 'test_ssl_off_dns_hosts.txt')
 ssl_off = Config.new(config_file, temp_file)
 

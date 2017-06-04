@@ -3,7 +3,7 @@
 # The root host inherit the first SSL-enabled host declared. The
 # hosts list should contain only SSL-enabled aliases.
 
-config_file = 'tests/configs/test_typical.yaml'
+config_file = 'tests/configs/typical.yaml'
 temp_file = File.join(File.dirname(__FILE__), 'test_typical_dns_hosts.txt')
 typical = Config.new(config_file, temp_file)
 
