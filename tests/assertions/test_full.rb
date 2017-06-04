@@ -1,3 +1,13 @@
+# Test configuration featuring multiple sites with full feature set
+#
+# The hosts list should contain only the first site's host,
+# aliases and subdomains, because:
+# - Only one site is missing an `ssl` setting, so the site
+#   inherits the root SSL value.
+# - There is a host declared on the config root `host`
+#   property, so the site's host doesn't need to be repurposed
+#   as the root host.
+
 config_file = 'tests/configs/test_full.yaml'
 temp_file = File.join(File.dirname(__FILE__), 'test_full_dns_hosts.txt')
 full = Config.new(config_file, temp_file)

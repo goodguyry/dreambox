@@ -1,3 +1,10 @@
+# Test configuration featuring only required settings
+#
+# The box defaults will be inherited by this config:
+# - PHP version 5
+# - SSL disabled
+# - 'dreambox' box name
+
 config_file = 'tests/configs/test_required.yaml'
 temp__file = File.join(File.dirname(__FILE__), 'test_required_dns_hosts.txt')
 required = Config.new(config_file, temp__file)
