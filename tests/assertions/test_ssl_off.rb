@@ -5,8 +5,8 @@ ssl_off = Config.new(ssl_off_config_file, ssl_off_dns_hosts_file)
 @tests.assertions.push(*[
   # Root SSL
   {
-    'name' => 'SSL Off: Root SSL should be disabled',
-    'expect' => false,
+    'name' => 'SSL Off: Root `ssl_enabled` should be true',
+    'expect' => true,
     'actual' => ssl_off.config['ssl_enabled'],
   },
 
