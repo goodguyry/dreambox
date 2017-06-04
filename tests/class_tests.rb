@@ -1,3 +1,11 @@
+#!/usr/bin/env ruby
+
+# Tests class
+#
+# This class tests an array of assertions, each a hash with a description expected
+# value and actual value. The outcome of each test is saved, then printed to stdout
+# upon completion of all tests.
+#
 class Tests
   attr_accessor :assertions
   attr_accessor :cleanup
@@ -25,6 +33,7 @@ class Tests
     end
   end
 
+  # Clean up temporary files
   def run_cleanup
     @cleanup.each do |file|
       if File.exist?(file) then
@@ -33,6 +42,7 @@ class Tests
     end
   end
 
+  # Run the tests
   def run
     @assertions.each do |test|
       # Test assert condition
