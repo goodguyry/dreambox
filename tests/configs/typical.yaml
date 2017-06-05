@@ -7,7 +7,7 @@ name: 'dreambox-tests'
 php: '5'
 
 sites:
-  'typical--one':
+  'typical-one':
     username: user
     root: example.com
     local_root: web/
