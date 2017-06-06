@@ -1,9 +1,20 @@
-require_relative '../templates/class_config.rb'
 require_relative 'class_tests.rb'
 
-@tests = Tests.new
+@assertions_dir = File.join(File.dirname(__FILE__), 'assertions')
 
-# Add tests here
+# Array of configs filenames without extension
+configs = [
+  'required',
+  'full',
+  'typical',
+  'ssl_off',
+  'ssl_on',
+]
+
+# Instantiate a new Test object
+@tests = Tests.new(configs)
+
+# Require tests here
 require_relative 'assertions/test_full.rb'
 require_relative 'assertions/test_typical.rb'
 require_relative 'assertions/test_required.rb'

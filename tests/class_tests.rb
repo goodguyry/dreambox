@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require_relative '../templates/class_config.rb'
 
 # Tests class
 #
@@ -7,14 +8,23 @@
 # upon completion of all tests.
 #
 class Tests
+  attr_accessor :configs
   attr_accessor :assertions
-  attr_accessor :cleanup
 
-  def initialize
+  def initialize(opts)
+    @configs = Hash.new
     @assertions = Array.new
+    @temp_files = Array.new
+
+    opts.each do |opt|
+      config_file = "tests/configs/#{opt}.yaml"
+      temp_file = File.join(File.dirname(__FILE__), "assertions/#{opt}.txt")
+      @configs[opt] = Config.new(config_file, temp_file)
+      @temp_files.push(temp_file)
+    end
+
     @failing = Array.new
     @passing = Array.new
-    @cleanup = Array.new
     @tests_run = 0
   end
 
@@ -35,7 +45,7 @@ class Tests
 
   # Clean up temporary files
   def run_cleanup
-    @cleanup.each do |file|
+    @temp_files.each do |file|
       if File.exist?(file) then
         File.delete(file)
       end

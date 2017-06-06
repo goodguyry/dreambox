@@ -3,3 +3,4 @@
 certs
 web
 **/*dns_hosts.txt
+tests/**/*.txt
