@@ -17,9 +17,9 @@ class Tests
     @temp_files = Array.new
 
     opts.each do |opt|
-      config_file = "tests/configs/#{opt}.yaml"
-      temp_file = File.join(File.dirname(__FILE__), "assertions/#{opt}.txt")
-      @configs[opt] = Config.new(config_file, temp_file)
+      basename = File.basename(opt, File.extname(opt))
+      temp_file = File.join(File.dirname(__FILE__), "assertions/#{basename}.txt")
+      @configs[basename] = Config.new(opt, temp_file)
       @temp_files.push(temp_file)
     end
 
