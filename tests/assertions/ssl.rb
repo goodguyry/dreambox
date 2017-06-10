@@ -30,7 +30,7 @@
   {
     'name' => 'Missing SSL: `ssl_enabled` should fall back to default `false` value.',
     'expect' => false,
-    'actual' => @tests.configs['required'].config['ssl_enabled'],
+    'actual' => @tests.the['required'].config['ssl_enabled'],
   },
 
   # Conditions:
@@ -43,7 +43,7 @@
   {
     'name' => 'Missing SSL: The root `host` property should remain empty.',
     'expect' => nil,
-    'actual' => @tests.configs['required'].config['host'],
+    'actual' => @tests.the['required'].config['host'],
   },
 
   # Conditions:
@@ -55,7 +55,7 @@
   {
     'name' => 'Missing SSL: The root `hosts` property should be empty.',
     'expect' => '',
-    'actual' => @tests.configs['required'].config['hosts'],
+    'actual' => @tests.the['required'].config['hosts'],
   },
 
   # Conditions:
@@ -67,7 +67,7 @@
   {
     'name' => 'Missing SSL: The site `ssl` property should inherit the root `ssl` value.',
     'expect' => false,
-    'actual' => @tests.configs['required'].config['sites']['required']['ssl'],
+    'actual' => @tests.the['required'].config['sites']['required']['ssl'],
   },
 
   # Conditions:
@@ -99,7 +99,7 @@
   {
     'name' => 'SSL Off: The root `ssl_enabled` property should be `true`.',
     'expect' => true, # See note in description for why
-    'actual' => @tests.configs['full'].config['ssl_enabled'],
+    'actual' => @tests.the['full'].config['ssl_enabled'],
   },
 
   # Conditions:
@@ -111,7 +111,7 @@
   {
     'name' => 'SSL Off: The root `host` property should be the exact config value.',
     'expect' => 'main-host.dev',
-    'actual' => @tests.configs['full'].config['host'],
+    'actual' => @tests.the['full'].config['host'],
   },
 
   # Conditions:
@@ -125,7 +125,7 @@
   {
     'name' => 'SSL Off: The root `hosts` property should contain only SSL-enabled hosts.',
     'expect' => 'example-two.dev,www.example-two.dev,help.example-two.dev',
-    'actual' => @tests.configs['full'].config['hosts'],
+    'actual' => @tests.the['full'].config['hosts'],
   },
 
   # Conditions:
@@ -137,7 +137,7 @@
   {
     'name' => 'SSL Off: The site should inherit the root `ssl` value.',
     'expect' => false,
-    'actual' => @tests.configs['full'].config['sites']['full-one']['ssl'],
+    'actual' => @tests.the['full'].config['sites']['full-one']['ssl'],
   },
 
   # Conditions:
@@ -149,7 +149,7 @@
   {
     'name' => 'SSL Off: The site should not inherit the root `ssl` value.',
     'expect' => true,
-    'actual' => @tests.configs['full'].config['sites']['full-two']['ssl'],
+    'actual' => @tests.the['full'].config['sites']['full-two']['ssl'],
   },
 
   # Conditions:
@@ -161,7 +161,7 @@
   {
     'name' => "SSL Off: The site's subdomains should inherit the site's `ssl` value (enabled).",
     'expect' => true,
-    'actual' => @tests.configs['full'].config['sites']['help.full-two']['ssl'],
+    'actual' => @tests.the['full'].config['sites']['help.full-two']['ssl'],
   },
 
   # Conditions:
@@ -174,7 +174,7 @@
   {
     'name' => "SSL Off: The site's subdomains should inherit the site's `ssl` value (disabled).",
     'expect' => false,
-    'actual' => @tests.configs['full'].config['sites']['app.full-one']['ssl'],
+    'actual' => @tests.the['full'].config['sites']['app.full-one']['ssl'],
   },
 
   # Conditions:
@@ -213,7 +213,7 @@
   {
     'name' => 'SSL On: the root `ssl_enabled` property should be true.',
     'expect' => true,
-    'actual' => @tests.configs['typical'].config['ssl_enabled'],
+    'actual' => @tests.the['typical'].config['ssl_enabled'],
   },
 
   # Conditions:
@@ -226,7 +226,7 @@
   {
     'name' => 'SSL On: The root `host` value should be the first SSL-enabled host declared.',
     'expect' => 'example.dev',
-    'actual' => @tests.configs['typical'].config['host'],
+    'actual' => @tests.the['typical'].config['host'],
   },
 
   # Conditions:
@@ -241,7 +241,7 @@
   {
     'name' => 'SSL On: The root `hosts` property should contain only SSL-enabled hosts.',
     'expect' => 'www.example.dev,*.example.dev',
-    'actual' => @tests.configs['typical'].config['hosts'],
+    'actual' => @tests.the['typical'].config['hosts'],
   },
 
   # Conditions:
@@ -253,7 +253,7 @@
   {
     'name' => "SSL On: The site's undeclared `ssl` value should inherit from the root.",
     'expect' => true,
-    'actual' => @tests.configs['typical'].config['sites']['typical-one']['ssl'],
+    'actual' => @tests.the['typical'].config['sites']['typical-one']['ssl'],
   },
 
   # Conditions:
@@ -265,7 +265,7 @@
   {
     'name' => 'SSL On: The site should not inherit the root `ssl` value.',
     'expect' => false,
-    'actual' => @tests.configs['typical'].config['sites']['typical-two']['ssl'],
+    'actual' => @tests.the['typical'].config['sites']['typical-two']['ssl'],
   },
 
   # Conditions:

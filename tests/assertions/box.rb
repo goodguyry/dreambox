@@ -13,7 +13,7 @@
   {
     'name' => "Box Name: The root `name` property should fall back to 'dreambox'.",
     'expect' => 'dreambox',
-    'actual' => @tests.configs['required'].config['name'],
+    'actual' => @tests.the['required'].config['name'],
   },
 
   # Condition:
@@ -24,7 +24,7 @@
   {
     'name' => "Box Name: The root `name` property should be identical to raw YAML value.",
     'expect' => 'dreambox-tests',
-    'actual' => @tests.configs['full'].config['name'],
+    'actual' => @tests.the['full'].config['name'],
   },
 
 ])

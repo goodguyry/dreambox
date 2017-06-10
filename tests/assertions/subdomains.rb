@@ -20,14 +20,14 @@
   {
     'name' => "Subdomain: Host should be correct based on parent site's domain",
     'expect' => 'help.example-two.dev',
-    'actual' => @tests.configs['full'].config['sites']['help.full-two']['host'],
+    'actual' => @tests.the['full'].config['sites']['help.full-two']['host'],
   },
 
   # Subdomain (Alt syntax): Host should be correct even if parent has `www.` prefix
   {
     'name' => 'Subdomain (Alt syntax): Host should be correct even if parent has `www.` prefix',
     'expect' => 'app.example.dev',
-    'actual' => @tests.configs['full'].config['sites']['app.full-one']['host'],
+    'actual' => @tests.the['full'].config['sites']['app.full-one']['host'],
   },
 
 ])

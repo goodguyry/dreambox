@@ -8,18 +8,18 @@ require_relative '../templates/class_config.rb'
 # upon completion of all tests.
 #
 class Tests
-  attr_accessor :configs
+  attr_accessor :the
   attr_accessor :assertions
 
   def initialize(opts)
-    @configs = Hash.new
+    @the = Hash.new
     @assertions = Array.new
     @temp_files = Array.new
 
     opts.each do |opt|
       basename = File.basename(opt, File.extname(opt))
       temp_file = File.join(File.dirname(__FILE__), "assertions/#{basename}.txt")
-      @configs[basename] = Config.new(opt, temp_file)
+      @the[basename] = Config.new(opt, temp_file)
       @temp_files.push(temp_file)
     end
 

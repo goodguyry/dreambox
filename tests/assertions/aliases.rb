@@ -13,7 +13,7 @@
   {
     'name' => "Aliases: Aliases should be combined into a space-separated String",
     'expect' => 'www.example.dev *.example.dev',
-    'actual' => @tests.configs['typical'].config['sites']['typical-one']['aliases'],
+    'actual' => @tests.the['typical'].config['sites']['typical-one']['aliases'],
   },
 
   # Condition:
@@ -24,7 +24,7 @@
   {
     'name' => "Aliases (Alt syntax): Aliases should be combined into a space-separated String",
     'expect' => 'www.example-two.dev *.example-two.dev',
-    'actual' => @tests.configs['typical'].config['sites']['typical-two']['aliases'],
+    'actual' => @tests.the['typical'].config['sites']['typical-two']['aliases'],
   },
 
 ])
