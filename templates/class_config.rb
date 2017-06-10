@@ -111,11 +111,13 @@ class Config
         # Ensure the site SSL setting is enabled
         # If it's enabled globally, but not at the site, ssl_setup will fail
         items['ssl'] = true
+        if (nil == @config['host'] || '' == @config['host']) then
+          @config['host'] = items['host']
         # Add site host to root hosts array
         # De-dup hosts values
         # @TODO: Create a method for this
-        if ! @config['hosts'].include?(items['host']) then
-          @config['hosts'] = @config['hosts'].push(*items['host'])
+        elsif ! @config['hosts'].include?(items['host']) then
+          @config['hosts'] = @config['hosts'].push(items['host'])
         end
       end
 
