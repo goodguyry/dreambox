@@ -53,9 +53,10 @@
   # - The subdomain's `root_path` property created by Config should have the
   #   correct path with a public folder.
   #
-  # We can't always assume subdomains will be nested in the public folder, so
-  # the public folder path is required if it needs to be included in the
-  # subdomain root path.
+  # Additional Information:
+  # - We can't always assume subdomains will be nested in the public folder, so
+  #   the public folder path is required if it needs to be included in the
+  #   subdomain root path.
   {
     'name' => "Paths: The subdomain's `root_path` property created by Config should have the correct path with a public folder.",
     'expect' => '/home/user/example.com/app',

@@ -49,6 +49,7 @@ class Config
     box_defaults = Hash.new
     box_defaults['name'] = 'dreambox'
     box_defaults['php'] = php_versions[0]
+    box_defaults['ssl'] = false
 
     # Merge the default 'box' values with those from vm-config
     @config = box_defaults.merge(@config)
@@ -89,27 +90,33 @@ class Config
       defaults['box_name'] = @config['name']
       defaults['is_subdomain'] = false
 
-      # Account for a `public` folder if set
-      path_end = (items['public'].kind_of? String) ?
-        File.join(items['root'], trim_slashes(items['public'])) :
-        items['root']
-
       # Build paths here rather than in a provisioner
-      items['root_path'] = File.join('/home/', items['username'], path_end)
+      root_path = File.join('/home/', items['username'], items['root'])
+
+      # Account for a `public` folder if set
+      items['root_path'] = (items['public'].kind_of? String) ?
+        File.join(root_path, trim_slashes(items['public'])) : root_path
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
+      # Inherit the SSL property if it's not set
+      if (nil == items['ssl']) then
+        items['ssl'] = @config['ssl']
+      end
+
       # If SSL is enabled globally and not disabled locally, or if enabled locally
-      if (@config['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
+      if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = true
         # Ensure the site SSL setting is enabled
         # If it's enabled globally, but not at the site, ssl_setup will fail
         items['ssl'] = true
+        if (nil == @config['host'] || '' == @config['host']) then
+          @config['host'] = items['host']
         # Add site host to root hosts array
         # De-dup hosts values
         # @TODO: Create a method for this
-        if ! @config['hosts'].include?(items['host']) then
-          @config['hosts'] = @config['hosts'].push(*items['host'])
+        elsif ! @config['hosts'].include?(items['host']) then
+          @config['hosts'] = @config['hosts'].push(items['host'])
         end
       end
 
@@ -118,10 +125,11 @@ class Config
       if (items['aliases'].kind_of? Array) then
         if items['aliases'].length then
           items['aliases'].each do |the_alias|
+            sanitized_alias = sanitize_alias(the_alias)
             # De-dup hosts values
             # @TODO: Create a method for this
-            if ! @config['hosts'].include?(the_alias) && items['ssl'] then
-              @config['hosts'] = @config['hosts'].push(*the_alias)
+            if ! @config['hosts'].include?(sanitized_alias) && items['ssl'] then
+              @config['hosts'] = @config['hosts'].push(sanitized_alias)
             end
           end
           items['aliases'] = items['aliases'].join(' ')
@@ -137,7 +145,7 @@ class Config
           subdomain_name = "#{sub}.#{site}"
           subdomains[subdomain_name] = {
             'username' => items['username'],
-            'root_path' => File.join(items['root_path'], trim_slashes(path)),
+            'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
             'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
