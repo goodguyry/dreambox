@@ -1,0 +1,34 @@
+# Test configuration featuring multiple sites with full feature set
+#
+# The hosts list should contain only the first site's host,
+# aliases and subdomains, because:
+# - Only one site is missing an `ssl` setting, so the site
+#   inherits the root SSL value.
+# - There is a host declared on the config root `host`
+#   property, so the site's host doesn't need to be repurposed
+#   as the root host.
+
+name: 'dreambox-tests'
+php: '7'
+ssl: false
+host: main-host.dev
+
+sites:
+  'full-one':
+    username: user
+    root: example.com
+    public: public
+    local_root: web/
+    host: www.example.dev
+    aliases:
+      - example.dev
+    subdomains:
+      app: 'app/'
+  'full-two':
+    username: user-two
+    root: example-two.com
+    local_root: web
+    host: example-two.dev
+    aliases: [ www.example-two.dev ] # alternative syntax
+    subdomains: { 'help': '/app/help/' } # alternative syntax
+    ssl: true

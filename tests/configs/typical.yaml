@@ -1,0 +1,25 @@
+# Test configuration featuring a typical setup
+#
+# The root host inherit the first SSL-enabled host declared. The
+# hosts list should contain only SSL-enabled aliases.
+
+name: 'dreambox-tests'
+php: '5'
+ssl: true
+
+sites:
+  'typical-one':
+    username: user
+    root: example.com
+    local_root: web/
+    host: example.dev
+    aliases:
+      - www.example.dev
+      - '*.example.dev'
+  'typical-two':
+    username: user-two
+    root: example-two.com
+    local_root: web
+    host: example-two.dev
+    aliases: [ www.example-two.dev, '*.example-two.dev' ] # alternative syntax
+    ssl: false

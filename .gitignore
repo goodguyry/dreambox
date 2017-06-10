@@ -2,4 +2,5 @@
 *.box
 certs
 web
-dns-hosts.txt
+**/*dns_hosts.txt
+tests/**/*.txt
