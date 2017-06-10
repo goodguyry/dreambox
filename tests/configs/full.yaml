@@ -10,11 +10,11 @@
 
 name: 'dreambox-tests'
 php: '7'
-ssl: true
+ssl: false
 host: main-host.dev
 
 sites:
-  'full':
+  'full-one':
     username: user
     root: example.com
     public: public
@@ -24,11 +24,11 @@ sites:
       - example.dev
     subdomains:
       app: 'app/'
-  'minimal':
+  'full-two':
     username: user-two
     root: example-two.com
     local_root: web
     host: example-two.dev
     aliases: [ www.example-two.dev ] # alternative syntax
     subdomains: { 'help': '/app/help/' } # alternative syntax
-    ssl: false
+    ssl: true

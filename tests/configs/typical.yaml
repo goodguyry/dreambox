@@ -5,6 +5,7 @@
 
 name: 'dreambox-tests'
 php: '5'
+ssl: true
 
 sites:
   'typical-one':
@@ -21,4 +22,4 @@ sites:
     local_root: web
     host: example-two.dev
     aliases: [ www.example-two.dev, '*.example-two.dev' ] # alternative syntax
-    ssl: true
+    ssl: false
