@@ -37,7 +37,7 @@ class Tests
       puts "==> #{@failing.length}/#{@tests_run} tests failed\n".bold.red
       @failing.each do |message|
         puts "#{message[0]}\n"
-        printf "Expected  => %s\n", message[1]
+        printf "Expected  => %s\n".yellow, message[1]
         printf "Actual    => %s\n\n".red, message[2]
       end
     end
