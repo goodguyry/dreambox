@@ -49,6 +49,7 @@ class Config
     box_defaults = Hash.new
     box_defaults['name'] = 'dreambox'
     box_defaults['php'] = php_versions[0]
+    box_defaults['ssl'] = false
 
     # Merge the default 'box' values with those from vm-config
     @config = box_defaults.merge(@config)
@@ -98,8 +99,13 @@ class Config
       items['root_path'] = File.join('/home/', items['username'], path_end)
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
+      # Inherit the SSL property if it's not set
+      if (nil == items['ssl']) then
+        items['ssl'] = @config['ssl']
+      end
+
       # If SSL is enabled globally and not disabled locally, or if enabled locally
-      if (@config['ssl'] && (false != items['ssl'] || ! defined?(items['ssl']))) || items['ssl'] then
+      if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = true
         # Ensure the site SSL setting is enabled
