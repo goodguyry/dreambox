@@ -71,4 +71,20 @@
     'expect' => 'path/to/directory/',
     'actual' => trim_beginning_slash('path/to/directory/'),
   },
+
+  # Condition:
+  # - A site's alias has a prefixed '*.'
+  #
+  # Expected Outcome:
+  # - The prefixed '*.' should be removed from the String.
+  #
+  # Additional Information:
+  # - The wildcard can break the subdomains and shouldn't be
+  #   used in the SSL certificate
+  {
+    'name' => "sanitize_alias: The prefixed '*.' should be removed from the String.",
+    'expect' => 'example.dev',
+    'actual' => sanitize_alias('*.example.dev'),
+  },
+
 ])

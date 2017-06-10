@@ -6,10 +6,6 @@
 # Notes:
 # - The root `host` and `hosts` properties are only used in creating the SSL
 #   certificate.
-#
-# @TODO:
-# - Reconcile, clean or skip aliases prefixed with `*.` to avoid wildcards
-#   in the SSL certificate
 
 @tests.assertions.push(*[
 
@@ -240,7 +236,7 @@
   # - The first site's alias values should be added to the root `hosts` property
   {
     'name' => 'SSL On: The root `hosts` property should contain only SSL-enabled hosts.',
-    'expect' => 'www.example.dev,*.example.dev',
+    'expect' => 'www.example.dev,example.dev',
     'actual' => @tests.the['typical'].config['hosts'],
   },
 

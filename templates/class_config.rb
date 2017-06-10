@@ -126,10 +126,11 @@ class Config
       if (items['aliases'].kind_of? Array) then
         if items['aliases'].length then
           items['aliases'].each do |the_alias|
+            sanitized_alias = sanitize_alias(the_alias)
             # De-dup hosts values
             # @TODO: Create a method for this
-            if ! @config['hosts'].include?(the_alias) && items['ssl'] then
-              @config['hosts'] = @config['hosts'].push(*the_alias)
+            if ! @config['hosts'].include?(sanitized_alias) && items['ssl'] then
+              @config['hosts'] = @config['hosts'].push(sanitized_alias)
             end
           end
           items['aliases'] = items['aliases'].join(' ')

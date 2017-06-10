@@ -30,6 +30,10 @@ def trim_beginning_slash(str)
   return ('/' == str[0..0]) ? str[1..-1] : str
 end
 
+def sanitize_alias(str)
+  return ('*.' == str[0..1]) ? str[2..-1] : str
+end
+
 # Print debug info
 def print_debug_info(config, file)
   puts ''
