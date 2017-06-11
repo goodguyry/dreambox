@@ -116,9 +116,8 @@ class Config
         items['ssl'] = @config['ssl']
       end
 
-      # Check SSL settings
+      # If SSL is enabled globally and not disabled locally, or if enabled locally
       if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
-        # We only collect host values if SSL is enabled
         collect_hosts = true
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = true
@@ -137,7 +136,7 @@ class Config
         File.join(root_path, trim_slashes(items['public'])) : root_path
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
-      # If SSL is enabled globally and not disabled locally, or if enabled locally
+      # We only collect host values if SSL is enabled
       if collect_hosts then
         if (nil == @config['host'] || '' == @config['host']) then
           @config['host'] = items['host']
@@ -147,14 +146,14 @@ class Config
       end
 
       # Add each of the site's hosts to the root [hosts] property
-      # Also combine `aliases` into a space-separated string
       if (items['aliases'].kind_of? Array) then
         if items['aliases'].length then
-          items['aliases'].each do |the_alias|
-            if collect_hosts then
+          if collect_hosts then
+            items['aliases'].each do |the_alias|
               add_host(sanitize_alias(the_alias))
             end
           end
+          # Combine `aliases` into a space-separated string
           items['aliases'] = items['aliases'].join(' ')
         else
           print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
