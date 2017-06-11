@@ -36,20 +36,18 @@ class Config
       print_error("Config file '#{@vm_config_file_path}' not found.", true)
     end
 
-    # Set config defaults
-    @config['hosts'] = Array.new
-    @config['ssl_enabled'] = false
-
     # Allowed PHP values
     php_versions = ['5', '7']
     # Associated PHP install directories
     php_dirs = ['php56', 'php70']
 
-    # Set default 'box' values
+    # Set config defaults
     box_defaults = Hash.new
     box_defaults['name'] = 'dreambox'
     box_defaults['php'] = php_versions[0]
     box_defaults['ssl'] = false
+    box_defaults['hosts'] = Array.new
+    box_defaults['ssl_enabled'] = false
 
     # Merge the default 'box' values with those from vm-config
     @config = box_defaults.merge(@config)
