@@ -100,6 +100,19 @@ class Config
         end
       end
 
+      # Inherit the SSL property if it's not set
+      if nil == items['ssl'] then
+        items['ssl'] = @config['ssl']
+      end
+
+      # Check SSL settings
+      if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
+        # We only collect host values if SSL is enabled
+        collect_hosts = true
+        # Enable the root SSL setting if not already enabled
+        @config['ssl_enabled'] = true
+      end
+
       # Establish site defaults
       defaults = Hash.new
       defaults['box_name'] = @config['name']
@@ -113,18 +126,8 @@ class Config
         File.join(root_path, trim_slashes(items['public'])) : root_path
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
-      # Inherit the SSL property if it's not set
-      if (nil == items['ssl']) then
-        items['ssl'] = @config['ssl']
-      end
-
       # If SSL is enabled globally and not disabled locally, or if enabled locally
-      if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
-        # Enable the root SSL setting if not already enabled
-        @config['ssl_enabled'] = true
-        # Ensure the site SSL setting is enabled
-        # If it's enabled globally, but not at the site, ssl_setup will fail
-        items['ssl'] = true
+      if collect_hosts then
         if (nil == @config['host'] || '' == @config['host']) then
           @config['host'] = items['host']
         # Add site host to root hosts array
@@ -141,10 +144,12 @@ class Config
         if items['aliases'].length then
           items['aliases'].each do |the_alias|
             sanitized_alias = sanitize_alias(the_alias)
-            # De-dup hosts values
-            # @TODO: Create a method for this
-            if ! @config['hosts'].include?(sanitized_alias) && items['ssl'] then
-              @config['hosts'] = @config['hosts'].push(sanitized_alias)
+            if collect_hosts then
+              # De-dup hosts values
+              # @TODO: Create a method for this
+              if ! @config['hosts'].include?(sanitized_alias) then
+                @config['hosts'] = @config['hosts'].push(sanitized_alias)
+              end
             end
           end
           items['aliases'] = items['aliases'].join(' ')
@@ -167,7 +172,7 @@ class Config
             'ssl' => items['ssl'],
             'box_name' => @config['name']
           }
-          if items['ssl'] then
+          if collect_hosts then
             # De-dup and add to root hosts property
             # @TODO: Create a method for this
             if ! @config['hosts'].include?(subdomains[subdomain_name]['host']) then
