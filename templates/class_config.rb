@@ -24,8 +24,8 @@ class Config
     return trim_ending_slash(trim_beginning_slash(str))
   end
 
-  def sanitize_alias(str)
-    return ('*.' == str[0..1]) ? str[2..-1] : str
+  def sanitize_alias(host)
+    return ('*.' == host[0..1]) ? host[2..-1] : host
   end
 
   # De-dup and add site host to root hosts array
