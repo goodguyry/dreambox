@@ -9,6 +9,7 @@ require_relative 'utilities.rb'
 # for the Dreambox provisioning scripts.
 class Config
   attr_accessor :config
+  attr_reader :raw
 
   # Class initialization
   #
@@ -31,7 +32,7 @@ class Config
 
     # Load the config file if found, otherwise abort
     if File.file?(@vm_config_file_path) then
-      @config = YAML.load_file(@vm_config_file_path)
+      @raw = YAML.load_file(@vm_config_file_path)
     else
       print_error("Config file '#{@vm_config_file_path}' not found.", true)
     end
@@ -50,7 +51,7 @@ class Config
     box_defaults['ssl_enabled'] = false
 
     # Merge the default 'box' values with those from vm-config
-    @config = box_defaults.merge(@config)
+    @config = box_defaults.merge(@raw)
 
     # Abort of the php version isn't one of the two specific options
     if ! php_versions.include?(@config['php']) then
