@@ -11,6 +11,23 @@ class Config
   attr_accessor :config
   attr_reader :raw
 
+  # Helper functions for manipulating Strings
+  def trim_ending_slash(str)
+    return ('/' == str[-1..-1]) ? str[0..-2] : str
+  end
+
+  def trim_beginning_slash(str)
+    return ('/' == str[0..0]) ? str[1..-1] : str
+  end
+
+  def trim_slashes(str)
+    return trim_ending_slash(trim_beginning_slash(str))
+  end
+
+  def sanitize_alias(str)
+    return ('*.' == str[0..1]) ? str[2..-1] : str
+  end
+
   # Class initialization
   #
   # This method does all the heavy lifting

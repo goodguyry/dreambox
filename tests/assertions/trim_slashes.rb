@@ -14,7 +14,7 @@
   {
     'name' => 'trim_slashes: The eginning and ending slashes should be removed.',
     'expect' => 'path/to/directory',
-    'actual' => trim_slashes('/path/to/directory/'),
+    'actual' => @tests.the['full'].trim_slashes('/path/to/directory/'),
   },
 
   # Condition:
@@ -25,7 +25,7 @@
   {
     'name' => 'trim_slashes: The String should not be altered.',
     'expect' => 'path/to/directory',
-    'actual' => trim_slashes('path/to/directory'),
+    'actual' => @tests.the['full'].trim_slashes('path/to/directory'),
   },
 
   # Condition:
@@ -36,7 +36,7 @@
   {
     'name' => 'trim_ending_slash: The ending slash should be removed.',
     'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory/'),
+    'actual' => @tests.the['full'].trim_ending_slash('/path/to/directory/'),
   },
 
   # Condition:
@@ -47,7 +47,7 @@
   {
     'name' => 'trim_ending_slash: The String should not be altered.',
     'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory'),
+    'actual' => @tests.the['full'].trim_ending_slash('/path/to/directory'),
   },
 
   # Condition:
@@ -58,7 +58,7 @@
   {
     'name' => 'trim_beginning_slash: The beginning slash should be removed.',
     'expect' => 'path/to/directory/',
-    'actual' => trim_beginning_slash('/path/to/directory/'),
+    'actual' => @tests.the['full'].trim_beginning_slash('/path/to/directory/'),
   },
 
   # Condition:
@@ -69,7 +69,7 @@
   {
     'name' => 'trim_beginning_slash: The String should not be altered.',
     'expect' => 'path/to/directory/',
-    'actual' => trim_beginning_slash('path/to/directory/'),
+    'actual' => @tests.the['full'].trim_beginning_slash('path/to/directory/'),
   },
 
   # Condition:
@@ -84,7 +84,7 @@
   {
     'name' => "sanitize_alias: The prefixed '*.' should be removed from the String.",
     'expect' => 'example.dev',
-    'actual' => sanitize_alias('*.example.dev'),
+    'actual' => @tests.the['full'].sanitize_alias('*.example.dev'),
   },
 
 ])
