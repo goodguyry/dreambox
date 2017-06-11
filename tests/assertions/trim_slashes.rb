@@ -87,4 +87,26 @@
     'actual' => @tests.the['full'].sanitize_alias('*.example.dev'),
   },
 
+  # Condition:
+  # - A site's host has a prefixed 'www.'.
+  #
+  # Expected Outcome:
+  # - The prefixed 'www.' should be removed from the String.
+  {
+    'name' => "remove_www: The prefixed 'www.' should be removed from the String.",
+    'expect' => 'example.dev',
+    'actual' => @tests.the['full'].remove_www('www.example.dev'),
+  },
+
+  # Condition:
+  # - A site's host does not have a prefixed 'www.'.
+  #
+  # Expected Outcome:
+  # - The String should not be altered.
+  {
+    'name' => "remove_www: The String should not be altered.",
+    'expect' => 'example.dev',
+    'actual' => @tests.the['full'].remove_www('example.dev'),
+  },
+
 ])

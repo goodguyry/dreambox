@@ -35,6 +35,10 @@ class Config
     end
   end
 
+  def remove_www(host)
+    return ('www' == host[0..2]) ? host[4..-1] : host
+  end
+
   # Class initialization
   #
   # This method does all the heavy lifting
@@ -167,7 +171,7 @@ class Config
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
-            'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
+            'host' => "#{sub}.#{remove_www(items['host'])}",
             'ssl' => items['ssl'],
             'box_name' => @config['name']
           }
