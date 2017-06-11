@@ -28,6 +28,13 @@ class Config
     return ('*.' == str[0..1]) ? str[2..-1] : str
   end
 
+  # De-dup and add site host to root hosts array
+  def add_host(host)
+    if ! @config['hosts'].include?(host) then
+      @config['hosts'] = @config['hosts'].push(host)
+    end
+  end
+
   # Class initialization
   #
   # This method does all the heavy lifting
@@ -130,11 +137,8 @@ class Config
       if collect_hosts then
         if (nil == @config['host'] || '' == @config['host']) then
           @config['host'] = items['host']
-        # Add site host to root hosts array
-        # De-dup hosts values
-        # @TODO: Create a method for this
-        elsif ! @config['hosts'].include?(items['host']) then
-          @config['hosts'] = @config['hosts'].push(items['host'])
+        else
+          add_host(items['host'])
         end
       end
 
@@ -143,13 +147,8 @@ class Config
       if (items['aliases'].kind_of? Array) then
         if items['aliases'].length then
           items['aliases'].each do |the_alias|
-            sanitized_alias = sanitize_alias(the_alias)
             if collect_hosts then
-              # De-dup hosts values
-              # @TODO: Create a method for this
-              if ! @config['hosts'].include?(sanitized_alias) then
-                @config['hosts'] = @config['hosts'].push(sanitized_alias)
-              end
+              add_host(sanitize_alias(the_alias))
             end
           end
           items['aliases'] = items['aliases'].join(' ')
@@ -173,11 +172,7 @@ class Config
             'box_name' => @config['name']
           }
           if collect_hosts then
-            # De-dup and add to root hosts property
-            # @TODO: Create a method for this
-            if ! @config['hosts'].include?(subdomains[subdomain_name]['host']) then
-              @config['hosts'] = @config['hosts'].push(*subdomains[subdomain_name]['host'])
-            end
+            add_host(subdomains[subdomain_name]['host'])
           end
         end
       end
