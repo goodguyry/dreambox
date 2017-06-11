@@ -50,7 +50,7 @@
   # - The root `hosts` property created by Config should be empty.
   {
     'name' => 'Missing SSL: The root `hosts` property should be empty.',
-    'expect' => '',
+    'expect' => [],
     'actual' => @tests.the['required'].config['hosts'],
   },
 

@@ -190,7 +190,7 @@ class Config
     @config['sites'] = @config['sites'].merge(subdomains)
 
     # Collect and transform host values
-    if @config['hosts'].length then
+    if @config['hosts'].length > 0 then
       # Delete an existing DNS Hosts file
       if File.exist?(@hosts_file) then
         File.delete(@hosts_file)
@@ -204,7 +204,8 @@ class Config
 
       # Merge the root `hosts` property into a comma-separated string
       @config['hosts'] = @config['hosts'].join(',')
-    else
+    elsif @config['ssl_enabled'] then
+      # @TODO is this actually necessary??
       # No hosts
       # Force disable SSL at the root and all sites
       @config['ssl_enabled'] = false
