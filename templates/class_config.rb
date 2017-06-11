@@ -91,13 +91,12 @@ class Config
       # Check for required site properties before proceeding
       # If found, remove any errant slashes
       # We allow slashes in the config file to increase readability
-      # @TODO Switch this to be affirmative, else abort
       required = ['username', 'root', 'local_root', 'host']
       required.each do |property|
-        if ! (items[property].kind_of? String) then
-          print_error("Missing #{property} for site #{site}.", true)
-        else
+        if (items[property].kind_of? String) then
           items[property] = trim_slashes(items[property])
+        else
+          print_error("Missing #{property} for site #{site}.", true)
         end
       end
 
