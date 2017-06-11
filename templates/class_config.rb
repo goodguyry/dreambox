@@ -191,11 +191,6 @@ class Config
 
     # Collect and transform host values
     if @config['hosts'].length then
-      # Save the first `hosts` index if no root `host` is declared
-      if (! @config['host'].kind_of? String) then
-        @config['host'] = @config['hosts'][0]
-      end
-
       # Delete an existing DNS Hosts file
       if File.exist?(@hosts_file) then
         File.delete(@hosts_file)
