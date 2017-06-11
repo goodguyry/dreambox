@@ -204,15 +204,6 @@ class Config
 
       # Merge the root `hosts` property into a comma-separated string
       @config['hosts'] = @config['hosts'].join(',')
-    elsif @config['ssl_enabled'] then
-      # @TODO is this actually necessary??
-      # No hosts
-      # Force disable SSL at the root and all sites
-      @config['ssl_enabled'] = false
-      @config['sites'].each do |site, items|
-        items['ssl'] = false
-      end
-      print_error("Missing hosts list; SSL disabled.", false)
     end
 
     # Print debug information
