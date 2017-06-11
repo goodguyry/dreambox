@@ -88,6 +88,17 @@
   },
 
   # Condition:
+  # - A site's alias does not have a prefixed '*.'
+  #
+  # Expected Outcome:
+  # - The String should not be altered.
+  {
+    'name' => "sanitize_alias: The String should not be altered.",
+    'expect' => 'example.dev',
+    'actual' => @tests.the['full'].sanitize_alias('example.dev'),
+  },
+
+  # Condition:
   # - A site's host has a prefixed 'www.'.
   #
   # Expected Outcome:
