@@ -71,11 +71,11 @@ class Config
     php_dirs = ['php56', 'php70']
 
     # Set config defaults
-    box_defaults = Hash.new
+    box_defaults = {}
     box_defaults['name'] = 'dreambox'
     box_defaults['php'] = php_versions[0]
     box_defaults['ssl'] = false
-    box_defaults['hosts'] = Array.new
+    box_defaults['hosts'] = []
     box_defaults['ssl_enabled'] = false
 
     # Merge the default 'box' values with those from vm-config
@@ -91,12 +91,12 @@ class Config
 
     # To collect subdomains
     # These will be transformed into sites at the end
-    subdomains = Hash.new
+    subdomains = {}
 
     # Collect settings for each site
     @config['sites'].each do |site, items|
       if ! items.kind_of? Hash then
-        items = Hash.new
+        items = {}
       end
 
       # Check for required site properties before proceeding
@@ -124,7 +124,7 @@ class Config
       end
 
       # Establish site defaults
-      defaults = Hash.new
+      defaults = {}
       defaults['box_name'] = @config['name']
       defaults['is_subdomain'] = false
 
