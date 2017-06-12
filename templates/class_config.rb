@@ -157,8 +157,6 @@ class Config
           end
           # Combine `aliases` into a space-separated string
           items['aliases'] = items.fetch('aliases').join(' ')
-        else
-          print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
         end
       end
 
