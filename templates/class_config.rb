@@ -73,7 +73,7 @@ class Config
     # Set config defaults
     box_defaults = {}
     box_defaults['name'] = 'dreambox'
-    box_defaults['php'] = php_versions[0]
+    box_defaults['php'] = php_versions.first
     box_defaults['ssl'] = false
     box_defaults['hosts'] = []
     box_defaults['ssl_enabled'] = false
@@ -83,7 +83,7 @@ class Config
 
     # Abort of the php version isn't one of the two specific options
     if ! php_versions.include?(@config['php']) then
-      print_error("Accepted `php` values are '#{php_versions[0]}' and '#{php_versions[1]}'", true)
+      print_error("Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}'", true)
     end
 
     # Set the PHP directory
