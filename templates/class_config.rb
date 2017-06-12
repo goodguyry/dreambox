@@ -30,8 +30,8 @@ class Config
 
   # De-dup and add site host to root hosts array
   def add_host(host)
-    if ! @config['hosts'].include?(host) then
-      @config['hosts'] = @config['hosts'].push(host)
+    if ! @config.fetch('hosts').include?(host) then
+      @config['hosts'] = @config.fetch('hosts').push(host)
     end
   end
 
@@ -82,19 +82,21 @@ class Config
     @config = box_defaults.merge(@raw)
 
     # Abort of the php version isn't one of the two specific options
-    if ! php_versions.include?(@config['php']) then
+    if ! php_versions.include?(@config.fetch('php')) then
       print_error("Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}'", true)
     end
 
     # Set the PHP directory
-    @config['php_dir'] = php_dirs[php_versions.index(@config['php'])]
+    @config['php_dir'] = php_dirs[php_versions.index(@config.fetch('php'))]
 
     # To collect subdomains
     # These will be transformed into sites at the end
     subdomains = {}
 
     # Collect settings for each site
-    @config['sites'].each do |site, items|
+    @config['sites'].each_key do |site|
+      items = @config['sites'].fetch(site)
+
       if ! items.kind_of? Hash then
         items = {}
       end
@@ -104,20 +106,20 @@ class Config
       # We allow slashes in the config file to increase readability
       required = ['username', 'root', 'local_root', 'host']
       required.each do |property|
-        if (items[property].kind_of? String) then
-          items[property] = trim_slashes(items[property])
+        if (items.fetch(property).kind_of? String) then
+          items[property] = trim_slashes(items.fetch(property))
         else
           print_error("Missing #{property} for site #{site}.", true)
         end
       end
 
       # Inherit the SSL property if it's not set
-      if nil == items['ssl'] then
-        items['ssl'] = @config['ssl']
+      if ! items.key?('ssl') then
+        items['ssl'] = @config.fetch('ssl')
       end
 
       # If SSL is enabled globally and not disabled locally, or if enabled locally
-      if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
+      if (@config.fetch('ssl') && false != items.fetch('ssl')) || items.fetch('ssl') then
         collect_hosts = true
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = true
@@ -125,23 +127,23 @@ class Config
 
       # Establish site defaults
       defaults = {}
-      defaults['box_name'] = @config['name']
+      defaults['box_name'] = @config.fetch('name')
       defaults['is_subdomain'] = false
 
       # Build paths here rather than in a provisioner
-      root_path = File.join('/home/', items['username'], items['root'])
+      root_path = File.join('/home/', items.fetch('username'), items.fetch('root'))
 
       # Account for a `public` folder if set
-      items['root_path'] = (items['public'].kind_of? String) ?
-        File.join(root_path, trim_slashes(items['public'])) : root_path
+      items['root_path'] = (items.key?('public')) ?
+        File.join(root_path, trim_slashes(items.fetch('public'))) : root_path
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
       # We only collect host values if SSL is enabled
       if collect_hosts then
-        if (nil == @config['host'] || '' == @config['host']) then
-          @config['host'] = items['host']
+        if ! @config.key?('host') then
+          @config['host'] = items.fetch('host')
         else
-          add_host(items['host'])
+          add_host(items.fetch('host'))
         end
       end
 
@@ -154,7 +156,7 @@ class Config
             end
           end
           # Combine `aliases` into a space-separated string
-          items['aliases'] = items['aliases'].join(' ')
+          items['aliases'] = items.fetch('aliases').join(' ')
         else
           print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
         end
@@ -163,19 +165,20 @@ class Config
       # Collect and merge site subdomains
       # Each subdomain is transformed into it's own site, based on the parent site's config values
       if (items['subdomains'].kind_of? Hash) then
-        items['subdomains'].each do |sub, path|
+        items['subdomains'].each_key do |sub|
+          path = items['subdomains'][sub]
           subdomain_name = "#{sub}.#{site}"
           subdomains[subdomain_name] = {
-            'username' => items['username'],
+            'username' => items.fetch('username'),
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
-            'host' => "#{sub}.#{remove_www(items['host'])}",
-            'ssl' => items['ssl'],
-            'box_name' => @config['name']
+            'host' => "#{sub}.#{remove_www(items.fetch('host'))}",
+            'ssl' => items.fetch('ssl'),
+            'box_name' => @config.fetch('name')
           }
           if collect_hosts then
-            add_host(subdomains[subdomain_name]['host'])
+            add_host(subdomains[subdomain_name].fetch('host'))
           end
         end
       end
@@ -186,7 +189,7 @@ class Config
 
     # Merge subdomain sites into `sites` hash
     # Done here to avoid unexpected looping /shrug
-    @config['sites'] = @config['sites'].merge(subdomains)
+    @config['sites'] = @config.fetch('sites').merge(subdomains)
 
     # Collect and transform host values
     if @config['hosts'].length > 0 then
@@ -202,11 +205,11 @@ class Config
       end
 
       # Merge the root `hosts` property into a comma-separated string
-      @config['hosts'] = @config['hosts'].join(',')
+      @config['hosts'] = @config.fetch('hosts').join(',')
     end
 
     # Print debug information
-    if @config['debug'] then
+    if @config.key?('debug') && @config.fetch('debug') then
       print_debug_info(@config, @vm_config_file_path)
     end
   end
