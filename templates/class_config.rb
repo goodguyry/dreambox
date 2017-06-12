@@ -9,6 +9,35 @@ require_relative 'utilities.rb'
 # for the Dreambox provisioning scripts.
 class Config
   attr_accessor :config
+  attr_reader :raw
+
+  # Helper functions for manipulating Strings
+  def trim_ending_slash(str)
+    return ('/' == str[-1..-1]) ? str[0..-2] : str
+  end
+
+  def trim_beginning_slash(str)
+    return ('/' == str[0..0]) ? str[1..-1] : str
+  end
+
+  def trim_slashes(str)
+    return trim_ending_slash(trim_beginning_slash(str))
+  end
+
+  def sanitize_alias(host)
+    return ('*.' == host[0..1]) ? host[2..-1] : host
+  end
+
+  # De-dup and add site host to root hosts array
+  def add_host(host)
+    if ! @config['hosts'].include?(host) then
+      @config['hosts'] = @config['hosts'].push(host)
+    end
+  end
+
+  def remove_www(host)
+    return ('www' == host[0..2]) ? host[4..-1] : host
+  end
 
   # Class initialization
   #
@@ -31,28 +60,26 @@ class Config
 
     # Load the config file if found, otherwise abort
     if File.file?(@vm_config_file_path) then
-      @config = YAML.load_file(@vm_config_file_path)
+      @raw = YAML.load_file(@vm_config_file_path)
     else
       print_error("Config file '#{@vm_config_file_path}' not found.", true)
     end
-
-    # Set config defaults
-    @config['hosts'] = Array.new
-    @config['ssl_enabled'] = false
 
     # Allowed PHP values
     php_versions = ['5', '7']
     # Associated PHP install directories
     php_dirs = ['php56', 'php70']
 
-    # Set default 'box' values
+    # Set config defaults
     box_defaults = Hash.new
     box_defaults['name'] = 'dreambox'
     box_defaults['php'] = php_versions[0]
     box_defaults['ssl'] = false
+    box_defaults['hosts'] = Array.new
+    box_defaults['ssl_enabled'] = false
 
     # Merge the default 'box' values with those from vm-config
-    @config = box_defaults.merge(@config)
+    @config = box_defaults.merge(@raw)
 
     # Abort of the php version isn't one of the two specific options
     if ! php_versions.include?(@config['php']) then
@@ -75,14 +102,25 @@ class Config
       # Check for required site properties before proceeding
       # If found, remove any errant slashes
       # We allow slashes in the config file to increase readability
-      # @TODO Switch this to be affirmative, else abort
       required = ['username', 'root', 'local_root', 'host']
       required.each do |property|
-        if ! (items[property].kind_of? String) then
-          print_error("Missing #{property} for site #{site}.", true)
-        else
+        if (items[property].kind_of? String) then
           items[property] = trim_slashes(items[property])
+        else
+          print_error("Missing #{property} for site #{site}.", true)
         end
+      end
+
+      # Inherit the SSL property if it's not set
+      if nil == items['ssl'] then
+        items['ssl'] = @config['ssl']
+      end
+
+      # If SSL is enabled globally and not disabled locally, or if enabled locally
+      if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
+        collect_hosts = true
+        # Enable the root SSL setting if not already enabled
+        @config['ssl_enabled'] = true
       end
 
       # Establish site defaults
@@ -98,40 +136,24 @@ class Config
         File.join(root_path, trim_slashes(items['public'])) : root_path
       items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
 
-      # Inherit the SSL property if it's not set
-      if (nil == items['ssl']) then
-        items['ssl'] = @config['ssl']
-      end
-
-      # If SSL is enabled globally and not disabled locally, or if enabled locally
-      if (@config['ssl'] && false != items['ssl']) || items['ssl'] then
-        # Enable the root SSL setting if not already enabled
-        @config['ssl_enabled'] = true
-        # Ensure the site SSL setting is enabled
-        # If it's enabled globally, but not at the site, ssl_setup will fail
-        items['ssl'] = true
+      # We only collect host values if SSL is enabled
+      if collect_hosts then
         if (nil == @config['host'] || '' == @config['host']) then
           @config['host'] = items['host']
-        # Add site host to root hosts array
-        # De-dup hosts values
-        # @TODO: Create a method for this
-        elsif ! @config['hosts'].include?(items['host']) then
-          @config['hosts'] = @config['hosts'].push(items['host'])
+        else
+          add_host(items['host'])
         end
       end
 
       # Add each of the site's hosts to the root [hosts] property
-      # Also combine `aliases` into a space-separated string
       if (items['aliases'].kind_of? Array) then
         if items['aliases'].length then
-          items['aliases'].each do |the_alias|
-            sanitized_alias = sanitize_alias(the_alias)
-            # De-dup hosts values
-            # @TODO: Create a method for this
-            if ! @config['hosts'].include?(sanitized_alias) && items['ssl'] then
-              @config['hosts'] = @config['hosts'].push(sanitized_alias)
+          if collect_hosts then
+            items['aliases'].each do |the_alias|
+              add_host(sanitize_alias(the_alias))
             end
           end
+          # Combine `aliases` into a space-separated string
           items['aliases'] = items['aliases'].join(' ')
         else
           print_error("Expected `aliases` value to be an Array for site '#{site}'.", true)
@@ -148,16 +170,12 @@ class Config
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
-            'host' => "#{sub}.#{('www' == items['host'][0..2]) ? items['host'][4..-1] : items['host']}",
+            'host' => "#{sub}.#{remove_www(items['host'])}",
             'ssl' => items['ssl'],
             'box_name' => @config['name']
           }
-          if items['ssl'] then
-            # De-dup and add to root hosts property
-            # @TODO: Create a method for this
-            if ! @config['hosts'].include?(subdomains[subdomain_name]['host']) then
-              @config['hosts'] = @config['hosts'].push(*subdomains[subdomain_name]['host'])
-            end
+          if collect_hosts then
+            add_host(subdomains[subdomain_name]['host'])
           end
         end
       end
@@ -171,12 +189,7 @@ class Config
     @config['sites'] = @config['sites'].merge(subdomains)
 
     # Collect and transform host values
-    if @config['hosts'].length then
-      # Save the first `hosts` index if no root `host` is declared
-      if (! @config['host'].kind_of? String) then
-        @config['host'] = @config['hosts'][0]
-      end
-
+    if @config['hosts'].length > 0 then
       # Delete an existing DNS Hosts file
       if File.exist?(@hosts_file) then
         File.delete(@hosts_file)
@@ -190,14 +203,6 @@ class Config
 
       # Merge the root `hosts` property into a comma-separated string
       @config['hosts'] = @config['hosts'].join(',')
-    else
-      # No hosts
-      # Force disable SSL at the root and all sites
-      @config['ssl_enabled'] = false
-      @config['sites'].each do |site, items|
-        items['ssl'] = false
-      end
-      print_error("Missing hosts list; SSL disabled.", false)
     end
 
     # Print debug information

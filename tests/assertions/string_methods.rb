@@ -14,7 +14,7 @@
   {
     'name' => 'trim_slashes: The eginning and ending slashes should be removed.',
     'expect' => 'path/to/directory',
-    'actual' => trim_slashes('/path/to/directory/'),
+    'actual' => @tests.the['full'].trim_slashes('/path/to/directory/'),
   },
 
   # Condition:
@@ -25,7 +25,7 @@
   {
     'name' => 'trim_slashes: The String should not be altered.',
     'expect' => 'path/to/directory',
-    'actual' => trim_slashes('path/to/directory'),
+    'actual' => @tests.the['full'].trim_slashes('path/to/directory'),
   },
 
   # Condition:
@@ -36,7 +36,7 @@
   {
     'name' => 'trim_ending_slash: The ending slash should be removed.',
     'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory/'),
+    'actual' => @tests.the['full'].trim_ending_slash('/path/to/directory/'),
   },
 
   # Condition:
@@ -47,7 +47,7 @@
   {
     'name' => 'trim_ending_slash: The String should not be altered.',
     'expect' => '/path/to/directory',
-    'actual' => trim_ending_slash('/path/to/directory'),
+    'actual' => @tests.the['full'].trim_ending_slash('/path/to/directory'),
   },
 
   # Condition:
@@ -58,7 +58,7 @@
   {
     'name' => 'trim_beginning_slash: The beginning slash should be removed.',
     'expect' => 'path/to/directory/',
-    'actual' => trim_beginning_slash('/path/to/directory/'),
+    'actual' => @tests.the['full'].trim_beginning_slash('/path/to/directory/'),
   },
 
   # Condition:
@@ -69,7 +69,7 @@
   {
     'name' => 'trim_beginning_slash: The String should not be altered.',
     'expect' => 'path/to/directory/',
-    'actual' => trim_beginning_slash('path/to/directory/'),
+    'actual' => @tests.the['full'].trim_beginning_slash('path/to/directory/'),
   },
 
   # Condition:
@@ -84,7 +84,40 @@
   {
     'name' => "sanitize_alias: The prefixed '*.' should be removed from the String.",
     'expect' => 'example.dev',
-    'actual' => sanitize_alias('*.example.dev'),
+    'actual' => @tests.the['full'].sanitize_alias('*.example.dev'),
+  },
+
+  # Condition:
+  # - A site's alias does not have a prefixed '*.'
+  #
+  # Expected Outcome:
+  # - The String should not be altered.
+  {
+    'name' => "sanitize_alias: The String should not be altered.",
+    'expect' => 'example.dev',
+    'actual' => @tests.the['full'].sanitize_alias('example.dev'),
+  },
+
+  # Condition:
+  # - A site's host has a prefixed 'www.'.
+  #
+  # Expected Outcome:
+  # - The prefixed 'www.' should be removed from the String.
+  {
+    'name' => "remove_www: The prefixed 'www.' should be removed from the String.",
+    'expect' => 'example.dev',
+    'actual' => @tests.the['full'].remove_www('www.example.dev'),
+  },
+
+  # Condition:
+  # - A site's host does not have a prefixed 'www.'.
+  #
+  # Expected Outcome:
+  # - The String should not be altered.
+  {
+    'name' => "remove_www: The String should not be altered.",
+    'expect' => 'example.dev',
+    'actual' => @tests.the['full'].remove_www('example.dev'),
   },
 
 ])

@@ -22,10 +22,6 @@ class Tests
       @the[basename] = Config.new(opt, temp_file)
       @temp_files.push(temp_file)
     end
-
-    @failing = Array.new
-    @passing = Array.new
-    @tests_run = 0
   end
 
   # Print test stats
@@ -54,6 +50,10 @@ class Tests
 
   # Run the tests
   def run
+    @failing = Array.new
+    @passing = Array.new
+    @tests_run = 0
+
     @assertions.each do |test|
       # Test assert condition
       condition_met = (test['expect'] == test['actual'])
