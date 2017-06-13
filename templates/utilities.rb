@@ -6,17 +6,6 @@ class String
   def bold;    "\e[1m#{self}\e[22m" end
 end
 
-# Helper function for printing error messages
-def print_error(message, fatal)
-  prefix = '===> Dreambox config'
-  if (fatal) then
-    puts "#{prefix}: #{message}".bold.red
-    abort "     See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".bold.yellow
-  else
-    puts "#{prefix}: #{message}".bold.yellow
-  end
-end
-
 # Print debug info
 def print_debug_info(config, file)
   puts ''

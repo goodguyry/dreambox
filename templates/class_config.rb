@@ -39,6 +39,18 @@ class Config
     return ('www' == host[0..2]) ? host[4..-1] : host
   end
 
+  # Helper function for printing error messages
+  def handle_error(e, message)
+    puts "#{ e.class.name }: #{ message }.".red
+    puts "See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".yellow
+    if ! defined?(@raw) then
+      puts e.backtrace.select { |bt| bt.match(File.expand_path(Dir.pwd)) }
+    elsif @raw.key?('debug') && true == @raw.fetch('debug') then
+      puts e.backtrace.select { |bt| bt.match(File.expand_path(Dir.pwd)) }
+    end
+    abort
+  end
+
   # Class initialization
   #
   # This method does all the heavy lifting
@@ -52,17 +64,25 @@ class Config
     vagrant_dir = File.expand_path(Dir.pwd)
 
     # Build the config filepath
-    if (defined?(@config_file)) && (@config_file.kind_of? String) then
-      @vm_config_file_path = File.join(vagrant_dir, @config_file)
-    else
-      print_error("There was an error with `config_file` declaration: '#{@config_file}'", true)
+    begin
+      if (defined?(@config_file)) && (@config_file.kind_of? String) then
+        @vm_config_file_path = File.join(vagrant_dir, @config_file)
+      else
+        raise TypeError
+      end
+    rescue TypeError => e
+      handle_error(e, "There was an error with `config_file` declaration: '#{ @config_file }'")
     end
 
     # Load the config file if found, otherwise abort
-    if File.file?(@vm_config_file_path) then
-      @raw = YAML.load_file(@vm_config_file_path)
-    else
-      print_error("Config file '#{@vm_config_file_path}' not found.", true)
+    begin
+      if File.file?(@vm_config_file_path) then
+        @raw = YAML.load_file(@vm_config_file_path)
+      else
+        raise Errno::ENOENT
+      end
+    rescue Errno::ENOENT => e
+      handle_error(e, "Config file not found")
     end
 
     # Allowed PHP values
@@ -81,13 +101,17 @@ class Config
     # Merge the default 'box' values with those from vm-config
     @config = box_defaults.merge(@raw)
 
-    # Abort of the php version isn't one of the two specific options
-    if ! php_versions.include?(@config.fetch('php')) then
-      print_error("Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}'", true)
+    # Abort if the php version isn't one of the two specific options
+    begin
+      if php_versions.include?(@config.fetch('php')) then
+        # Set the PHP directory
+        @config['php_dir'] = php_dirs[php_versions.index(@config.fetch('php'))]
+      else
+        raise KeyError
+      end
+    rescue KeyError => e
+      handle_error(e, "Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}")
     end
-
-    # Set the PHP directory
-    @config['php_dir'] = php_dirs[php_versions.index(@config.fetch('php'))]
 
     # To collect subdomains
     # These will be transformed into sites at the end
@@ -106,10 +130,14 @@ class Config
       # We allow slashes in the config file to increase readability
       required = ['username', 'root', 'local_root', 'host']
       required.each do |property|
-        if (items.fetch(property).kind_of? String) then
-          items[property] = trim_slashes(items.fetch(property))
-        else
-          print_error("Missing #{property} for site #{site}.", true)
+        begin
+          if (items.fetch(property).kind_of? String) then
+            items[property] = trim_slashes(items.fetch(property))
+          else
+            raise KeyError
+          end
+        rescue KeyError => e
+          handle_error(e, "Missing `#{ property }` for site #{ site }")
         end
       end
 
