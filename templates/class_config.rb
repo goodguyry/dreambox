@@ -158,7 +158,7 @@ class Config
 
       # We only collect host values if SSL is enabled
       if ssl_enabled
-        unless @config.key?('host')
+        if ! @config.key?('host')
           @config['host'] = site.fetch('host')
         else
           add_host( site.fetch('host') )
