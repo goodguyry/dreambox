@@ -30,9 +30,7 @@ class Config
 
   # De-dup and add site host to root hosts array
   def add_host(host)
-    if ! @config.fetch('hosts').include?( host ) then
-      @config['hosts'] = @config.fetch('hosts').push( host )
-    end
+    @config['hosts'] = @config.fetch('hosts').push( host ) unless @config.fetch('hosts').include?( host )
   end
 
   def remove_www(host)
@@ -43,11 +41,9 @@ class Config
   def handle_error(e, message)
     puts "#{ e.class.name }: #{ message }.".red
     puts "See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".yellow
-    if ! defined?( @raw ) then
-      puts e.backtrace.select { |bt| bt.match( File.expand_path( Dir.pwd ) ) }
-    elsif @raw.key?('debug') && true == @raw.fetch('debug') then
-      puts e.backtrace.select { |bt| bt.match( File.expand_path( Dir.pwd ) ) }
-    end
+    trace = e.backtrace.select { |bt| bt.match( File.expand_path( Dir.pwd ) ) }
+    puts trace unless defined?( @raw )
+    puts trace if @raw.key?('debug') && true == @raw.fetch('debug')
     abort
   end
 
@@ -65,7 +61,7 @@ class Config
 
     # Build the config filepath
     begin
-      if defined?( @config_file ) && ( @config_file.kind_of? String ) then
+      if defined?( @config_file ) && ( @config_file.kind_of? String )
         @vm_config_file_path = File.join( vagrant_dir, @config_file )
       else
         raise TypeError
@@ -76,7 +72,7 @@ class Config
 
     # Load the config file if found, otherwise abort
     begin
-      if File.file?( @vm_config_file_path ) then
+      if File.file?( @vm_config_file_path )
         @raw = YAML.load_file( @vm_config_file_path )
       else
         raise Errno::ENOENT
@@ -103,7 +99,7 @@ class Config
 
     # Abort if the php version isn't one of the two specific options
     begin
-      if php_versions.include?( @config.fetch('php') ) then
+      if php_versions.include?( @config.fetch('php') )
         # Set the PHP directory
         @config['php_dir'] = php_dirs[ php_versions.index( @config.fetch('php') ) ]
       else
@@ -127,7 +123,7 @@ class Config
       required = ['username', 'root', 'local_root', 'host']
       required.each do |property|
         begin
-          if site.fetch( property ).kind_of? String then
+          if site.fetch( property ).kind_of? String
             site[ property ] = trim_slashes( site.fetch( property ) )
           else
             raise KeyError
@@ -138,12 +134,10 @@ class Config
       end
 
       # Inherit the SSL property if it's not set
-      if ! site.key?('ssl') then
-        site['ssl'] = @config.fetch('ssl')
-      end
+      site['ssl'] = @config.fetch('ssl') unless site.key?('ssl')
 
       # If SSL is enabled globally and not disabled locally, or if enabled locally
-      if ( @config.fetch('ssl') && false != site.fetch('ssl') ) || site.fetch('ssl') then
+      if ( @config.fetch('ssl') && false != site.fetch('ssl') ) || site.fetch('ssl')
         collect_hosts = true
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = true
@@ -163,8 +157,8 @@ class Config
       site['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{ dict }.conf")
 
       # We only collect host values if SSL is enabled
-      if collect_hosts then
-        if ! @config.key?('host') then
+      if collect_hosts
+        unless @config.key?('host')
           @config['host'] = site.fetch('host')
         else
           add_host( site.fetch('host') )
@@ -172,21 +166,15 @@ class Config
       end
 
       # Add each of the site's hosts to the root [hosts] property
-      if (site['aliases'].kind_of? Array) then
-        if site['aliases'].length then
-          if collect_hosts then
-            site['aliases'].each do |the_alias|
-              add_host( sanitize_alias( the_alias ) )
-            end
-          end
-          # Combine `aliases` into a space-separated string
-          site['aliases'] = site.fetch('aliases').join(' ')
-        end
+      if site['aliases'].kind_of? Array
+        site['aliases'].each { |the_alias| add_host( sanitize_alias( the_alias ) ) } if collect_hosts
+        # Combine `aliases` into a space-separated string
+        site['aliases'] = site.fetch('aliases').join(' ')
       end
 
       # Collect and merge site subdomains
       # Each subdomain is transformed into it's own site, based on the parent site's config values
-      if (site['subdomains'].kind_of? Hash) then
+      if (site['subdomains'].kind_of? Hash)
         site['subdomains'].each_key do |sub|
           path = site['subdomains'][ sub ]
           subdomain_name = "#{ sub }.#{ dict }"
@@ -199,9 +187,7 @@ class Config
             'ssl' => site.fetch('ssl'),
             'box_name' => @config.fetch('name')
           }
-          if collect_hosts then
-            add_host( subdomains[ subdomain_name ].fetch('host') )
-          end
+          add_host( subdomains[ subdomain_name ].fetch('host') ) if collect_hosts
         end
       end
 
@@ -214,11 +200,9 @@ class Config
     @config['sites'] = @config.fetch('sites').merge( subdomains )
 
     # Collect and transform host values
-    if @config['hosts'].length > 0 then
+    if @config['hosts'].length > 0
       # Delete an existing DNS Hosts file
-      if File.exist?( @hosts_file ) then
-        File.delete( @hosts_file )
-      end
+      File.delete( @hosts_file ) if File.exist?( @hosts_file )
 
       # Write the DNS Hosts file
       # To be contatenated onto openssl.cnf during SSL setup
@@ -231,7 +215,7 @@ class Config
     end
 
     # Print debug information
-    if @config.key?('debug') && @config.fetch('debug') then
+    if @config.key?('debug') && @config.fetch('debug')
       print_debug_info( @config, @vm_config_file_path )
     end
   end

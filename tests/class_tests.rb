@@ -40,11 +40,7 @@ class Tests
 
   # Clean up temporary files
   def run_cleanup
-    @temp_files.each do |file|
-      if File.exist?( file )
-        File.delete( file )
-      end
-    end
+    @temp_files.each { |file| File.delete( file ) if File.exist?( file ) }
   end
 
   # Run the tests
@@ -55,17 +51,16 @@ class Tests
 
     @assertions.each do |test|
       # Test assert condition
-      condition_met = ( test['expect'] == test['actual'] )
-      if ( false == test['assert'] )
-        condition_met = ( test['expect'] != test['actual'] )
-      end
+      condition_met = false == test['assert'] ?
+        ( test['expect'] != test['actual'] ) :
+        ( test['expect'] == test['actual'] )
 
       # Test for equal values
-      if ! ( condition_met )
+      if ( condition_met )
+        @passing.push("`#{ test['name'] }` value")
+      else
         message = test['name'], test['expect'], test['actual']
         @failing.push( message )
-      else
-        @passing.push("`#{ test['name'] }` value")
       end
       @tests_run += 1
     end

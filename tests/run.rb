@@ -15,9 +15,7 @@ configs = Dir[ File.join( @configs_dir, '*.yaml' ) ]
 assertions = Dir.entries( @assertions_dir ).reject { |f| File.directory? f }
 
 assertions.each do |assertion|
-  if '.rb' == File.extname( assertion )
-    require_relative File.join('assertions', assertion)
-  end
+  require_relative File.join('assertions', assertion) if '.rb' == File.extname( assertion )
 end
 
 # Run tests
