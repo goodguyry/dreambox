@@ -5,7 +5,7 @@ require_relative 'class_tests.rb'
 @configs_dir = File.join(File.dirname(__FILE__), 'configs')
 
 # Array of configs filenames without extension
-configs = Dir[ File.join(@configs_dir, '*.yaml') ]
+configs = Dir[File.join(@configs_dir, '*.yaml')]
 
 # Instantiate a new Test object
 @tests = Tests.new(configs)

@@ -18,7 +18,7 @@ class Tests
     opts.each do |opt|
       basename = File.basename(opt, File.extname(opt))
       temp_file = File.join(File.dirname(__FILE__), "assertions/#{basename}.txt")
-      @the[ basename ] = Config.new(opt, temp_file)
+      @the[basename] = Config.new(opt, temp_file)
       @temp_files.push(temp_file)
     end
   end
