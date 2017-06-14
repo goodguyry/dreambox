@@ -121,10 +121,6 @@ class Config
     @config['sites'].each_key do |site|
       items = @config['sites'].fetch(site)
 
-      if ! items.kind_of? Hash then
-        items = {}
-      end
-
       # Check for required site properties before proceeding
       # If found, remove any errant slashes
       # We allow slashes in the config file to increase readability
