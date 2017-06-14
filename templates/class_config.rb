@@ -13,19 +13,19 @@ class Config
 
   # Helper functions for manipulating Strings
   def trim_ending_slash(str)
-    return ('/' == str[-1..-1]) ? str[0..-2] : str
+    ('/' == str[-1..-1]) ? str[0..-2] : str
   end
 
   def trim_beginning_slash(str)
-    return ('/' == str[0..0]) ? str[1..-1] : str
+    ('/' == str[0..0]) ? str[1..-1] : str
   end
 
   def trim_slashes(str)
-    return trim_ending_slash( trim_beginning_slash( str ) )
+    trim_ending_slash( trim_beginning_slash( str ) )
   end
 
   def sanitize_alias(host)
-    return ('*.' == host[0..1]) ? host[2..-1] : host
+    ('*.' == host[0..1]) ? host[2..-1] : host
   end
 
   # De-dup and add site host to root hosts array
@@ -34,7 +34,7 @@ class Config
   end
 
   def remove_www(host)
-    return ('www' == host[0..2]) ? host[4..-1] : host
+    ('www' == host[0..2]) ? host[4..-1] : host
   end
 
   # Helper function for printing error messages
