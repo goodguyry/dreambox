@@ -28,7 +28,7 @@ class Tests
     puts ''
     puts "==> #{ @passing.length }/#{ @tests_run } tests passed".bold.green
 
-    if ( @failing.length > 0 )
+    if @failing.length > 0
       puts "==> #{ @failing.length }/#{ @tests_run } tests failed\n".bold.red
       @failing.each do |message|
         puts "#{ message.first }\n"
@@ -51,12 +51,15 @@ class Tests
 
     @assertions.each do |test|
       # Test assert condition
-      condition_met = false == test['assert'] ?
-        ( test['expect'] != test['actual'] ) :
-        ( test['expect'] == test['actual'] )
+      condition_met =
+        if false == test['assert']
+          test['expect'] != test['actual']
+        else
+          test['expect'] == test['actual']
+        end
 
       # Test for equal values
-      if ( condition_met )
+      if condition_met
         @passing.push("`#{ test['name'] }` value")
       else
         message = test['name'], test['expect'], test['actual']

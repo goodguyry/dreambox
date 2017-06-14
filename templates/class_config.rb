@@ -138,9 +138,8 @@ class Config
 
       # If SSL is enabled globally and not disabled locally, or if enabled locally
       if ( @config.fetch('ssl') && false != site.fetch('ssl') ) || site.fetch('ssl')
-        ssl_enabled = true
         # Enable the root SSL setting if not already enabled
-        @config['ssl_enabled'] = true
+        @config['ssl_enabled'] = ssl_enabled = true
       end
 
       # Establish site defaults
@@ -158,10 +157,10 @@ class Config
 
       # We only collect host values if SSL is enabled
       if ssl_enabled
-        if ! @config.key?('host')
-          @config['host'] = site.fetch('host')
-        else
+        if @config.key?('host')
           add_host( site.fetch('host') )
+        else
+          @config['host'] = site.fetch('host')
         end
       end
 
@@ -174,7 +173,7 @@ class Config
 
       # Collect and merge site subdomains
       # Each subdomain is transformed into it's own site, based on the parent site's config values
-      if (site['subdomains'].kind_of? Hash)
+      if site['subdomains'].kind_of? Hash
         site['subdomains'].each_key do |sub|
           path = site['subdomains'][ sub ]
           subdomain_name = "#{ sub }.#{ dict }"
@@ -215,8 +214,6 @@ class Config
     end
 
     # Print debug information
-    if @config.key?('debug') && @config.fetch('debug')
-      print_debug_info( @config, @vm_config_file_path )
-    end
+    print_debug_info( @config, @vm_config_file_path ) if @config.key?('debug') && @config.fetch('debug')
   end
 end
