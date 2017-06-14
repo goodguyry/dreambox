@@ -16,22 +16,22 @@ class Tests
     @temp_files = []
 
     opts.each do |opt|
-      basename = File.basename( opt, File.extname( opt ) )
-      temp_file = File.join( File.dirname( __FILE__ ), "assertions/#{basename}.txt" )
-      @the[ basename ] = Config.new( opt, temp_file )
-      @temp_files.push( temp_file )
+      basename = File.basename(opt, File.extname(opt))
+      temp_file = File.join(File.dirname(__FILE__), "assertions/#{basename}.txt")
+      @the[ basename ] = Config.new(opt, temp_file)
+      @temp_files.push(temp_file)
     end
   end
 
   # Print test stats
   def print_stats
     puts ''
-    puts "==> #{ @passing.length }/#{ @tests_run } tests passed".bold.green
+    puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
 
     if @failing.length > 0
-      puts "==> #{ @failing.length }/#{ @tests_run } tests failed\n".bold.red
+      puts "==> #{@failing.length}/#{@tests_run} tests failed\n".bold.red
       @failing.each do |message|
-        puts "#{ message.first }\n"
+        puts "#{message.first}\n"
         printf "Expected  => %s\n".yellow, message.first
         printf "Actual    => %s\n\n".red, message.last
       end
@@ -40,7 +40,7 @@ class Tests
 
   # Clean up temporary files
   def run_cleanup
-    @temp_files.each { |file| File.delete( file ) if File.exist?( file ) }
+    @temp_files.each { |file| File.delete(file) if File.exist?(file) }
   end
 
   # Run the tests
@@ -60,10 +60,10 @@ class Tests
 
       # Test for equal values
       if condition_met
-        @passing.push("`#{ test['name'] }` value")
+        @passing.push("`#{test['name']}` value")
       else
         message = test['name'], test['expect'], test['actual']
-        @failing.push( message )
+        @failing.push(message)
       end
       @tests_run += 1
     end
