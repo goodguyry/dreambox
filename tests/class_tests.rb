@@ -8,31 +8,30 @@ require_relative '../templates/class_config.rb'
 # upon completion of all tests.
 #
 class Tests
-  attr_accessor :the
-  attr_accessor :assertions
+  attr_accessor :the, :assertions
 
   def initialize(opts)
-    @the = Hash.new
-    @assertions = Array.new
-    @temp_files = Array.new
+    @the = {}
+    @assertions = []
+    @temp_files = []
 
     opts.each do |opt|
-      basename = File.basename(opt, File.extname(opt))
-      temp_file = File.join(File.dirname(__FILE__), "assertions/#{basename}.txt")
-      @the[basename] = Config.new(opt, temp_file)
-      @temp_files.push(temp_file)
+      basename = File.basename( opt, File.extname( opt ) )
+      temp_file = File.join( File.dirname( __FILE__ ), "assertions/#{basename}.txt" )
+      @the[ basename ] = Config.new( opt, temp_file )
+      @temp_files.push( temp_file )
     end
   end
 
   # Print test stats
   def print_stats
     puts ''
-    puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
+    puts "==> #{ @passing.length }/#{ @tests_run } tests passed".bold.green
 
-    if (@failing.length > 0) then
-      puts "==> #{@failing.length}/#{@tests_run} tests failed\n".bold.red
+    if ( @failing.length > 0 )
+      puts "==> #{ @failing.length }/#{ @tests_run } tests failed\n".bold.red
       @failing.each do |message|
-        puts "#{message[0]}\n"
+        puts "#{ message.first }\n"
         printf "Expected  => %s\n".yellow, message[1]
         printf "Actual    => %s\n\n".red, message[2]
       end
@@ -42,31 +41,31 @@ class Tests
   # Clean up temporary files
   def run_cleanup
     @temp_files.each do |file|
-      if File.exist?(file) then
-        File.delete(file)
+      if File.exist?( file )
+        File.delete( file )
       end
     end
   end
 
   # Run the tests
   def run
-    @failing = Array.new
-    @passing = Array.new
+    @failing = []
+    @passing = []
     @tests_run = 0
 
     @assertions.each do |test|
       # Test assert condition
-      condition_met = (test['expect'] == test['actual'])
-      if (false == test['assert']) then
-        condition_met = (test['expect'] != test['actual'])
+      condition_met = ( test['expect'] == test['actual'] )
+      if ( false == test['assert'] )
+        condition_met = ( test['expect'] != test['actual'] )
       end
 
       # Test for equal values
-      if ! (condition_met) then
+      if ! ( condition_met )
         message = test['name'], test['expect'], test['actual']
-        @failing.push(message)
+        @failing.push( message )
       else
-        @passing.push("`#{test['name']}` value")
+        @passing.push("`#{ test['name'] }` value")
       end
       @tests_run += 1
     end
