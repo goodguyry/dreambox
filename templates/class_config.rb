@@ -138,7 +138,7 @@ class Config
 
       # If SSL is enabled globally and not disabled locally, or if enabled locally
       if ( @config.fetch('ssl') && false != site.fetch('ssl') ) || site.fetch('ssl')
-        collect_hosts = true
+        ssl_enabled = true
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = true
       end
@@ -157,7 +157,7 @@ class Config
       site['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{ dict }.conf")
 
       # We only collect host values if SSL is enabled
-      if collect_hosts
+      if ssl_enabled
         unless @config.key?('host')
           @config['host'] = site.fetch('host')
         else
@@ -167,7 +167,7 @@ class Config
 
       # Add each of the site's hosts to the root [hosts] property
       if site['aliases'].kind_of? Array
-        site['aliases'].each { |the_alias| add_host( sanitize_alias( the_alias ) ) } if collect_hosts
+        site['aliases'].each { |the_alias| add_host( sanitize_alias( the_alias ) ) } if ssl_enabled
         # Combine `aliases` into a space-separated string
         site['aliases'] = site.fetch('aliases').join(' ')
       end
@@ -187,7 +187,7 @@ class Config
             'ssl' => site.fetch('ssl'),
             'box_name' => @config.fetch('name')
           }
-          add_host( subdomains[ subdomain_name ].fetch('host') ) if collect_hosts
+          add_host( subdomains[ subdomain_name ].fetch('host') ) if ssl_enabled
         end
       end
 
