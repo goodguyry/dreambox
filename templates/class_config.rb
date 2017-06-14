@@ -118,8 +118,8 @@ class Config
     subdomains = {}
 
     # Collect settings for each site
-    @config['sites'].each_key do |site|
-      items = @config['sites'].fetch(site)
+    @config['sites'].each_key do |dict|
+      site = @config['sites'].fetch(dict)
 
       # Check for required site properties before proceeding
       # If found, remove any errant slashes
@@ -127,23 +127,23 @@ class Config
       required = ['username', 'root', 'local_root', 'host']
       required.each do |property|
         begin
-          if (items.fetch(property).kind_of? String) then
-            items[property] = trim_slashes(items.fetch(property))
+          if (site.fetch(property).kind_of? String) then
+            site[property] = trim_slashes(site.fetch(property))
           else
             raise KeyError
           end
         rescue KeyError => e
-          handle_error(e, "Missing `#{ property }` for site #{ site }")
+          handle_error(e, "Missing `#{ property }` for site #{ dict }")
         end
       end
 
       # Inherit the SSL property if it's not set
-      if ! items.key?('ssl') then
-        items['ssl'] = @config.fetch('ssl')
+      if ! site.key?('ssl') then
+        site['ssl'] = @config.fetch('ssl')
       end
 
       # If SSL is enabled globally and not disabled locally, or if enabled locally
-      if (@config.fetch('ssl') && false != items.fetch('ssl')) || items.fetch('ssl') then
+      if (@config.fetch('ssl') && false != site.fetch('ssl')) || site.fetch('ssl') then
         collect_hosts = true
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = true
@@ -155,48 +155,48 @@ class Config
       defaults['is_subdomain'] = false
 
       # Build paths here rather than in a provisioner
-      root_path = File.join('/home/', items.fetch('username'), items.fetch('root'))
+      root_path = File.join('/home/', site.fetch('username'), site.fetch('root'))
 
       # Account for a `public` folder if set
-      items['root_path'] = (items.key?('public')) ?
-        File.join(root_path, trim_slashes(items.fetch('public'))) : root_path
-      items['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{site}.conf")
+      site['root_path'] = (site.key?('public')) ?
+        File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
+      site['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{dict}.conf")
 
       # We only collect host values if SSL is enabled
       if collect_hosts then
         if ! @config.key?('host') then
-          @config['host'] = items.fetch('host')
+          @config['host'] = site.fetch('host')
         else
-          add_host(items.fetch('host'))
+          add_host(site.fetch('host'))
         end
       end
 
       # Add each of the site's hosts to the root [hosts] property
-      if (items['aliases'].kind_of? Array) then
-        if items['aliases'].length then
+      if (site['aliases'].kind_of? Array) then
+        if site['aliases'].length then
           if collect_hosts then
-            items['aliases'].each do |the_alias|
+            site['aliases'].each do |the_alias|
               add_host(sanitize_alias(the_alias))
             end
           end
           # Combine `aliases` into a space-separated string
-          items['aliases'] = items.fetch('aliases').join(' ')
+          site['aliases'] = site.fetch('aliases').join(' ')
         end
       end
 
       # Collect and merge site subdomains
       # Each subdomain is transformed into it's own site, based on the parent site's config values
-      if (items['subdomains'].kind_of? Hash) then
-        items['subdomains'].each_key do |sub|
-          path = items['subdomains'][sub]
-          subdomain_name = "#{sub}.#{site}"
+      if (site['subdomains'].kind_of? Hash) then
+        site['subdomains'].each_key do |sub|
+          path = site['subdomains'][sub]
+          subdomain_name = "#{sub}.#{dict}"
           subdomains[subdomain_name] = {
-            'username' => items.fetch('username'),
+            'username' => site.fetch('username'),
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
-            'host' => "#{sub}.#{remove_www(items.fetch('host'))}",
-            'ssl' => items.fetch('ssl'),
+            'host' => "#{sub}.#{remove_www(site.fetch('host'))}",
+            'ssl' => site.fetch('ssl'),
             'box_name' => @config.fetch('name')
           }
           if collect_hosts then
@@ -206,7 +206,7 @@ class Config
       end
 
       # Merge in settings
-      @config['sites'][site] = defaults.merge(items)
+      @config['sites'][dict] = defaults.merge(site)
     end
 
     # Merge subdomain sites into `sites` hash
