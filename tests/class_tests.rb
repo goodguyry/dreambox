@@ -53,9 +53,9 @@ class Tests
       # Test assert condition
       condition_met =
         if false == test['assert']
-          test['expect'] != test['actual']
+          ! test['expect'].eql? test['actual']
         else
-          test['expect'] == test['actual']
+          test['expect'].eql? test['actual']
         end
 
       # Test for equal values
