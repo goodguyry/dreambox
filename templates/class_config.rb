@@ -8,43 +8,10 @@ require_relative 'utilities.rb'
 # The Config class collects and transforms the config file's values to prepare them
 # for the Dreambox provisioning scripts.
 class Config
+  include Helpers
+
   attr_accessor :config
   attr_reader :raw
-
-  # Helper functions for manipulating Strings
-  def trim_ending_slash(str)
-    ('/' == str[-1..-1]) ? str[0..-2] : str
-  end
-
-  def trim_beginning_slash(str)
-    ('/' == str[0..0]) ? str[1..-1] : str
-  end
-
-  def trim_slashes(str)
-    trim_ending_slash(trim_beginning_slash(str))
-  end
-
-  def sanitize_alias(host)
-    ('*.' == host[0..1]) ? host[2..-1] : host
-  end
-
-  # De-dup and add site host to root hosts array
-  def add_host(host)
-    @config['hosts'] = @config.fetch('hosts').push(host) unless @config.fetch('hosts').include?(host)
-  end
-
-  def remove_www(host)
-    ('www' == host[0..2]) ? host[4..-1] : host
-  end
-
-  # Helper function for printing error messages
-  def handle_error(e, message)
-    puts "#{e.class.name}: #{message}.".red
-    puts "See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".yellow
-    trace = e.backtrace.select { |bt| bt.match(File.expand_path(Dir.pwd)) }
-    puts trace if ! defined?(@raw) || (@raw.key?('debug') && true == @raw.fetch('debug'))
-    abort
-  end
 
   # Class initialization
   #
