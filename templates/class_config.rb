@@ -13,27 +13,18 @@ class Config
   attr_accessor :config
   attr_reader :raw
 
-  # Class initialization
-  #
-  # This method does all the heavy lifting
-  #
-  # @param String {config_file} The path to the config file
-  # @param String {hosts_file} The location at which to create the DNS Hosts file
-  def initialize(config_file, hosts_file)
-    @config_file = config_file
-    @hosts_file = hosts_file
-
+  def validates(config_file)
     vagrant_dir = File.expand_path(Dir.pwd)
 
     # Build the config filepath
     begin
-      if defined?(@config_file) && (@config_file.kind_of? String)
-        @vm_config_file_path = File.join(vagrant_dir, @config_file)
+      if defined?(config_file) && (config_file.kind_of? String)
+        @vm_config_file_path = File.join(vagrant_dir, config_file)
       else
         raise TypeError
       end
     rescue TypeError => e
-      handle_error(e, "There was an error with `config_file` declaration: '#{@config_file}'")
+      handle_error(e, "There was an error with `config_file` declaration: '#{config_file}'")
     end
 
     # Load the config file if found, otherwise abort
@@ -75,11 +66,6 @@ class Config
       handle_error(e, "Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}")
     end
 
-    # To collect subdomains
-    # These will be transformed into sites at the end
-    subdomains = {}
-
-    # Collect settings for each site
     @config['sites'].each_key do |dict|
       site = @config['sites'].fetch(dict)
 
@@ -95,9 +81,20 @@ class Config
             raise KeyError
           end
         rescue KeyError => e
-          handle_error(e, "Missing `#{property}` for site #{dict}")
+          handle_error(e, "Missing `#{property}` for site '#{dict}'")
         end
       end
+    end
+  end
+
+  def collect_config_values
+    # To collect subdomains
+    # These will be transformed into sites at the end
+    subdomains = {}
+
+    # Collect settings for each site
+    @config['sites'].each_key do |dict|
+      site = @config['sites'].fetch(dict)
 
       # Inherit the SSL property if it's not set
       site['ssl'] = @config.fetch('ssl') unless site.key?('ssl')
@@ -181,5 +178,16 @@ class Config
 
     # Print debug information
     print_debug_info(@config, @vm_config_file_path) if @config.key?('debug') && @config.fetch('debug')
+  end
+
+  # Class initialization
+  #
+  # This method does all the heavy lifting
+  #
+  # @param String {config_file} The path to the config file
+  # @param String {hosts_file} The location at which to create the DNS Hosts file
+  def initialize(config_file, hosts_file)
+    @hosts_file = hosts_file
+    collect_config_values if validates(config_file)
   end
 end
