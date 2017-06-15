@@ -42,8 +42,7 @@ class Config
     puts "#{e.class.name}: #{message}.".red
     puts "See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".yellow
     trace = e.backtrace.select { |bt| bt.match(File.expand_path(Dir.pwd)) }
-    puts trace unless defined?(@raw)
-    puts trace if @raw.key?('debug') && true == @raw.fetch('debug')
+    puts trace if ! defined?(@raw) || (@raw.key?('debug') && true == @raw.fetch('debug'))
     abort
   end
 
