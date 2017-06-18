@@ -13,10 +13,9 @@ configs = Dir[File.join(@configs_dir, '*.yaml')]
 # Require tests here
 # .rb files in tests/assertsions/ will be auto-required
 assertions = Dir.entries(@assertions_dir).reject { |f| File.directory? f }
+
 assertions.each do |assertion|
-  if '.rb' == File.extname(assertion) then
-    require_relative File.join('assertions', assertion)
-  end
+  require_relative File.join('assertions', assertion) if '.rb' == File.extname(assertion)
 end
 
 # Run tests

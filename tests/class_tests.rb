@@ -8,13 +8,12 @@ require_relative '../templates/class_config.rb'
 # upon completion of all tests.
 #
 class Tests
-  attr_accessor :the
-  attr_accessor :assertions
+  attr_accessor :the, :assertions
 
   def initialize(opts)
-    @the = Hash.new
-    @assertions = Array.new
-    @temp_files = Array.new
+    @the = {}
+    @assertions = []
+    @temp_files = []
 
     opts.each do |opt|
       basename = File.basename(opt, File.extname(opt))
@@ -24,53 +23,48 @@ class Tests
     end
   end
 
-  # Print test stats
   def print_stats
     puts ''
     puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
 
-    if (@failing.length > 0) then
+    if @failing.length > 0
       puts "==> #{@failing.length}/#{@tests_run} tests failed\n".bold.red
       @failing.each do |message|
-        puts "#{message[0]}\n"
-        printf "Expected  => %s\n".yellow, message[1]
-        printf "Actual    => %s\n\n".red, message[2]
+        puts "#{message[:name]}\n"
+        printf "Expected  => %s\n".yellow, message[:expected]
+        printf "Actual    => %s\n\n".red, message[:actual]
       end
     end
   end
 
   # Clean up temporary files
   def run_cleanup
-    @temp_files.each do |file|
-      if File.exist?(file) then
-        File.delete(file)
-      end
-    end
+    @temp_files.each { |file| File.delete(file) if File.exist?(file) }
   end
 
-  # Run the tests
   def run
-    @failing = Array.new
-    @passing = Array.new
+    @failing = []
+    @passing = []
     @tests_run = 0
 
     @assertions.each do |test|
       # Test assert condition
-      condition_met = (test['expect'] == test['actual'])
-      if (false == test['assert']) then
-        condition_met = (test['expect'] != test['actual'])
-      end
+      condition_met =
+        if false == test['assert']
+          ! test['expect'].eql? test['actual']
+        else
+          test['expect'].eql? test['actual']
+        end
 
       # Test for equal values
-      if ! (condition_met) then
-        message = test['name'], test['expect'], test['actual']
-        @failing.push(message)
-      else
+      if condition_met
         @passing.push("`#{test['name']}` value")
+      else
+        message = { name: test['name'], expected: test['expect'], actual: test['actual'] }
+        @failing.push(message)
       end
       @tests_run += 1
     end
-    # Delete temporary test files
     run_cleanup
   end
 end
