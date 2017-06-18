@@ -80,18 +80,19 @@ class Config
   end
 
   def collect_config_values
-    # To collect subdomains
-    # These will be transformed into sites at the end
+    @config = {}.merge(@raw)
+
+    sites = {}
     subdomains = {}
 
-    @config = {}.merge(@raw)
+    # Establish site defaults
+    site_defaults = {}
+    site_defaults['box_name'] = @config.fetch('name')
+    site_defaults['is_subdomain'] = false
 
     # Collect settings for each site
     @config['sites'].each_key do |dict|
-      site = @config['sites'].fetch(dict)
-
-      # Inherit the SSL property if it's not set
-      site['ssl'] = @config.fetch('ssl') unless site.key?('ssl')
+      site = Marshal.load(Marshal.dump(@config['sites'].fetch(dict)))
 
       site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
 
@@ -147,12 +148,17 @@ class Config
         end
       end
 
+      # We no longer need this
+      site.delete('public')
+      site.delete('subdomains')
+
       # Merge in settings
-      @config['sites'][dict] = defaults.merge(site)
+      sites[dict] = site_defaults.merge(site)
     end
 
     # Merge subdomain sites into `sites` hash
     # Done here to avoid unexpected looping /shrug
+    @config['sites'] = @config.fetch('sites').merge(sites)
     @config['sites'] = @config.fetch('sites').merge(subdomains)
 
     @config['php_dir'] = PHP_DIRS[PHP_VERSIONS.index(@config.fetch('php'))]
