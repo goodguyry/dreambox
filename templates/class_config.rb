@@ -9,10 +9,6 @@ class Config
   attr_accessor :config
   attr_reader :raw
 
-  # Allowed PHP values and associated PHP install directories
-  PHP_VERSIONS = ['5', '7']
-  PHP_DIRS = ['php56', 'php70']
-
   # Class initialization
   #
   # @param String {config_file} The path to the config file
@@ -45,10 +41,13 @@ class Config
     # Save raw config files for access in the Vagrantfile
     @raw = YAML.load_file(@config_config_file_path)
 
+    # Allowed PHP values and associated PHP install directories
+    php_versions = ['5', '7']
+    php_dirs = ['php56', 'php70']
 
     box_defaults = {}
     box_defaults['name'] = 'dreambox'
-    box_defaults['php'] = PHP_VERSIONS.first
+    box_defaults['php'] = php_versions.first
     box_defaults['ssl'] = false
     box_defaults['ssl_enabled'] = false
     box_defaults['hosts'] = []
@@ -57,10 +56,12 @@ class Config
     @raw = box_defaults.merge(@raw)
 
     begin
-      raise KeyError unless PHP_VERSIONS.include?(@raw.fetch('php'))
+      raise KeyError unless php_versions.include?(@raw.fetch('php'))
     rescue KeyError => e
-      handle_error(e, "Accepted `php` values are '#{PHP_VERSIONS.first}' and '#{PHP_VERSIONS.last}")
+      handle_error(e, "Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}")
     end
+
+    @raw['php_dir'] = php_dirs[php_versions.index(@raw.fetch('php'))]
 
     required_properties = ['username', 'root', 'local_root', 'host']
     @raw['sites'].each_key do |dict|
@@ -155,8 +156,6 @@ class Config
     # Merge subdomain and sites
     @config['sites'] = @config.fetch('sites').merge(sites)
     @config['sites'] = @config.fetch('sites').merge(subdomains)
-
-    @config['php_dir'] = PHP_DIRS[PHP_VERSIONS.index(@config.fetch('php'))]
 
     # REVIEW: Refactor as a method; call in the Vagrantfile
     if @config['hosts'].length > 0
