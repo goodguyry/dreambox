@@ -3,19 +3,14 @@
 require 'yaml'
 require_relative 'utilities.rb'
 
-# Config class
-#
-# The Config class collects and transforms the config file's values to prepare them
-# for the Dreambox provisioning scripts.
 class Config
   include Helpers
 
   attr_accessor :config
   attr_reader :raw
 
-  # Allowed PHP values
+  # Allowed PHP values and associated PHP install directories
   PHP_VERSIONS = ['5', '7']
-  # Associated PHP install directories
   PHP_DIRS = ['php56', 'php70']
 
   # Class initialization
@@ -27,6 +22,9 @@ class Config
     collect_config_values if validates(config_file)
   end
 
+  # Validate
+  #
+  # Reads the config file and validates necessary values
   def validates(config_file)
     vagrant_dir = File.expand_path(Dir.pwd)
 
@@ -36,7 +34,6 @@ class Config
       handle_error(e, "There was an error with `config_file` declaration: '#{config_file}'")
     end
 
-    # Build the config filepath
     @config_config_file_path = File.join(vagrant_dir, config_file)
 
     begin
@@ -45,10 +42,10 @@ class Config
       handle_error(e, "Config file not found")
     end
 
-    # Load the config file if found, otherwise abort
+    # Save raw config files for access in the Vagrantfile
     @raw = YAML.load_file(@config_config_file_path)
 
-    # Set config defaults
+
     box_defaults = {}
     box_defaults['name'] = 'dreambox'
     box_defaults['php'] = PHP_VERSIONS.first
@@ -56,20 +53,18 @@ class Config
     box_defaults['ssl_enabled'] = false
     box_defaults['hosts'] = []
 
-    # Merge the default 'box' values with those from vm-config
+    # Fill in the blanks with default values
     @raw = box_defaults.merge(@raw)
 
-    # Abort if the php version isn't one of the two specific options
     begin
       raise KeyError unless PHP_VERSIONS.include?(@raw.fetch('php'))
     rescue KeyError => e
       handle_error(e, "Accepted `php` values are '#{PHP_VERSIONS.first}' and '#{PHP_VERSIONS.last}")
     end
 
-    # Validate required site properties before proceeding
-    required = ['username', 'root', 'local_root', 'host']
+    required_properties = ['username', 'root', 'local_root', 'host']
     @raw['sites'].each_key do |dict|
-      required.each do |property|
+      required_properties.each do |property|
         begin
           raise KeyError unless @raw['sites'].fetch(dict).fetch(property).kind_of? String
         rescue KeyError => e
@@ -79,41 +74,42 @@ class Config
     end
   end
 
+  # Transforms and collects site property values
   def collect_config_values
     @config = {}.merge(@raw)
 
     sites = {}
     subdomains = {}
 
-    # Establish site defaults
     site_defaults = {}
     site_defaults['box_name'] = @config.fetch('name')
     site_defaults['is_subdomain'] = false
 
-    # Collect settings for each site
     @config['sites'].each_key do |dict|
+      # Make a deep copy of the hash so it's not altered as we are iterating
       site = Marshal.load(Marshal.dump(@config['sites'].fetch(dict)))
+
+      # Paths
+      # Clean and build paths used by Vagrant and/or the provisioners
 
       site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
 
-      # Build paths here rather than in a provisioner
       root_path = File.join('/home/', site.fetch('username'), trim_slashes(site.fetch('root')))
-
-      # Account for a `public` folder if set
       site['root_path'] = (site.key?('public')) ?
         File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
+
       site['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{dict}.conf")
 
-      # Inherit the SSL property if it's not set
+      # SSL
+      # Inherit the SSL setting from the root unless set in the site
+      # The SSL setting informs whether or not hosts and aliases are collected
+
       site['ssl'] = @config.fetch('ssl') unless site.key?('ssl')
 
-      # If SSL is enabled globally and not disabled locally, or if enabled locally
       if (@config.fetch('ssl') && false != site.fetch('ssl')) || site.fetch('ssl')
-        # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = ssl_enabled = true
       end
 
-      # We only collect host values if SSL is enabled
       if ssl_enabled
         if @config.key?('host')
           add_host(site.fetch('host'))
@@ -122,53 +118,49 @@ class Config
         end
       end
 
-      # Add each of the site's hosts to the root [hosts] property
       if site['aliases'].kind_of? Array
         site['aliases'].each { |the_alias| add_host(sanitize_alias(the_alias)) } if ssl_enabled
-        # Combine `aliases` into a space-separated string
+        # Aliases will be printed in the site's Apache conf
         site['aliases'] = site.fetch('aliases').join(' ')
       end
 
-      # Collect and merge site subdomains
-      # Each subdomain is transformed into it's own site, based on the parent site's config values
+      # Subdomains
+      # Each subdomain is converted to a site hash; gets its own Apache conf
+
       if site['subdomains'].kind_of? Hash
         site['subdomains'].each_key do |sub|
           path = site['subdomains'][sub]
           subdomain_name = "#{sub}.#{dict}"
           subdomains[subdomain_name] = {
-            'username' => site.fetch('username'),
+            'username' => site.fetch('username'), # Inherited from the parent site
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
             'host' => "#{sub}.#{ remove_www(site.fetch('host')) }",
-            'ssl' => site.fetch('ssl'),
+            'ssl' => site.fetch('ssl'), # Inherited from the parent site
             'box_name' => @config.fetch('name')
           }
           add_host(subdomains[subdomain_name].fetch('host')) if ssl_enabled
         end
       end
 
-      # We no longer need this
+      # Clean properties not used by Vagrant and/or provisioners
       site.delete('public')
       site.delete('subdomains')
 
-      # Merge in settings
+      # Fill in the blanks with the site default values
       sites[dict] = site_defaults.merge(site)
     end
 
-    # Merge subdomain sites into `sites` hash
-    # Done here to avoid unexpected looping /shrug
+    # Merge subdomain and sites
     @config['sites'] = @config.fetch('sites').merge(sites)
     @config['sites'] = @config.fetch('sites').merge(subdomains)
 
     @config['php_dir'] = PHP_DIRS[PHP_VERSIONS.index(@config.fetch('php'))]
 
-    # Collect and transform host values
+    # REVIEW: Refactor as a method; call in the Vagrantfile
     if @config['hosts'].length > 0
-      # Delete an existing DNS Hosts file
       File.delete(@hosts_file) if File.exist?(@hosts_file)
-
-      # Write the DNS Hosts file
       # To be contatenated onto openssl.cnf during SSL setup
       @config['hosts'].each.with_index(1) do |host, index|
         File.open(@hosts_file, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
@@ -178,7 +170,6 @@ class Config
       @config.delete('hosts')
     end
 
-    # Print debug information
     print_debug_info(@config, @config_config_file_path) if @config.key?('debug') && @config.fetch('debug')
   end
 end

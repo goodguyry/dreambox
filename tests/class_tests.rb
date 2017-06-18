@@ -23,7 +23,6 @@ class Tests
     end
   end
 
-  # Print test stats
   def print_stats
     puts ''
     puts "==> #{@passing.length}/#{@tests_run} tests passed".bold.green
@@ -43,7 +42,6 @@ class Tests
     @temp_files.each { |file| File.delete(file) if File.exist?(file) }
   end
 
-  # Run the tests
   def run
     @failing = []
     @passing = []
@@ -67,7 +65,6 @@ class Tests
       end
       @tests_run += 1
     end
-    # Delete temporary test files
     run_cleanup
   end
 end

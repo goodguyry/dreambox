@@ -1,4 +1,3 @@
-# Helper class for formatting message text
 class String
   def red;     "\e[31m#{self}\e[0m" end
   def green;   "\e[32m#{self}\e[0m" end
@@ -7,7 +6,6 @@ class String
 end
 
 module Helpers
-  # Helper functions for manipulating Strings
   def trim_ending_slash(str)
     ('/' == str[-1..-1]) ? str[0..-2] : str
   end
@@ -24,7 +22,6 @@ module Helpers
     ('*.' == host[0..1]) ? host[2..-1] : host
   end
 
-  # De-dup and add site host to root hosts array
   def add_host(host)
     @config['hosts'] = @config.fetch('hosts').push(host) unless @config.fetch('hosts').include?(host)
   end
@@ -33,7 +30,6 @@ module Helpers
     ('www' == host[0..2]) ? host[4..-1] : host
   end
 
-  # Helper function for printing error messages
   def handle_error(e, message)
     puts "#{e.class.name}: #{message}.".red
     puts "See 'Getting Started': https://github.com/goodguyry/dreambox/wiki".yellow
@@ -42,7 +38,6 @@ module Helpers
     abort
   end
 
-  # Print debug info
   def print_debug_info(config, file)
     puts ''
     puts "===> Dreambox Debug:".bold.yellow
