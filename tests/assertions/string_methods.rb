@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-
+include Helpers
 # trim_slashes
 # Tests configutation values output by the `trim_slashes`,
 # `trim_ending_slash` and `trim_beginning_slash` helper functions
