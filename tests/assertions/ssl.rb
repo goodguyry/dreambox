@@ -74,7 +74,7 @@
   # Expected Outcome:
   # - The DNS Hosts file should not be created.
   {
-    'name' => 'Missing SSL: The DNS Hosts should not be created.',
+    'name' => 'Missing SSL: The DNS Hosts file should not be created.',
     'expect' => false,
     'actual' => File.exist?(File.join(@assertions_dir, 'required.txt')),
   },
