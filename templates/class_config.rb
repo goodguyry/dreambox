@@ -13,6 +13,11 @@ class Config
   attr_accessor :config
   attr_reader :raw
 
+  # Allowed PHP values
+  PHP_VERSIONS = ['5', '7']
+  # Associated PHP install directories
+  PHP_DIRS = ['php56', 'php70']
+
   # Class initialization
   #
   # @param String {config_file} The path to the config file
@@ -25,72 +30,50 @@ class Config
   def validates(config_file)
     vagrant_dir = File.expand_path(Dir.pwd)
 
-    # Build the config filepath
     begin
-      if defined?(config_file) && (config_file.kind_of? String)
-        @vm_config_file_path = File.join(vagrant_dir, config_file)
-      else
-        raise TypeError
-      end
+      raise TypeError unless defined?(config_file) && (config_file.kind_of? String)
     rescue TypeError => e
       handle_error(e, "There was an error with `config_file` declaration: '#{config_file}'")
     end
 
-    # Load the config file if found, otherwise abort
+    # Build the config filepath
+    @config_config_file_path = File.join(vagrant_dir, config_file)
+
     begin
-      if File.file?(@vm_config_file_path)
-        @raw = YAML.load_file(@vm_config_file_path)
-      else
-        raise Errno::ENOENT
-      end
+      raise Errno::ENOENT unless File.file?(@config_config_file_path)
     rescue Errno::ENOENT => e
       handle_error(e, "Config file not found")
     end
 
-    # Allowed PHP values
-    php_versions = ['5', '7']
-    # Associated PHP install directories
-    php_dirs = ['php56', 'php70']
+    # Load the config file if found, otherwise abort
+    @raw = YAML.load_file(@config_config_file_path)
 
     # Set config defaults
     box_defaults = {}
     box_defaults['name'] = 'dreambox'
-    box_defaults['php'] = php_versions.first
+    box_defaults['php'] = PHP_VERSIONS.first
     box_defaults['ssl'] = false
-    box_defaults['hosts'] = []
     box_defaults['ssl_enabled'] = false
+    box_defaults['hosts'] = []
 
     # Merge the default 'box' values with those from vm-config
-    @config = box_defaults.merge(@raw)
+    @raw = box_defaults.merge(@raw)
 
     # Abort if the php version isn't one of the two specific options
     begin
-      if php_versions.include?(@config.fetch('php'))
-        # Set the PHP directory
-        @config['php_dir'] = php_dirs[php_versions.index(@config.fetch('php'))]
-      else
-        raise KeyError
-      end
+      raise KeyError unless PHP_VERSIONS.include?(@raw.fetch('php'))
     rescue KeyError => e
-      handle_error(e, "Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}")
+      handle_error(e, "Accepted `php` values are '#{PHP_VERSIONS.first}' and '#{PHP_VERSIONS.last}")
     end
 
-    @config['sites'].each_key do |dict|
-      site = @config['sites'].fetch(dict)
-
-      # Check for required site properties before proceeding
-      # If found, remove any errant slashes
-      # We allow slashes in the config file to increase readability
-      required = ['username', 'root', 'local_root', 'host']
+    # Validate required site properties before proceeding
+    required = ['username', 'root', 'local_root', 'host']
+    @raw['sites'].each_key do |dict|
       required.each do |property|
         begin
-          if site.fetch(property).kind_of? String
-            site[property] = trim_slashes(site.fetch(property))
-          else
-            raise KeyError
-          end
+          raise KeyError unless @raw['sites'].fetch(dict).fetch(property).kind_of? String
         rescue KeyError => e
-          handle_error(e, "Missing `#{property}` for site '#{dict}'")
+          handle_error(e, "Missing or incorrect `#{property}` value for site '#{dict}'")
         end
       end
     end
@@ -101,9 +84,24 @@ class Config
     # These will be transformed into sites at the end
     subdomains = {}
 
+    @config = {}.merge(@raw)
+
     # Collect settings for each site
     @config['sites'].each_key do |dict|
       site = @config['sites'].fetch(dict)
+
+      # Inherit the SSL property if it's not set
+      site['ssl'] = @config.fetch('ssl') unless site.key?('ssl')
+
+      site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
+
+      # Build paths here rather than in a provisioner
+      root_path = File.join('/home/', site.fetch('username'), trim_slashes(site.fetch('root')))
+
+      # Account for a `public` folder if set
+      site['root_path'] = (site.key?('public')) ?
+        File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
+      site['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{dict}.conf")
 
       # Inherit the SSL property if it's not set
       site['ssl'] = @config.fetch('ssl') unless site.key?('ssl')
@@ -113,19 +111,6 @@ class Config
         # Enable the root SSL setting if not already enabled
         @config['ssl_enabled'] = ssl_enabled = true
       end
-
-      # Establish site defaults
-      defaults = {}
-      defaults['box_name'] = @config.fetch('name')
-      defaults['is_subdomain'] = false
-
-      # Build paths here rather than in a provisioner
-      root_path = File.join('/home/', site.fetch('username'), site.fetch('root'))
-
-      # Account for a `public` folder if set
-      site['root_path'] = (site.key?('public')) ?
-        File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
-      site['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{dict}.conf")
 
       # We only collect host values if SSL is enabled
       if ssl_enabled
@@ -169,6 +154,8 @@ class Config
     # Merge subdomain sites into `sites` hash
     # Done here to avoid unexpected looping /shrug
     @config['sites'] = @config.fetch('sites').merge(subdomains)
+
+    @config['php_dir'] = PHP_DIRS[PHP_VERSIONS.index(@config.fetch('php'))]
 
     # Collect and transform host values
     if @config['hosts'].length > 0
