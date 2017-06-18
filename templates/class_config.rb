@@ -13,6 +13,15 @@ class Config
   attr_accessor :config
   attr_reader :raw
 
+  # Class initialization
+  #
+  # @param String {config_file} The path to the config file
+  # @param String {hosts_file} The location at which to create the DNS Hosts file
+  def initialize(config_file, hosts_file)
+    @hosts_file = hosts_file
+    collect_config_values if validates(config_file)
+  end
+
   def validates(config_file)
     vagrant_dir = File.expand_path(Dir.pwd)
 
@@ -177,17 +186,6 @@ class Config
     end
 
     # Print debug information
-    print_debug_info(@config, @vm_config_file_path) if @config.key?('debug') && @config.fetch('debug')
-  end
-
-  # Class initialization
-  #
-  # This method does all the heavy lifting
-  #
-  # @param String {config_file} The path to the config file
-  # @param String {hosts_file} The location at which to create the DNS Hosts file
-  def initialize(config_file, hosts_file)
-    @hosts_file = hosts_file
-    collect_config_values if validates(config_file)
+    print_debug_info(@config, @config_config_file_path) if @config.key?('debug') && @config.fetch('debug')
   end
 end
