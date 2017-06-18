@@ -112,20 +112,6 @@
 
   # Conditions:
   # - The root `ssl` value is `false`
-  # - The second site's `ssl` value is `true`.
-  # - The root `host` property is set.
-  #
-  # Expected Outcome:
-  # - All of the SSL-enabled site's host, alias and subdomain values
-  #   should be added to the root `hosts` property by Config.
-  {
-    'name' => 'SSL Off: The root `hosts` property should contain only SSL-enabled hosts.',
-    'expect' => 'example-two.dev,www.example-two.dev,help.example-two.dev',
-    'actual' => @tests.the['full'].config['hosts'],
-  },
-
-  # Conditions:
-  # - The root `ssl` value is `false`
   # - The first site's `ssl` property is not declared.
   #
   # Expected Outcome:
@@ -223,21 +209,6 @@
     'name' => 'SSL On: The root `host` value should be the first SSL-enabled host declared.',
     'expect' => 'example.dev',
     'actual' => @tests.the['typical'].config['host'],
-  },
-
-  # Conditions:
-  # - The root `ssl` value is `true`
-  # - The first site's `ssl` property is undeclared, so the `true` value was
-  #   inherited from the root.
-  # - The root `host` property is undeclared, so the property took the site's
-  #   first `host` value.
-  #
-  # Expected Outcome:
-  # - The first site's alias values should be added to the root `hosts` property
-  {
-    'name' => 'SSL On: The root `hosts` property should contain only SSL-enabled hosts.',
-    'expect' => 'www.example.dev,example.dev',
-    'actual' => @tests.the['typical'].config['hosts'],
   },
 
   # Conditions:

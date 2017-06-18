@@ -168,8 +168,8 @@ class Config
         File.open(@hosts_file, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
       end
 
-      # Merge the root `hosts` property into a comma-separated string
-      @config['hosts'] = @config.fetch('hosts').join(',')
+      # We no longer need this
+      @config.delete('hosts')
     end
 
     # Print debug information
