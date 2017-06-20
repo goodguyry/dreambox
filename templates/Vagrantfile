@@ -7,10 +7,17 @@ dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
 dns_hosts_file = File.join(File.dirname(__FILE__), 'dns_hosts.txt')
 
 Dreambox = Config.new(dreambox_config_file, dns_hosts_file)
+VAGRANT_COMMAND = ARGV[0]
 
 Vagrant.configure(2) do |config|
   # Start bash as a non-login shell
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
+
+  $user_vars["DREAMBOX_UID"] = 31415
+
+  if VAGRANT_COMMAND == "ssh"
+    config.ssh.username = $user_vars['DREAMBOX_USER_NAME']
+  end
 
   # Install PHP
   config.vm.provision "shell",
@@ -27,11 +34,13 @@ Vagrant.configure(2) do |config|
     if (! conf['is_subdomain']) then
       # Sets up the sync folder
       config.vm.synced_folder conf['local_root'], conf['root_path']
+        owner: $user_vars["DREAMBOX_UID"],
+        group: "www-data",
+        mount_options: ["dmode=775,fmode=664"]
     end
     # Runs user_setup
     config.vm.provision "shell",
       inline: "/bin/bash /usr/local/bin/user_setup",
       :env => conf
   end
-
 end

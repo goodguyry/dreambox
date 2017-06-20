@@ -57,6 +57,13 @@ if [[ -n $host && -n $root_path && -n $vhost_file && -n $box_name ]]; then
   sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ "${vhost_file}";
   e_catch $? "httpd-vhosts.conf update"
 
+  useradd -g users -s /bin/bash $username -u $DREAMBOX_UID
+  cp -R /home/vagrant/.ssh /home/$username/.ssh
+  echo -e "vagrant\nvagrant" | (passwd $username)
+  cp /home/vagrant/.profile /home/$username/.profile
+  echo "$username  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+  chown -R $username /home/$username
+
   # ServerName
   sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${host}/" "${vhost_file}"
 

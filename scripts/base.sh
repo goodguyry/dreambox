@@ -12,11 +12,11 @@ apt-get -qq update
 
 # Install utilities
 echo "Installing utilities"
-apt-get -y install build-essential chkconfig curl facter libreadline-gplv2-dev libssl-dev linux-headers-$(uname -r) vim zip zlib1g-dev >/dev/null
+apt-get -y install build-essential chkconfig curl facter libreadline-gplv2-dev libssl-dev linux-headers-$(uname -r) vim zip zlib1g-dev git git-core git-stuff git-sh git-doc git-svn>/dev/null
 
 # Install libraries
 echo "Installing libraries"
-apt-get -y install libapr1 libaprutil1 libaspell15 libcurl3 libdjvulibre21 libfontconfig1 libgvc5 libicu48 libjasper1 libjpeg-turbo8 liblcms1 liblqr-1-0 libltdl7 libmcrypt4 libopenexr6 libpcre3 libpq5 librsvg2-2 libtidy-0.99-0 libtiff4 libwmf0.2-7 libxml2 libxpm4 libxslt1.1 >/dev/null
+apt-get -y install libapr1 libaprutil1 libaspell15 libcurl3 libdjvulibre21 libfontconfig1 libgvc5 libicu48 libjasper1 libjpeg-turbo8 liblcms1 liblqr-1-0 libltdl7 libmcrypt4 libopenexr6 libpcre3 libpq5 librsvg2-2 libtidy-0.99-0 libtiff4 libwmf0.2-7 libxml2 libxpm4 libxslt1.1  ruby1.8-dev ruby-rails-2.3 >/dev/null
 
 # Link and cache libraries
 ldconfig /usr/local/lib
