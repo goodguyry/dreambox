@@ -28,7 +28,6 @@ apt-get -y build-dep php5;
 # Install additional libraries
 apt-get -y install libaspell-dev libc-client2007e-dev libcurl3 libfcgi-dev libfcgi0ldbl libicu-dev libjpeg62-dbg libjpeg8 libmcrypt-dev libpq5 libssl-dev libtidy-dev libxslt1-dev;
 
-
 # Link the imap library
 ln -s /usr/lib/libc-client.a /usr/lib/x86_64-linux-gnu/libc-client.a;
 

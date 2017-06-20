@@ -13,6 +13,9 @@ PHP_DIR="php70"
 mkdir -p /usr/local/"${PHP_DIR}";
 mkdir -p /etc/"${PHP_DIR}";
 
+debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password root'
+debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password_again password root'
+
 # Update apt-get
 apt-get -qq update;
 
@@ -97,7 +100,7 @@ cd "${PACKAGE_NAME}"/;
 --with-kerberos \
 --with-mcrypt \
 --with-mhash \
---with-mysql-sock=/No-MySQL-hostname-was-specified \
+--with-mysql-sock=/tmp/mysql.sock \
 --with-mysqli=mysqlnd \
 --with-openssl \
 --with-pcre-regex \
