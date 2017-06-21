@@ -78,12 +78,14 @@ Vagrant.configure(2) do |config|
     end
 
     Dreambox.config['sites'].each do |site, conf|
-      # Sets up the sync folder
-      test.vm.synced_folder conf['local_root'], conf['root_path'],
-        # REVIEW Generate the UID, pass it to `user_setup` with conf
-        owner: conf['uid'],
-        group: "www-data",
-        mount_options: ["dmode=775,fmode=664"]
+      if (! conf['is_subdomain']) then
+        # Sets up the sync folder
+        test.vm.synced_folder conf['local_root'], conf['root_path'],
+          # REVIEW Generate the UID, pass it to `user_setup` with conf
+          owner: conf['uid'],
+          group: "www-data",
+          mount_options: ["dmode=775,fmode=664"]
+      end
       # Runs user_setup
       test.vm.provision "shell",
         inline: "/bin/bash /usr/local/bin/user_setup",
