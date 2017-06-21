@@ -9,6 +9,8 @@
 PACKAGE_NAME="php-7.0.14"
 PHP_DIR="php70"
 
+# TODO The setup is identical and thus can be shared between the two PHP files
+
 # Create some needed directories
 mkdir -p /usr/local/"${PHP_DIR}";
 mkdir -p /etc/"${PHP_DIR}";

@@ -9,6 +9,8 @@
 PACKAGE_NAME="php-5.6.29"
 PHP_DIR="php56"
 
+# TODO The setup is identical and thus can be shared between the two PHP files
+
 # Create some needed directories
 mkdir -p /usr/local/"${PHP_DIR}";
 mkdir -p /etc/"${PHP_DIR}";

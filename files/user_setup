@@ -48,6 +48,7 @@ function do_exit {
 # [vhost_file] The path to the vhost files for the site.
 # [box_name]   The root config name; used as the certificate and key file names.
 ##
+# TODO No need to check for values here.
 if [[ -n $host && -n $root_path && -n $vhost_file && -n $box_name ]]; then
   # Set the new vhost conf file in place
   cp /tmp/files/http/httpd-vhosts.conf "${vhost_file}"
@@ -57,6 +58,7 @@ if [[ -n $host && -n $root_path && -n $vhost_file && -n $box_name ]]; then
   sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ "${vhost_file}";
   e_catch $? "httpd-vhosts.conf update"
 
+  # REVIEW Some of this may need adjusting, esp. code style
   useradd -g users -s /bin/bash $username -u $DREAMBOX_UID
   cp -R /home/vagrant/.ssh /home/$username/.ssh
   echo -e "vagrant\nvagrant" | (passwd $username)
@@ -95,6 +97,6 @@ if [[ -n $host && -n $root_path && -n $vhost_file && -n $box_name ]]; then
   echo
 
   [[ $? -lt 1 ]] && echo -e "User setup complete.\n"
-else
+else # TODO From here down can be removed
   do_exit 'Missing required Dreambox config settings.'
 fi
