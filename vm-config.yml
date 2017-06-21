@@ -6,6 +6,7 @@ ssl: true
 sites:
   'dreambox':
     username: 'db_user' # required
+    uid: 31415 # temp fix
     root: 'dreambox.com' # required
     public: 'public'
     local_root: 'web/' # required
@@ -17,6 +18,7 @@ sites:
     # ssl: true
   'example':
     username: example_user
+    uid: 31416 # temp fix
     root: example.com
     local_root: web
     host: example.dev

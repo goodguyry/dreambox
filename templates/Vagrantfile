@@ -37,7 +37,7 @@ Vagrant.configure(2) do |config|
   Dreambox.config['sites'].each do |site, conf|
     if (! conf['is_subdomain']) then
       # Sets up the sync folder
-      config.vm.synced_folder conf['local_root'], conf['root_path']
+      config.vm.synced_folder conf['local_root'], conf['root_path'],
         # TODO Generate the UID, pass it to `user_setup` with conf
         owner: $user_vars["DREAMBOX_UID"],
         group: "www-data",

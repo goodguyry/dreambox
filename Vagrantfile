@@ -1,6 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+VAGRANT_ARGS = ARGV
+
 # config_file = 'vm-config.yml-example'
 
 # Shoehorn the config file into our test Vagrantfile
@@ -24,6 +26,16 @@ Vagrant.configure(2) do |config|
   # Set these so the provisioning scripts can be run via ssh
   config.vm.synced_folder "files", "/tmp/files", create: false, :mount_options => ["dmode=775", "fmode=664"]
   config.vm.synced_folder "packages", "/tmp/packages", create: false, :mount_options => ["dmode=775", "fmode=664"]
+
+  # REVIEW See synced_folder line
+  # $user_vars["DREAMBOX_UID"] = 31415
+
+  # REVIEW We're going to listen for a user _after_ `ssh` instead
+  # REVIEW We need to check for multimachine so shit doesn't break
+  # if 'ssh' == VAGRANT_ARGS.first && VAGRANT_ARGS.length == 3
+  #   config.ssh.username = VAGRANT_ARGS[1] if config.vm.defined_vm_keys.length == 1
+  #   puts 'logging in with user'
+  # end
 
   # Development machine
   # Ubuntu 12.04
@@ -67,7 +79,11 @@ Vagrant.configure(2) do |config|
 
     Dreambox.config['sites'].each do |site, conf|
       # Sets up the sync folder
-      test.vm.synced_folder conf['local_root'], conf['root_path']
+      test.vm.synced_folder conf['local_root'], conf['root_path'],
+        # REVIEW Generate the UID, pass it to `user_setup` with conf
+        owner: conf['uid'],
+        group: "www-data",
+        mount_options: ["dmode=775,fmode=664"]
       # Runs user_setup
       test.vm.provision "shell",
         inline: "/bin/bash /usr/local/bin/user_setup",
