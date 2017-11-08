@@ -216,7 +216,7 @@ if [[ $status -eq 4 ]]; then
   conf_do -b
 
   # Create the SSL certificate
-  [[ $ENABLE_SSL ]] && source ssl_setup;
+  [[ 'true' == $ENABLE_SSL ]] && source ssl_setup;
 
   # Set Apache directory
   ESCAPED_SITE_ROOT=$(echo "$PUBLIC_SITE_ROOT" | sed 's/\(\W\)/\\\1/g');
