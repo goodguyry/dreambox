@@ -25,6 +25,7 @@ Vagrant.configure(2) do |config|
 
   # Set these so the provisioning scripts can be run via ssh
   config.vm.synced_folder "files", "/tmp/files", create: false, :mount_options => ["dmode=775", "fmode=664"]
+  config.vm.synced_folder "scripts", "/tmp/scripts", create: false, :mount_options => ["dmode=775", "fmode=664"]
   config.vm.synced_folder "packages", "/tmp/packages", create: false, :mount_options => ["dmode=775", "fmode=664"]
 
   # REVIEW See synced_folder line
@@ -79,12 +80,16 @@ Vagrant.configure(2) do |config|
 
     # TODO Change this to .each_value
     Dreambox.config['sites'].each do |site, conf|
+      # Runs user_setup
+      test.vm.provision "shell",
+        inline: "/bin/bash /tmp/scripts/user.sh",
+        :env => conf
+
       if (! conf['is_subdomain']) then
         # Sets up the sync folder
         test.vm.synced_folder conf['local_root'], conf['root_path'],
-          # REVIEW Generate the UID, pass it to `user_setup` with conf
-          owner: conf['uid'],
-          group: "www-data",
+          owner: "#{conf['uid']}",
+          group: "#{conf['gid']}",
           mount_options: ["dmode=775,fmode=664"]
       end
       # Runs user_setup
