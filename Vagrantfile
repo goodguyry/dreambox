@@ -24,9 +24,17 @@ Vagrant.configure(2) do |config|
   end
 
   # Set these so the provisioning scripts can be run via ssh
-  config.vm.synced_folder "files", "/tmp/files", create: false, :mount_options => ["dmode=775", "fmode=664"]
-  config.vm.synced_folder "scripts", "/tmp/scripts", create: false, :mount_options => ["dmode=775", "fmode=664"]
-  config.vm.synced_folder "packages", "/tmp/packages", create: false, :mount_options => ["dmode=775", "fmode=664"]
+  file_dirs = {
+    'files' => '/tmp/files',
+    'scripts' => '/tmp/scripts',
+    'packages' => '/tmp/packages' ,
+  }
+
+  file_dirs.each do | dir, path |
+    config.vm.synced_folder "#{dir}", "#{path}",
+    create: false,
+    :mount_options => ['dmode=775,fmode=664']
+  end
 
   # REVIEW See synced_folder line
   # $user_vars["DREAMBOX_UID"] = 31415
@@ -55,34 +63,34 @@ Vagrant.configure(2) do |config|
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
     # Installed utinities and libraries
-    test.vm.provision "base",
+    test.vm.provision "Base",
       type: "shell",
-      path: "scripts/base.sh",
-      # Environment variable for simulating Packer file provisioner
-      # REVIEW: Not sure this is still necessary
-      :env => {"DREAMBOX_ENV" => "develop"}
+      path: "scripts/base.sh"
 
     # Post-install MySQL setup
-    test.vm.provision "package-setup",
+    test.vm.provision "Package Setup",
       type: "shell",
       path: "scripts/package-setup.sh"
 
     # Install PHP
-    test.vm.provision "shell",
-      inline: "/bin/bash /usr/local/bin/php_install",
+    test.vm.provision "PHP Install",
+      type: "shell",
+      path: "files/php_install",
       :env => Dreambox.config
 
     if Dreambox.config['ssl_enabled'] then
-      test.vm.provision "shell",
-        inline: "/bin/bash /usr/local/bin/ssl_setup",
+      test.vm.provision "SSL Setup",
+        type: "shell",
+        path: "files/ssl_setup",
         :env => Dreambox.config
     end
 
     # TODO Change this to .each_value
     Dreambox.config['sites'].each do |site, conf|
       # Runs user_setup
-      test.vm.provision "shell",
-        inline: "/bin/bash /tmp/scripts/user.sh",
+      test.vm.provision "User Setup: #{conf['username']}",
+        type: "shell",
+        path: "scripts/user.sh",
         :env => conf
 
       if (! conf['is_subdomain']) then
@@ -94,8 +102,9 @@ Vagrant.configure(2) do |config|
       end
 
       # Runs user_setup
-      test.vm.provision "shell",
-        inline: "/bin/bash /tmp/scripts/vhost.sh",
+      test.vm.provision "VHost Setup: #{conf['host']}",
+        type: "shell",
+        path: "scripts/vhost.sh",
         :env => conf
     end
   end
