@@ -1,7 +1,5 @@
 #!/bin/bash
 
-$port_file='/usr/local/apache2/conf/vhosts/ports.conf'
-
 # Set the new vhost conf file in place
 cp /tmp/files/http/httpd-vhosts.conf "${vhost_file}"
 
@@ -15,7 +13,7 @@ sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${host}/" "${vhost_file}"
 # Update vhost file for SSL
 if [[ 'true' == $ssl ]]; then
   # Enable the NameVirtualHost on port 443
-  sed -i 's/\(#\ \)\(NameVirtualHost\ \*\:443\)/\2/' "${port_file}"
+  sed -i 's/\(#\ \)\(NameVirtualHost\ \*\:443\)/\2/' /usr/local/apache2/conf/vhosts/ports.conf
   # Listen 443
   sed -i 's/\(#\ \)\(Listen\ \)\(80\)/\2443/' "${vhost_file}"
   # <VirtualHost *:443>
@@ -28,7 +26,7 @@ if [[ 'true' == $ssl ]]; then
   sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${box_name}\.key"/ "${vhost_file}"
 else
   # Enable the NameVirtualHost on port 80
-  sed -i 's/\(#\ \)\(NameVirtualHost\ \*\:80\)/\2/' "${port_file}"
+  sed -i 's/\(#\ \)\(NameVirtualHost\ \*\:80\)/\2/' /usr/local/apache2/conf/vhosts/ports.conf
 fi
 
 # Change ownership to Apache user

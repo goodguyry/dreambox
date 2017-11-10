@@ -66,22 +66,8 @@ chmod +x /usr/local/bin/php-fastcgi-wrapper
 cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
 cp /tmp/files/http/ports.conf /usr/local/apache2/conf/vhosts/
 
-# Set vhost setup script as executable
-# cp /tmp/scripts/vhost.sh /usr/local/bin/vhost.sh
-chmod +x /tmp/scripts/vhost.sh
-
-# Set user setup script as executable
-# cp /tmp/scripts/users.sh /usr/local/bin/users.sh
-chmod +x /tmp/scripts/users.sh
-
-# Copy SSL setup script and set as executable
-cp /tmp/files/ssl_setup /usr/local/bin/ssl_setup
-chmod +x /usr/local/bin/ssl_setup
+# Copy SSL setup script into place
 cp /tmp/files/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
-
-# Copy PHP install script and set as executable
-cp /tmp/files/php_install /usr/local/bin/php_install
-chmod +x /usr/local/bin/php_install
 
 # Add Apache, PHP and MySQL bins to PATH
 echo "Adding Apache, PHP and MySQL bins to PATH"
