@@ -188,6 +188,7 @@ class Config
     if @config['hosts'].length > 0
       File.delete(@hosts_file) if File.exist?(@hosts_file)
       # To be contatenated onto openssl.cnf during SSL setup
+      File.open(@hosts_file, 'a+') { |file| file.puts("# Dreambox config") }
       @config['hosts'].each.with_index(1) do |host, index|
         File.open(@hosts_file, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
       end

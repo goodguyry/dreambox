@@ -171,6 +171,7 @@
   {
     'name' => 'SSL Off: The DNS Hosts file should contain all SSL-enabled hosts.',
     'expect' => [
+      '# Dreambox config',
       'DNS.1 = example-two.dev',
       'DNS.2 = www.example-two.dev',
       'DNS.3 = help.example-two.dev',
@@ -249,6 +250,7 @@
   {
     'name' => "SSL On: The DNS Hosts file should contain the SSL-enabled site's aliases.",
     'expect' => [
+      '# Dreambox config',
       'DNS.1 = www.example.dev',
       'DNS.2 = example.dev',
     ],
