@@ -58,6 +58,9 @@ module Helpers
       puts "===> #{site}:".bold.yellow
       printf "%-20s %s\n", 'is_subdomain', items['is_subdomain'] if items['is_subdomain']
       printf "%-20s %s\n", 'username', items['username']
+      printf "%-20s %s\n", 'uid', items['uid']
+      printf "%-20s %s\n", 'group', items['group']
+      printf "%-20s %s\n", 'gid', items['gid']
       printf "%-20s %s\n", 'root_path', items['root_path']
       printf "%-20s %s\n", 'root', items['root']
       printf "%-20s %s\n", 'local_root', items['local_root']

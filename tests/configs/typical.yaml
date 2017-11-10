@@ -10,6 +10,7 @@ ssl: true
 sites:
   'typical-one':
     username: user
+    group: example_group
     root: example.com
     local_root: web/
     host: example.dev

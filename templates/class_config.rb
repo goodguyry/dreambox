@@ -82,6 +82,11 @@ class Config
     sites = {}
     subdomains = {}
 
+    users = {}
+    groups = {}
+    user_id = 501
+    group_id = 901
+
     site_defaults = {}
     site_defaults['box_name'] = @config.fetch('name')
     site_defaults['is_subdomain'] = false
@@ -89,6 +94,25 @@ class Config
     @config['sites'].each_key do |dict|
       # Make a deep copy of the hash so it's not altered as we are iterating
       site = Marshal.load(Marshal.dump(@config['sites'].fetch(dict)))
+
+      # User and Group ID
+      # Assign a UID based either on a previously-declared user or a new user
+      # Assign a GID based either on a previously-declared group, a new group, or the default
+
+      if users.key?(site['username'])
+        site['uid'] = users[site['username']]
+      else
+        site['uid'] = user_id += 1
+        users.merge!(site['username'] => site['uid'])
+      end
+
+      site['group'] = 'dreambox' unless site['group']
+      if groups.key?(site['group'])
+        site['gid'] = groups[site['group']]
+      else
+        site['gid'] = group_id += 1
+        groups.merge!(site['group'] => site['gid'])
+      end
 
       # Paths
       # Clean and build paths used by Vagrant and/or the provisioners
@@ -134,6 +158,9 @@ class Config
           subdomain_name = "#{sub}.#{dict}"
           subdomains[subdomain_name] = {
             'username' => site.fetch('username'), # Inherited from the parent site
+            'uid' => site.fetch('uid'), # Inherited from the parent site
+            'group' => site.fetch('group'), # Inherited from the parent site
+            'gid' => site.fetch('gid'), # Inherited from the parent site
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),

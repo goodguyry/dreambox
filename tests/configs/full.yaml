@@ -16,6 +16,7 @@ host: main-host.dev
 sites:
   'full-one':
     username: user
+    group: shared_group
     root: example.com
     public: public
     local_root: web/
@@ -26,6 +27,7 @@ sites:
       app: 'app/'
   'full-two':
     username: user-two
+    group: shared_group
     root: example-two.com
     local_root: web
     host: example-two.dev
