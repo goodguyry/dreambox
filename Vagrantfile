@@ -35,7 +35,6 @@ Vagrant.configure(2) do |config|
   # REVIEW We need to check for multimachine so shit doesn't break
   # if 'ssh' == VAGRANT_ARGS.first && VAGRANT_ARGS.length == 3
   #   config.ssh.username = VAGRANT_ARGS[1] if config.vm.defined_vm_keys.length == 1
-  #   puts 'logging in with user'
   # end
 
   # Development machine
@@ -60,6 +59,7 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "scripts/base.sh",
       # Environment variable for simulating Packer file provisioner
+      # REVIEW: Not sure this is still necessary
       :env => {"DREAMBOX_ENV" => "develop"}
 
     # Post-install MySQL setup
