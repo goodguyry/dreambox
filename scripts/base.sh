@@ -64,10 +64,15 @@ chmod +x /usr/local/bin/php-fastcgi-wrapper
 # Copy the Apache config files into place
 [[ ! -d '/usr/local/apache2/conf/vhosts' ]] && mkdir '/usr/local/apache2/conf/vhosts'
 cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
+cp /tmp/files/http/ports.conf /usr/local/apache2/conf/vhosts/
 
-# Copy user setup script and set as executable
-cp /tmp/files/user_setup /usr/local/bin/user_setup
-chmod +x /usr/local/bin/user_setup
+# Set vhost setup script as executable
+# cp /tmp/scripts/vhost.sh /usr/local/bin/vhost.sh
+chmod +x /tmp/scripts/vhost.sh
+
+# Set user setup script as executable
+# cp /tmp/scripts/users.sh /usr/local/bin/users.sh
+chmod +x /tmp/scripts/users.sh
 
 # Copy SSL setup script and set as executable
 cp /tmp/files/ssl_setup /usr/local/bin/ssl_setup

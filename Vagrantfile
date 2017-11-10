@@ -92,9 +92,10 @@ Vagrant.configure(2) do |config|
           group: "#{conf['gid']}",
           mount_options: ["dmode=775,fmode=664"]
       end
+
       # Runs user_setup
       test.vm.provision "shell",
-        inline: "/bin/bash /usr/local/bin/user_setup",
+        inline: "/bin/bash /tmp/scripts/vhost.sh",
         :env => conf
     end
   end
