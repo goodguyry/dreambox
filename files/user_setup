@@ -9,6 +9,8 @@
 
 trap "do_exit" TERM INT
 
+echo ">>> Begin user_setup"
+
 # Ensure the script is run as SU
 if [ "$(whoami)" != "root" ]; then
   echo
@@ -54,12 +56,29 @@ ESCAPED_SITE_ROOT=$(echo "$root_path" | sed 's/\(\W\)/\\\1/g');
 sed -i s/"\/usr\/local\/apache2\/htdocs"/"$ESCAPED_SITE_ROOT"/ "${vhost_file}";
 e_catch $? "httpd-vhosts.conf update"
 
-useradd -g users -s /bin/bash $username -u $uid
-cp -R /home/vagrant/.ssh "/home/${username}/.ssh"
-echo -e "vagrant\nvagrant" | (passwd $username)
-cp /home/vagrant/.profile "/home/${username}/.profile"
-echo "${username} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-chown -R $username "/home/${username}"
+# REVIEW Can this be set up with `adduser`, as originally was the case?
+# adduser --disabled-password --no-create-home --gecos "" "$@" >/dev/null
+# # Set permissions for the home folder since it's not owned by the new user
+# # due to having been created by Vagrant as a sync folder
+# if [[ "$(stat -c '%U' /home/${USER_NAME})" != "${USER_NAME}" ]]; then
+#   chown "${USER_NAME}":"${USER_NAME}" "/home/${USER_NAME}"
+# fi
+#
+# -g The group name or number of the user's initial login group. The group name must exist.
+# -o Allow the creation of a user account with a duplicate (non-unique) UID.
+# -s The name of the user's login shell.
+# -u The numerical value of the user's ID. This value must be unique, unless the -o option is used.
+#   The value must be non-negative. The default is to use the smallest ID value greater than 999
+#   and greater than every other user. Values between 0 and 999 are typically reserved for system accounts.
+# useradd -g users -s /bin/bash $username -u $uid
+# if [[ ! "$(grep username /etc/passwd)" ]]; then
+#   adduser --no-create-home --gecos '' --ingroup users --shell /bin/bash $username
+#   cp -R /home/vagrant/.ssh "/home/${username}/.ssh"
+#   echo -e "vagrant\nvagrant" | (passwd $username)
+#   cp /home/vagrant/.profile "/home/${username}/.profile"
+#   echo "${username} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+#   chown -R $username "/home/${username}"
+# fi
 
 # ServerName
 sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${host}/" "${vhost_file}"
@@ -82,6 +101,11 @@ if [[ 'true' == $ssl ]]; then
 fi
 
 # Change ownership to Apache user
+# TODO The public folder must be created before this point
+if [[ ! -d "${root_path}" ]]; then
+  mkdir -p "${root_path}"
+fi
+# REVIEW Should this be $username:www-data?
 chown -R www-data:www-data "${root_path}"
 e_catch $? "Permissions update"
 
@@ -92,3 +116,5 @@ e_catch $? "Apache restart"
 echo
 
 [[ $? -lt 1 ]] && echo -e "User setup complete.\n"
+
+echo ">>> end user_setup"
