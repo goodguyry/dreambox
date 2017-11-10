@@ -2,5 +2,6 @@
 *.box
 certs
 web
+static
 **/*dns_hosts.txt
 tests/**/*.txt
