@@ -4,7 +4,7 @@ ssl: true
 
 sites:
   'dreambox':
-    username: 'db_user' # required
+    user: 'db_user' # required
     root: 'dreambox.com' # required
     public: 'html'
     local_root: 'web/' # required

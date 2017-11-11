@@ -37,8 +37,8 @@ if [[ ! -d "${root_path}" ]]; then
   mkdir -p "${root_path}"
 fi
 
-echo "chown -R ${username}:${group} /home/${username}"
-chown -R "${username}:${group}" "/home/${username}"
+echo "chown -R ${user}:${group} /home/${user}"
+chown -R "${user}:${group}" "/home/${user}"
 
 # Restart Apache
 /usr/local/apache2/bin/apachectl restart >/dev/null;

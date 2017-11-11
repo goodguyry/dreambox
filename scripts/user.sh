@@ -6,14 +6,14 @@ else
   addgroup --gid $gid $group
 fi
 
-if $(getent passwd $username >/dev/null); then
-  echo "User ${username} already exists."
+if $(getent passwd $user >/dev/null); then
+  echo "User ${user} already exists."
 else
-  adduser --no-create-home -uid $uid -gid $gid --disabled-password --gecos '' $username
-  cp -R /home/vagrant/.ssh "/home/${username}/.ssh"
-  echo -e "vagrant\nvagrant" | (passwd $username)
-  cp /home/vagrant/.profile "/home/${username}/.profile"
-  echo "${username} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+  adduser --no-create-home -uid $uid -gid $gid --disabled-password --gecos '' $user
+  cp -R /home/vagrant/.ssh "/home/${user}/.ssh"
+  echo -e "vagrant\nvagrant" | (passwd $user)
+  cp /home/vagrant/.profile "/home/${user}/.profile"
+  echo "${user} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 fi
 
-chown -R "${username}:${group}" "/home/${username}"
+chown -R "${user}:${group}" "/home/${user}"

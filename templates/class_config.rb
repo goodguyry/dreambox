@@ -63,7 +63,7 @@ class Config
 
     @raw['php_dir'] = php_dirs[php_versions.index(@raw.fetch('php'))]
 
-    required_properties = ['username', 'root', 'local_root', 'host']
+    required_properties = ['user', 'root', 'local_root', 'host']
     @raw['sites'].each_key do |dict|
       required_properties.each do |property|
         begin
@@ -99,11 +99,11 @@ class Config
       # Assign a UID based either on a previously-declared user or a new user
       # Assign a GID based either on a previously-declared group, a new group, or the default
 
-      if users.key?(site['username'])
-        site['uid'] = users[site['username']]
+      if users.key?(site['user'])
+        site['uid'] = users[site['user']]
       else
         site['uid'] = user_id += 1
-        users.merge!(site['username'] => site['uid'])
+        users.merge!(site['user'] => site['uid'])
       end
 
       site['group'] = 'dreambox' unless site['group']
@@ -119,7 +119,7 @@ class Config
 
       site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
 
-      root_path = File.join('/home/', site.fetch('username'), trim_slashes(site.fetch('root')))
+      root_path = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
       site['root_path'] = (site.key?('public')) ?
         File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
 
@@ -157,7 +157,7 @@ class Config
           path = site['subdomains'][sub]
           subdomain_name = "#{sub}.#{dict}"
           subdomains[subdomain_name] = {
-            'username' => site.fetch('username'), # Inherited from the parent site
+            'user' => site.fetch('user'), # Inherited from the parent site
             'uid' => site.fetch('uid'), # Inherited from the parent site
             'group' => site.fetch('group'), # Inherited from the parent site
             'gid' => site.fetch('gid'), # Inherited from the parent site
