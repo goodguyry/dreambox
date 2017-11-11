@@ -58,24 +58,20 @@ Vagrant.configure(2) do |config|
     test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"
 
-
     # Start bash as a non-login shell
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
-    # Installed utinities and libraries
     test.vm.provision "Base",
       type: "shell",
       path: "scripts/base.sh"
 
-    # Post-install MySQL setup
     test.vm.provision "Package Setup",
       type: "shell",
       path: "scripts/package-setup.sh"
 
-    # Install PHP
     test.vm.provision "PHP Install",
       type: "shell",
-      path: "files/php_install",
+      path: "scripts/php.sh",
       :env => Dreambox.config
 
     if Dreambox.config['ssl_enabled'] then
@@ -87,21 +83,18 @@ Vagrant.configure(2) do |config|
 
     # TODO Change this to .each_value
     Dreambox.config['sites'].each do |site, conf|
-      # Runs user_setup
       test.vm.provision "User Setup: #{conf['username']}",
         type: "shell",
         path: "scripts/user.sh",
         :env => conf
 
       if (! conf['is_subdomain']) then
-        # Sets up the sync folder
         test.vm.synced_folder conf['local_root'], conf['root_path'],
           owner: "#{conf['uid']}",
           group: "#{conf['gid']}",
           mount_options: ["dmode=775,fmode=664"]
       end
 
-      # Runs user_setup
       test.vm.provision "VHost Setup: #{conf['host']}",
         type: "shell",
         path: "scripts/vhost.sh",

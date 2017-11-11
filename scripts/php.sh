@@ -1,9 +1,5 @@
 #! /bin/bash
 
-# Defaults:
-# - php: 5
-# - php_dir: php56
-
 echo "Installing PHP v${php}"
 if [[ /usr/local/src/php_"${php}"*.deb ]]; then
   dpkg -i /usr/local/src/php_"${php}"*.deb > /dev/null 2>&1
@@ -18,6 +14,7 @@ cp /tmp/files/php/php.ini /etc/"${php_dir}"/
 # Copy php-cgi to the Apache cgi-bin
 cp /usr/local/"${php_dir}"/bin/php-cgi /usr/local/apache2/cgi-bin/
 
+# Update the PHP version in fastcgi wrapper
 if [[ 'php56' != "${php_dir}" ]]; then
   sed -i "s/\(php56\)/${php_dir}/" /usr/local/bin/php-fastcgi-wrapper
 fi
