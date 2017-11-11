@@ -81,7 +81,7 @@ Vagrant.configure(2) do |config|
     if Dreambox.config['ssl_enabled'] then
       test.vm.provision "SSL Setup",
         type: "shell",
-        path: "files/ssl_setup",
+        path: "scripts/ssl.sh",
         :env => Dreambox.config
     end
 
