@@ -41,7 +41,7 @@ echo "chown -R ${user}:${group} /home/${user}"
 chown -R "${user}:${group}" "/home/${user}"
 
 # Restart Apache
-/usr/local/apache2/bin/apachectl restart >/dev/null;
+/etc/init.d/apache2 restart  >/dev/null
 
 echo
 
