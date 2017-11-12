@@ -12,7 +12,7 @@ if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; the
 else
   if [ -z "${hosts}" ]; then
     # Comment-out alt_names pointer
-    sed -i 's/\(subjectAltName\ =\ \@alt_names\)/# \1/' "${open_ssl_conf}"
+    sed -i -r 's/(subjectAltName\s=\s\@alt_names)/# \1/' "${open_ssl_conf}"
   else
     # Add the DNS Hosts string to `open_ssl_conf`
     bash -c "echo -e \"${hosts}\" >> ${open_ssl_conf}"

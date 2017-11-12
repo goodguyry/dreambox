@@ -16,7 +16,7 @@ cp /usr/local/"${php_dir}"/bin/php-cgi /usr/local/apache2/cgi-bin/
 
 # Update the PHP version in fastcgi wrapper
 if [[ 'php56' != "${php_dir}" ]]; then
-  sed -i "s/\(php56\)/${php_dir}/" /usr/local/bin/php-fastcgi-wrapper
+  sed -i "s/php56/${php_dir}/" /usr/local/bin/php-fastcgi-wrapper
 fi
 
 # Update bin path

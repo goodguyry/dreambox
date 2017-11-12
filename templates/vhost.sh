@@ -10,25 +10,25 @@ ESCAPED_SITE_ROOT=$(echo "${root_path}" | sed 's/\(\W\)/\\\1/g');
 sed -i s/"\/usr\/local\/apache2\/htdocs"/"${ESCAPED_SITE_ROOT}"/ "${vhost_file}";
 
 # ServerName
-sed -i s/"\(ServerName\ \)\w*\.\w*"/"\1${host}/" "${vhost_file}"
+sed -i -r s/"(ServerName\s)\w*\.\w*"/"\1${host}/" "${vhost_file}"
 
 # Update vhost file for SSL
 if [[ 'true' == $ssl ]]; then
   # Enable the NameVirtualHost on port 443
-  sed -i 's/\(#\ \)\(NameVirtualHost\ \*\:443\)/\2/' "${port_file}"
+  sed -i -r 's/(#\s)(NameVirtualHost\s\*:443)/\2/' "${port_file}"
   # Listen 443
-  sed -i 's/\(#\ \)\(Listen\ \)\(80\)/\2443/' "${vhost_file}"
+  sed -i -r 's/(#\s)(Listen\s)(80)/\2443/' "${vhost_file}"
   # <VirtualHost *:443>
-  sed -i 's/\*:80/\*:443/g' "${vhost_file}"
+  sed -i -r 's/\*:80/\*:443/g' "${vhost_file}"
   # SSLEngine on
-  sed -i 's/\(SSLEngine\ \)\w*/\1on/' "${vhost_file}"
+  sed -i -r 's/(SSLEngine\s)\w*/\1on/' "${vhost_file}"
   # SSLCertificateFile
-  sed -i s/'\(#\ \)\(SSLCertificateFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.crt'/"\2\3${box_name}\.crt"/ "${vhost_file}"
+  sed -i -r s/'(#\s)(SSLCertificateFile\s)(\/usr\/local\/apache2\/conf\/)\w*\.crt'/"\2\3${box_name}\.crt"/ "${vhost_file}"
   # SSLCertificateKeyFile
-  sed -i s/'\(#\ \)\(SSLCertificateKeyFile\ \)\(\/usr\/local\/apache2\/conf\/\)\w*\.key'/"\2\3${box_name}\.key"/ "${vhost_file}"
+  sed -i -r s/'(#\s)(SSLCertificateKeyFile\s)(\/usr\/local\/apache2\/conf\/)\w*\.key'/"\2\3${box_name}\.key"/ "${vhost_file}"
 else
   # Enable the NameVirtualHost on port 80
-  sed -i 's/\(#\ \)\(NameVirtualHost\ \*\:80\)/\2/' "${port_file}"
+  sed -i -r 's/(#\s)(NameVirtualHost\s\*:80)/\2/' "${port_file}"
 fi
 
 # Change ownership to Apache user
