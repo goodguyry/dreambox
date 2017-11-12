@@ -24,18 +24,17 @@ for INDEX in ${!TMP[*]}; do
   [[ -d $TMP[$INDEX] ]] && rm -rf $TMP[$INDEX]
 done
 
+echo "Removing .deb installers"
 declare -a PACKAGES=(
-  '/usr/local/src/httpd_2.2.31-1_amd64.deb'
-  '/usr/local/src/imagemagick-6.6.9_10-1_amd64.deb'
-  '/usr/local/src/imagick_3.2.0RC1-1_amd64.deb'
-  '/usr/local/src/mod-fastcgi_2.4.6-1_amd64.deb'
-  '/usr/local/src/mysql_5.5.40-1_amd64.deb'
+  /usr/local/src/httpd_*.deb
+  /usr/local/src/imagemagick-*.deb
+  /usr/local/src/imagick_*.deb
+  /usr/local/src/mod-fastcgi_*.deb
+  /usr/local/src/mysql_*.deb
 );
 
 for INDEX in ${!PACKAGES[*]}; do
-  if [[ -r "${PACKAGES[$INDEX]}" ]]; then
-    sudo rm -f "${PACKAGES[$INDEX]}"
-  fi
+  ls $PACKAGES[$INDEX] 1> /dev/null && rm -f $PACKAGES[$INDEX]
 done
 
 echo "Adding a 2 sec delay to the interface up, to make the dhclient happy"
