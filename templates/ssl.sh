@@ -10,8 +10,13 @@ if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; the
   echo "Using saved certs from /vagrant/certs/"
   cp -f /vagrant/certs/"${name}".* /usr/local/apache2/conf/
 else
-  # Add the DNS Hosts string to `open_ssl_conf`
-  bash -c "echo -e \"${hosts}\" >> ${open_ssl_conf}"
+  if [ -z "${hosts}" ]; then
+    # Comment-out alt_names pointer
+    sed -i 's/\(subjectAltName\ =\ \@alt_names\)/# \1/' "${open_ssl_conf}"
+  else
+    # Add the DNS Hosts string to `open_ssl_conf`
+    bash -c "echo -e \"${hosts}\" >> ${open_ssl_conf}"
+  fi
 
   # Create the certificate
   openssl req \
