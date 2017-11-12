@@ -187,10 +187,9 @@ class Config
 
     # Build the hosts string
     # To be echoed onto openssl.cnf during SSL setup
-    if @config['hosts'].length > 0
-      @config['hosts'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" }
-      @config['hosts'] = @config.fetch('hosts').join('\n')
-    end
+    @config['hosts'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" } if @config['hosts'].length > 0
+    delimiter = (@config['hosts'].length > 0) ? '\n' : ''
+    @config['hosts'] = @config.fetch('hosts').join(delimiter)
 
     print_debug_info(@config, @config_config_file_path) if @config.key?('debug') && @config.fetch('debug')
   end

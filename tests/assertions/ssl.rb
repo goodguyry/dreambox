@@ -47,10 +47,10 @@
   # - SSL is not enabled in the lone site declaration.
   #
   # Expected Outcome:
-  # - The root `hosts` property created by Config should be empty.
+  # - The root `hosts` property created by Config should be an empty string.
   {
-    'name' => 'Missing SSL: The root `hosts` property should be empty.',
-    'expect' => [],
+    'name' => 'Missing SSL: The root `hosts` property should be an empty string.',
+    'expect' => '',
     'actual' => @tests.the['required'].config['hosts'],
   },
 
