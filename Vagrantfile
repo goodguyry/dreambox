@@ -31,15 +31,6 @@ Vagrant.configure(2) do |config|
     config.vm.provision "file", source: "#{dir}", destination: "#{path}"
   end
 
-  # REVIEW See synced_folder line
-  # $user_vars["DREAMBOX_UID"] = 31415
-
-  # REVIEW We're going to listen for a user _after_ `ssh` instead
-  # REVIEW We need to check for multimachine so shit doesn't break
-  # if 'ssh' == VAGRANT_ARGS.first && VAGRANT_ARGS.length == 3
-  #   config.ssh.username = VAGRANT_ARGS[1] if config.vm.defined_vm_keys.length == 1
-  # end
-
   # Development machine
   # Ubuntu 12.04
   config.vm.define 'dev', autostart: false do |dev|
