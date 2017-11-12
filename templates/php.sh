@@ -9,7 +9,7 @@ fi
 
 # Copy the .ini file into place
 mkdir -p /etc/"${php_dir}"
-cp /tmp/files/php/php.ini /etc/"${php_dir}"/
+cp /usr/local/dreambox/php.ini /etc/"${php_dir}"/
 
 # Copy php-cgi to the Apache cgi-bin
 cp /usr/local/"${php_dir}"/bin/php-cgi /usr/local/apache2/cgi-bin/

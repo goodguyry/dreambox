@@ -24,16 +24,15 @@ Vagrant.configure(2) do |config|
   end
 
   # Set these so the provisioning scripts can be run via ssh
-  file_dirs = {
+  files = {
     'files' => '/tmp/files',
     'scripts' => '/tmp/scripts',
-    'packages' => '/tmp/packages' ,
+    'packages' => '/tmp/packages',
+    'templates' => '/tmp/templates',
   }
 
-  file_dirs.each do | dir, path |
-    config.vm.synced_folder "#{dir}", "#{path}",
-    create: false,
-    :mount_options => ['dmode=775,fmode=664']
+  files.each do | dir, path |
+    config.vm.provision "file", source: "#{dir}", destination: "#{path}"
   end
 
   # REVIEW See synced_folder line
@@ -69,23 +68,27 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "scripts/package-setup.sh"
 
+    # env_config = Dreambox.config.merge(template_root)
+
     test.vm.provision "PHP Install",
       type: "shell",
-      path: "scripts/php.sh",
+      inline: "/bin/bash /tmp/templates/php.sh",
       :env => Dreambox.config
 
     if Dreambox.config['ssl_enabled'] then
       test.vm.provision "SSL Setup",
         type: "shell",
-        path: "scripts/ssl.sh",
+        inline: "/bin/bash /tmp/templates/ssl.sh",
         :env => Dreambox.config
     end
 
     # TODO Change this to .each_value
     Dreambox.config['sites'].each do |site, conf|
+      # env_conf = conf.merge(template_root)
+
       test.vm.provision "User Setup: #{conf['user']}",
         type: "shell",
-        path: "scripts/user.sh",
+        inline: "/bin/bash /tmp/templates/user.sh",
         :env => conf
 
       if (! conf['is_subdomain']) then
@@ -97,7 +100,7 @@ Vagrant.configure(2) do |config|
 
       test.vm.provision "VHost Setup: #{conf['host']}",
         type: "shell",
-        path: "scripts/vhost.sh",
+        inline: "/bin/bash /tmp/templates/vhost.sh",
         :env => conf
     end
   end

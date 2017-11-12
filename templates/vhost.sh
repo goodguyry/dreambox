@@ -3,7 +3,7 @@
 port_file=/usr/local/apache2/conf/vhosts/ports.conf
 
 # Set the new vhost conf file in place
-cp /tmp/files/http/httpd-vhosts.conf "${vhost_file}"
+cp /usr/local/dreambox/httpd-vhosts.conf "${vhost_file}"
 
 # Set Apache directory
 ESCAPED_SITE_ROOT=$(echo "${root_path}" | sed 's/\(\W\)/\\\1/g');

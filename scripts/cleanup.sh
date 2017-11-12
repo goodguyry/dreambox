@@ -13,8 +13,16 @@ rm /lib/udev/rules.d/75-persistent-net-generator.rules
 
 # Remove temporary directories
 echo "Removing temporary files"
-rm -rf /tmp/files
-rm -rf /tmp/packages
+declare -a TMP=(
+  '/tmp/files'
+  '/tmp/packages'
+  '/tmp/scripts'
+  '/tmp/templates'
+);
+
+for INDEX in ${!TMP[*]}; do
+  [[ -d $TMP[$INDEX] ]] && rm -rf $TMP[$INDEX]
+done
 
 declare -a PACKAGES=(
   '/usr/local/src/httpd_2.2.31-1_amd64.deb'

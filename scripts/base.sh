@@ -62,9 +62,25 @@ cp /tmp/files/php/php-fastcgi-wrapper /usr/local/bin/
 chmod +x /usr/local/bin/php-fastcgi-wrapper
 
 # Copy the Apache config files into place
-[[ ! -d '/usr/local/apache2/conf/vhosts' ]] && mkdir '/usr/local/apache2/conf/vhosts'
+[[ ! -d /usr/local/apache2/conf/vhosts ]] && mkdir /usr/local/apache2/conf/vhosts
 cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
 cp /tmp/files/http/ports.conf /usr/local/apache2/conf/vhosts/
+
+# Copy provisioners and support files into place
+declare -a FILES=(
+  'dns_hosts.txt'
+  'httpd-vhosts.conf'
+  'php.ini'
+  'php.sh'
+  'ssl.sh'
+  'user.sh'
+  'vhost.sh'
+)
+
+[[ ! -d /usr/local/dreambox ]] && mkdir /usr/local/dreambox
+for INDEX in ${!FILES[*]}; do
+  [[ -r "/tmp/templates/${FILES[$INDEX]}" ]] && cp "/tmp/templates/${FILES[$INDEX]}" /usr/local/dreambox/
+done
 
 # Copy SSL setup script into place
 cp /tmp/files/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf

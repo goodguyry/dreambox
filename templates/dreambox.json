@@ -15,6 +15,11 @@
       "destination": "/tmp"
     },
     {
+      "type": "file",
+      "source": "{{ pwd }}/templates",
+      "destination": "/tmp"
+    },
+    {
       "type": "shell",
       "scripts": [
         "{{ pwd }}/scripts/base.sh",
@@ -100,7 +105,8 @@
       "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.box",
       "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
       "include": [
-        "{{ pwd }}/templates/config-setup.rb"
+        "{{ pwd }}/templates/class_config.rb",
+        "{{ pwd }}/templates/utilities.rb"
       ]
     },
     {
@@ -109,7 +115,8 @@
       "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.box",
       "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
       "include": [
-        "{{ pwd }}/templates/config-setup.rb"
+        "{{ pwd }}/templates/class_config.rb",
+        "{{ pwd }}/templates/utilities.rb"
       ]
     }]
   ]

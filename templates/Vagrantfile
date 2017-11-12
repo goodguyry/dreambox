@@ -23,19 +23,25 @@ Vagrant.configure(2) do |config|
     config.ssh.username = $user_vars['DREAMBOX_USER_NAME']
   end
 
-  # Install PHP
-  config.vm.provision "shell",
-    inline: "/bin/bash /usr/local/bin/php_install",
-    :env => Dreambox.config['box']
+  config.vm.provision "PHP Install",
+    type: "shell",
+    inline: "/bin/bash /user/local/dreambox/php.sh",
+    :env => Dreambox.config
 
   if Dreambox.config['ssl_enabled'] then
-    config.vm.provision "shell",
-      inline: "/bin/bash /usr/local/bin/ssl_setup",
+    config.vm.provision "SSL Setup",
+      type: "shell",
+      inline: "/bin/bash /user/local/dreambox/ssl.sh",
       :env => Dreambox.config
   end
 
   # TODO Change this to .each_value
   Dreambox.config['sites'].each do |site, conf|
+    config.vm.provision "User Setup: #{conf['user']}",
+      type: "shell",
+      inline: "/bin/bash /user/local/dreambox/user.sh",
+      :env => conf
+
     if (! conf['is_subdomain']) then
       # Sets up the sync folder
       config.vm.synced_folder conf['local_root'], conf['root_path'],
@@ -44,9 +50,10 @@ Vagrant.configure(2) do |config|
         group: "www-data",
         mount_options: ["dmode=775,fmode=664"]
     end
-    # Runs user_setup
-    config.vm.provision "shell",
-      inline: "/bin/bash /usr/local/bin/user_setup",
+
+    config.vm.provision "VHost Setup: #{conf['host']}",
+      type: "shell",
+      inline: "/bin/bash /user/local/dreambox/vhost.sh",
       :env => conf
   end
 end
