@@ -13,13 +13,10 @@ class Tests
   def initialize(opts)
     @the = {}
     @assertions = []
-    @temp_files = []
 
     opts.each do |opt|
       basename = File.basename(opt, File.extname(opt))
-      temp_file = File.join(File.dirname(__FILE__), "assertions/#{basename}.txt")
-      @the[basename] = Config.new(opt, temp_file)
-      @temp_files.push(temp_file)
+      @the[basename] = Config.new(opt)
     end
   end
 
@@ -35,11 +32,6 @@ class Tests
         printf "Actual    => %s\n\n".red, message[:actual]
       end
     end
-  end
-
-  # Clean up temporary files
-  def run_cleanup
-    @temp_files.each { |file| File.delete(file) if File.exist?(file) }
   end
 
   def run
@@ -65,6 +57,5 @@ class Tests
       end
       @tests_run += 1
     end
-    run_cleanup
   end
 end

@@ -1,17 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-VAGRANT_ARGS = ARGV
-
-# config_file = 'vm-config.yml-example'
-
 # Shoehorn the config file into our test Vagrantfile
 require_relative File.join(File.expand_path(Dir.pwd), 'templates/class_config.rb')
 
+# config_file = 'vm-config.yml-example'
 dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
-dns_hosts_file = File.join(File.expand_path(Dir.pwd), 'templates/dns_hosts.txt')
 
-Dreambox = Config.new(dreambox_config_file, dns_hosts_file)
+Dreambox = Config.new(dreambox_config_file)
 
 Vagrant.configure(2) do |config|
   config.vm.box = "hashicorp/precise64"
@@ -68,8 +64,6 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "scripts/package-setup.sh"
 
-    # env_config = Dreambox.config.merge(template_root)
-
     test.vm.provision "PHP Install",
       type: "shell",
       inline: "/bin/bash /tmp/templates/php.sh",
@@ -84,8 +78,6 @@ Vagrant.configure(2) do |config|
 
     # TODO Change this to .each_value
     Dreambox.config['sites'].each do |site, conf|
-      # env_conf = conf.merge(template_root)
-
       test.vm.provision "User Setup: #{conf['user']}",
         type: "shell",
         inline: "/bin/bash /tmp/templates/user.sh",

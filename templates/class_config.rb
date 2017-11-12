@@ -12,9 +12,7 @@ class Config
   # Class initialization
   #
   # @param String {config_file} The path to the config file
-  # @param String {hosts_file} The location at which to create the DNS Hosts file
-  def initialize(config_file, hosts_file)
-    @hosts_file = hosts_file
+  def initialize(config_file)
     collect_config_values if validates(config_file)
   end
 
@@ -184,17 +182,14 @@ class Config
     @config['sites'] = @config.fetch('sites').merge(sites)
     @config['sites'] = @config.fetch('sites').merge(subdomains)
 
-    # REVIEW: Refactor as a method; call in the Vagrantfile
-    if @config['hosts'].length > 0
-      File.delete(@hosts_file) if File.exist?(@hosts_file)
-      # To be contatenated onto openssl.cnf during SSL setup
-      File.open(@hosts_file, 'a+') { |file| file.puts("# Dreambox config") }
-      @config['hosts'].each.with_index(1) do |host, index|
-        File.open(@hosts_file, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
-      end
+    # Add the template root
+    @config['template_root'] = @template_root
 
-      # We no longer need this
-      @config.delete('hosts')
+    # Build the hosts string
+    # To be echoed onto openssl.cnf during SSL setup
+    if @config['hosts'].length > 0
+      @config['hosts'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" }
+      @config['hosts'] = @config.fetch('hosts').join('\n')
     end
 
     print_debug_info(@config, @config_config_file_path) if @config.key?('debug') && @config.fetch('debug')
