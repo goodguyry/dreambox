@@ -20,8 +20,8 @@ declare -a TMP=(
   '/tmp/templates'
 );
 
-for INDEX in ${!TMP[*]}; do
-  [[ -d $TMP[$INDEX] ]] && rm -rf $TMP[$INDEX]
+for FILE in ${TMP[@]}; do
+  [[ -d $FILE ]] && rm -rf "${FILE}"
 done
 
 echo "Removing .deb installers"
@@ -33,8 +33,8 @@ declare -a PACKAGES=(
   /usr/local/src/mysql_*.deb
 );
 
-for INDEX in ${!PACKAGES[*]}; do
-  ls $PACKAGES[$INDEX] 1> /dev/null && rm -f $PACKAGES[$INDEX]
+for DEB in ${PACKAGES[@]}; do
+  ls "${DEB}" 1> /dev/null && rm -f "${DEB}"
 done
 
 echo "Adding a 2 sec delay to the interface up, to make the dhclient happy"
