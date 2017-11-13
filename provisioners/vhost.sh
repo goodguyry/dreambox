@@ -31,12 +31,13 @@ else
   sed -i -r 's/(#\s)(NameVirtualHost\s\*:80)/\2/' "${port_file}"
 fi
 
-# Change ownership to Apache user
-# TODO The public folder must be created before this point
+# Create root path
+# For when the site's public directory isn't the site root
 if [[ ! -d "${root_path}" ]]; then
   mkdir -p "${root_path}"
 fi
 
+# Change ownership to Dreambox user
 echo "chown -R ${user}:${group} /home/${user}"
 chown -R "${user}:${group}" "/home/${user}"
 

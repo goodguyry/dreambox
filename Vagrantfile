@@ -66,7 +66,6 @@ Vagrant.configure(2) do |config|
         :env => Dreambox.config
     end
 
-    # TODO Change this to .each_value
     Dreambox.config['sites'].each do |site, conf|
       test.vm.provision "User Setup: #{conf['user']}",
         type: "shell",

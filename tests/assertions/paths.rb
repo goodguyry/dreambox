@@ -86,7 +86,4 @@
     'actual' => @tests.the['full'].config['sites']['app.full-one']['vhost_file'],
   },
 
-  # @TODO Paths: DNS Hosts File path should be correct
-  {},
-
 ])
