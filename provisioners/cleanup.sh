@@ -18,24 +18,11 @@ declare -a TMP=(
   'packages'
   'scripts'
   'provisioners'
-  'packages/src'
+  'packages'
 );
 
 for FILE in ${TMP[@]}; do
   [[ -d "/tmp/${FILE}" ]] && rm -rf "/tmp/${FILE}"
-done
-
-echo "Removing .deb installers"
-declare -a PACKAGES=(
-  /usr/local/src/httpd_*.deb
-  /usr/local/src/imagemagick-*.deb
-  /usr/local/src/imagick_*.deb
-  /usr/local/src/mod-fastcgi_*.deb
-  /usr/local/src/mysql_*.deb
-);
-
-for DEB in ${PACKAGES[@]}; do
-  ls "${DEB}" 1> /dev/null && rm -f "${DEB}"
 done
 
 echo "Adding a 2 sec delay to the interface up, to make the dhclient happy"

@@ -81,6 +81,9 @@ for INDEX in ${!FILES[*]}; do
   [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/
 done
 
+# Copy PHP installers into place
+ls /usr/local/src/php_*.deb 1> /dev/null && cp /usr/local/src/php_*.deb /usr/local/dreambox
+
 # Copy SSL setup script into place
 cp /tmp/files/ssl/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
 

@@ -1,8 +1,8 @@
 #! /bin/bash
 
 echo "Installing PHP v${php}"
-if [[ /usr/local/src/php_"${php}"*.deb ]]; then
-  dpkg -i /usr/local/src/php_"${php}"*.deb > /dev/null 2>&1
+if [[ /usr/local/dreambox/php_"${php}"*.deb ]]; then
+  dpkg -i /usr/local/dreambox/php_"${php}"*.deb > /dev/null 2>&1
 else
   exit 1
 fi
