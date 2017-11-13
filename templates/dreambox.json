@@ -16,19 +16,19 @@
     },
     {
       "type": "file",
-      "source": "{{ pwd }}/templates",
+      "source": "{{ pwd }}/provisioners",
       "destination": "/tmp"
     },
     {
       "type": "shell",
       "scripts": [
-        "{{ pwd }}/scripts/base.sh",
-        "{{ pwd }}/scripts/package-setup.sh",
-        "{{ pwd }}/scripts/virtualbox.sh",
-        "{{ pwd }}/scripts/vmware.sh",
-        "{{ pwd }}/scripts/vagrant.sh",
-        "{{ pwd }}/scripts/cleanup.sh",
-        "{{ pwd }}/scripts/zerodisk.sh"
+        "{{ pwd }}/provisioners/base.sh",
+        "{{ pwd }}/provisioners/package-setup.sh",
+        "{{ pwd }}/provisioners/virtualbox.sh",
+        "{{ pwd }}/provisioners/vmware.sh",
+        "{{ pwd }}/provisioners/vagrant.sh",
+        "{{ pwd }}/provisioners/cleanup.sh",
+        "{{ pwd }}/provisioners/zerodisk.sh"
       ],
       "override": {
         "virtualbox-iso": {

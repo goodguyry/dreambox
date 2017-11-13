@@ -68,22 +68,21 @@ cp /tmp/files/http/ports.conf /usr/local/apache2/conf/vhosts/
 
 # Copy provisioners and support files into place
 declare -a FILES=(
-  'dns_hosts.txt'
-  'httpd-vhosts.conf'
-  'php.ini'
-  'php.sh'
-  'ssl.sh'
-  'user.sh'
-  'vhost.sh'
+  'files/http/httpd-vhosts.conf'
+  'files/php/php.ini'
+  'provisioners/php.sh'
+  'provisioners/ssl.sh'
+  'provisioners/user.sh'
+  'provisioners/vhost.sh'
 )
 
 [[ ! -d /usr/local/dreambox ]] && mkdir /usr/local/dreambox
 for INDEX in ${!FILES[*]}; do
-  [[ -r "/tmp/templates/${FILES[$INDEX]}" ]] && cp "/tmp/templates/${FILES[$INDEX]}" /usr/local/dreambox/
+  [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/
 done
 
 # Copy SSL setup script into place
-cp /tmp/files/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
+cp /tmp/files/ssl/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
 
 # Add Apache, PHP and MySQL bins to PATH
 echo "Adding Apache, PHP and MySQL bins to PATH"

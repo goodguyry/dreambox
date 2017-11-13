@@ -14,14 +14,15 @@ rm /lib/udev/rules.d/75-persistent-net-generator.rules
 # Remove temporary directories
 echo "Removing temporary files"
 declare -a TMP=(
-  '/tmp/files'
-  '/tmp/packages'
-  '/tmp/scripts'
-  '/tmp/templates'
+  'files'
+  'packages'
+  'scripts'
+  'provisioners'
+  'packages/src'
 );
 
 for FILE in ${TMP[@]}; do
-  [[ -d $FILE ]] && rm -rf "${FILE}"
+  [[ -d "/tmp/${FILE}" ]] && rm -rf "/tmp/${FILE}"
 done
 
 echo "Removing .deb installers"

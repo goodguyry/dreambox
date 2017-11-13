@@ -22,9 +22,8 @@ Vagrant.configure(2) do |config|
   # Set these so the provisioning scripts can be run via ssh
   files = {
     'files' => '/tmp/files',
-    'scripts' => '/tmp/scripts',
     'packages' => '/tmp/packages',
-    'templates' => '/tmp/templates',
+    'provisioners' => '/tmp/provisioners',
   }
 
   files.each do | dir, path |
@@ -49,21 +48,21 @@ Vagrant.configure(2) do |config|
 
     test.vm.provision "Base",
       type: "shell",
-      path: "scripts/base.sh"
+      path: "provisioners/base.sh"
 
     test.vm.provision "Package Setup",
       type: "shell",
-      path: "scripts/package-setup.sh"
+      path: "provisioners/package-setup.sh"
 
     test.vm.provision "PHP Install",
       type: "shell",
-      inline: "/bin/bash /tmp/templates/php.sh",
+      inline: "/bin/bash /tmp/provisioners/php.sh",
       :env => Dreambox.config
 
     if Dreambox.config['ssl_enabled'] then
       test.vm.provision "SSL Setup",
         type: "shell",
-        inline: "/bin/bash /tmp/templates/ssl.sh",
+        inline: "/bin/bash /tmp/provisioners/ssl.sh",
         :env => Dreambox.config
     end
 
@@ -71,7 +70,7 @@ Vagrant.configure(2) do |config|
     Dreambox.config['sites'].each do |site, conf|
       test.vm.provision "User Setup: #{conf['user']}",
         type: "shell",
-        inline: "/bin/bash /tmp/templates/user.sh",
+        inline: "/bin/bash /tmp/provisioners/user.sh",
         :env => conf
 
       if (! conf['is_subdomain']) then
@@ -83,7 +82,7 @@ Vagrant.configure(2) do |config|
 
       test.vm.provision "VHost Setup: #{conf['host']}",
         type: "shell",
-        inline: "/bin/bash /tmp/templates/vhost.sh",
+        inline: "/bin/bash /tmp/provisioners/vhost.sh",
         :env => conf
     end
   end
