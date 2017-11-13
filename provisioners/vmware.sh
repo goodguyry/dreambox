@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# VMWare-specific setup
+#
 
 # Bail if we are not running inside VMWare.
 if [[ `facter virtual` != "vmware" ]]; then
@@ -6,8 +9,6 @@ if [[ `facter virtual` != "vmware" ]]; then
 fi
 
 # Install the VMWare Tools from a linux ISO.
-echo "Installing VMWare Tools"
-#wget http://192.168.0.185/linux.iso -P /tmp
 mkdir -p /mnt/vmware
 mount -o loop /home/vagrant/linux.iso /mnt/vmware
 

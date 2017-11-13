@@ -2,11 +2,11 @@
 #
 # Create the SSL certificate, then finish setup
 #
+
 open_ssl_conf='/usr/lib/ssl/dreambox-openssl.cnf'
 
 # Check for a saved certificate and key
 if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; then
-  # Use the saved certs
   echo "Using saved certs from /vagrant/certs/"
   cp -f /vagrant/certs/"${name}".* /usr/local/apache2/conf/
 else
@@ -28,9 +28,8 @@ else
     -out "/usr/local/apache2/conf/${name}.crt" \
     -config "${open_ssl_conf}";
 
-  # Create the certs directory
-  [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
   # Save these for next time
+  [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
   cp -f /usr/local/apache2/conf/"${name}".* /vagrant/certs
 fi
 

@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# VirtualBox-specific setup
+#
 
 # Bail if we are not running inside VirtualBox.
 if [[ `facter virtual` != "virtualbox" ]]; then
@@ -6,7 +9,6 @@ if [[ `facter virtual` != "virtualbox" ]]; then
 fi
 
 # Install the VMWare Tools from a linux ISO.
-echo "Installing VMWare Tools"
 mkdir -p /mnt/virtualbox
 mount -o loop /home/vagrant/VBoxGuest*.iso /mnt/virtualbox
 

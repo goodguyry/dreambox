@@ -1,7 +1,6 @@
 name: 'dreambox'
 php: '7'
 ssl: true
-# host: main-host.dev
 
 sites:
   'dreambox':
@@ -14,7 +13,6 @@ sites:
       - 'dreambox.test'
     subdomains:
       app: 'app/'
-    # ssl: true
   'example':
     user: example_user
     root: example.com

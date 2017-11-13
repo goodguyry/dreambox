@@ -35,7 +35,7 @@ Vagrant.configure(2) do |config|
   end
 
   # Testing machine
-  # Fully provisioned and ready to test
+  # To be fully provisioned and ready to test
   config.vm.define 'test', primary: true do |test|
     test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"

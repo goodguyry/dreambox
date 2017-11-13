@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Set up the virtual host
+#
 
 port_file=/usr/local/apache2/conf/vhosts/ports.conf
 
@@ -33,17 +36,10 @@ fi
 
 # Create root path
 # For when the site's public directory isn't the site root
-if [[ ! -d "${root_path}" ]]; then
-  mkdir -p "${root_path}"
-fi
+[[ ! -d "${root_path}" ]] && mkdir -p "${root_path}"
 
-# Change ownership to Dreambox user
-echo "chown -R ${user}:${group} /home/${user}"
+# Update permissions
 chown -R "${user}:${group}" "/home/${user}"
 
 # Restart Apache
 /etc/init.d/apache2 restart  >/dev/null
-
-echo
-
-[[ $? -lt 1 ]] && echo -e "User setup complete.\n"

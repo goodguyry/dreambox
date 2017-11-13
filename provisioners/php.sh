@@ -1,6 +1,10 @@
 #! /bin/bash
+#
+# Install PHP
+#
 
 echo "Installing PHP v${php}"
+
 if [[ /usr/local/dreambox/php_"${php}"*.deb ]]; then
   dpkg -i /usr/local/dreambox/php_"${php}"*.deb > /dev/null 2>&1
 else
@@ -23,6 +27,5 @@ fi
 export PATH=$PATH:"/usr/local/${php_dir}/bin"
 echo "PATH=\$PATH:/usr/local/${php_dir}/bin" >> /home/vagrant/.profile
 
-# Restart Apache
-echo "Starting Apache"
+# Start Apache
 /etc/init.d/apache2 start
