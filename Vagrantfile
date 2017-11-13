@@ -1,15 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# config_file = 'vm-config.yml-example'
-
 # Shoehorn the config file into our test Vagrantfile
 require_relative File.join(File.expand_path(Dir.pwd), 'templates/class_config.rb')
 
+# config_file = 'vm-config.yml-example'
 dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
-dns_hosts_file = File.join(File.expand_path(Dir.pwd), 'templates/dns_hosts.txt')
 
-Dreambox = Config.new(dreambox_config_file, dns_hosts_file)
+Dreambox = Config.new(dreambox_config_file)
 
 Vagrant.configure(2) do |config|
   config.vm.box = "hashicorp/precise64"
@@ -21,9 +19,13 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
-  # Set these so the provisioning scripts can be run via ssh
-  config.vm.synced_folder "files", "/tmp/files", create: false, :mount_options => ["dmode=775", "fmode=664"]
-  config.vm.synced_folder "packages", "/tmp/packages", create: false, :mount_options => ["dmode=775", "fmode=664"]
+  # Recreates the Packer file provisioner
+  files = {
+    'files' => '/tmp/files',
+    'packages' => '/tmp/packages',
+    'provisioners' => '/tmp/provisioners',
+  }
+  files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
 
   # Development machine
   # Ubuntu 12.04
@@ -33,44 +35,50 @@ Vagrant.configure(2) do |config|
   end
 
   # Testing machine
-  # Fully provisioned and ready to test
+  # To be fully provisioned and ready to test
   config.vm.define 'test', primary: true do |test|
     test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"
 
-
     # Start bash as a non-login shell
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
-    # Installed utinities and libraries
-    test.vm.provision "base",
+    test.vm.provision "Base",
       type: "shell",
-      path: "scripts/base.sh",
-      # Environment variable for simulating Packer file provisioner
-      :env => {"DREAMBOX_ENV" => "develop"}
+      path: "provisioners/base.sh"
 
-    # Post-install MySQL setup
-    test.vm.provision "package-setup",
+    test.vm.provision "Package Setup",
       type: "shell",
-      path: "scripts/package-setup.sh"
+      path: "provisioners/package-setup.sh"
 
-    # Install PHP
-    test.vm.provision "shell",
-      inline: "/bin/bash /usr/local/bin/php_install",
+    test.vm.provision "PHP Install",
+      type: "shell",
+      path: "provisioners/php.sh",
       :env => Dreambox.config
 
     if Dreambox.config['ssl_enabled'] then
-      test.vm.provision "shell",
-        inline: "/bin/bash /usr/local/bin/ssl_setup",
+      test.vm.provision "SSL Setup",
+        type: "shell",
+        path: "provisioners/ssl.sh",
         :env => Dreambox.config
     end
 
     Dreambox.config['sites'].each do |site, conf|
-      # Sets up the sync folder
-      test.vm.synced_folder conf['local_root'], conf['root_path']
-      # Runs user_setup
-      test.vm.provision "shell",
-        inline: "/bin/bash /usr/local/bin/user_setup",
+      test.vm.provision "User Setup: #{conf['user']}",
+        type: "shell",
+        path: "provisioners/user.sh",
+        :env => conf
+
+      if (! conf['is_subdomain']) then
+        test.vm.synced_folder conf['local_root'], conf['root_path'],
+          owner: "#{conf['uid']}",
+          group: "#{conf['gid']}",
+          mount_options: ["dmode=775,fmode=664"]
+      end
+
+      test.vm.provision "VHost Setup: #{conf['host']}",
+        type: "shell",
+        path: "provisioners/vhost.sh",
         :env => conf
     end
   end

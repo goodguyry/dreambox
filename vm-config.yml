@@ -1,26 +1,24 @@
 name: 'dreambox'
 php: '7'
 ssl: true
-# host: main-host.dev
 
 sites:
   'dreambox':
-    username: 'db_user' # required
+    user: 'db_user' # required
     root: 'dreambox.com' # required
     public: 'public'
-    local_root: 'web/' # required
+    local_root: 'static/' # required
     host: 'www.dreambox.test' # required
     aliases:
       - 'dreambox.test'
     subdomains:
       app: 'app/'
-    # ssl: true
   'example':
-    username: example_user
+    user: example_user
     root: example.com
     local_root: web
     host: example.dev
     subdomains: { 'help': '/app/help/' }
     ssl: false
 
-debug: true
+# debug: true

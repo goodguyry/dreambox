@@ -9,7 +9,8 @@ ssl: true
 
 sites:
   'typical-one':
-    username: user
+    user: user
+    group: example_group
     root: example.com
     local_root: web/
     host: example.dev
@@ -17,7 +18,7 @@ sites:
       - www.example.dev
       - '*.example.dev'
   'typical-two':
-    username: user-two
+    user: user-two
     root: example-two.com
     local_root: web
     host: example-two.dev

@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 # Default: vm-config.yml
-vm_config_file = 'vm-config.yml-example'
+config_file = 'vm-config.yml-example'
 
 # See https://www.vagrantup.com/docs/vagrantfile/ for
 #   additional configuration options

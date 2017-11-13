@@ -47,10 +47,10 @@
   # - SSL is not enabled in the lone site declaration.
   #
   # Expected Outcome:
-  # - The root `hosts` property created by Config should be empty.
+  # - The root `hosts` property created by Config should be an empty string.
   {
-    'name' => 'Missing SSL: The root `hosts` property should be empty.',
-    'expect' => [],
+    'name' => 'Missing SSL: The root `hosts` property should be an empty string.',
+    'expect' => '',
     'actual' => @tests.the['required'].config['hosts'],
   },
 
@@ -166,16 +166,11 @@
   #
   # Expected Outcome:
   # - All of the SSL-enabled site's host and alias values should be added
-  #   to the root `hosts` property by Config and thus passed along to the
-  #   DNS Hosts file.
+  #   to the root `hosts` property by Config as a string.
   {
     'name' => 'SSL Off: The DNS Hosts file should contain all SSL-enabled hosts.',
-    'expect' => [
-      'DNS.1 = example-two.dev',
-      'DNS.2 = www.example-two.dev',
-      'DNS.3 = help.example-two.dev',
-    ],
-    'actual' => File.open(File.join(@assertions_dir, 'full.txt'), 'r').read.split("\n"),
+    'expect' => 'DNS.1 = example-two.dev\nDNS.2 = www.example-two.dev\nDNS.3 = help.example-two.dev',
+    'actual' => @tests.the['full'].config['hosts'],
   },
 
   ## ===> SSL On
@@ -245,14 +240,11 @@
   #   property by Config
   #
   # Expected Outcome:
-  # - The DNS Hosts file should contain the SSL-enabled site's aliases.
+  # - The hosts string should contain the SSL-enabled site's aliases.
   {
     'name' => "SSL On: The DNS Hosts file should contain the SSL-enabled site's aliases.",
-    'expect' => [
-      'DNS.1 = www.example.dev',
-      'DNS.2 = example.dev',
-    ],
-    'actual' => File.open(File.join(@assertions_dir, 'typical.txt'), 'r').read.split("\n"),
+    'expect' => 'DNS.1 = www.example.dev\nDNS.2 = example.dev',
+    'actual' => @tests.the['typical'].config['hosts'],
   },
 
 ])

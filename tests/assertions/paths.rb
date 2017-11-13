@@ -16,7 +16,7 @@
   },
 
   # Conditions:
-  # - The site's `username` property has a valid String value.
+  # - The site's `user` property has a valid String value.
   # - The site's `root` property has a valid String value.
   # - The site's `public` property has a valid String value.
   #
@@ -30,7 +30,7 @@
   },
 
   # Conditions:
-  # - The site's `username` property has a valid String value.
+  # - The site's `user` property has a valid String value.
   # - The site's `root` property has a valid String value.
   # - The site has a valid subdomain delcaration
   #
@@ -44,7 +44,7 @@
   },
 
   # Conditions:
-  # - The site's `username` property has a valid String value.
+  # - The site's `user` property has a valid String value.
   # - The site's `root` property has a valid String value.
   # - The site has a valid subdomain delcaration
   # - The parent site's `public` property has a valid String value.
@@ -85,8 +85,5 @@
     'expect' => '/usr/local/apache2/conf/vhosts/app.full-one.conf',
     'actual' => @tests.the['full'].config['sites']['app.full-one']['vhost_file'],
   },
-
-  # @TODO Paths: DNS Hosts File path should be correct
-  {},
 
 ])

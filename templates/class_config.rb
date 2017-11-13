@@ -12,9 +12,7 @@ class Config
   # Class initialization
   #
   # @param String {config_file} The path to the config file
-  # @param String {hosts_file} The location at which to create the DNS Hosts file
-  def initialize(config_file, hosts_file)
-    @hosts_file = hosts_file
+  def initialize(config_file)
     collect_config_values if validates(config_file)
   end
 
@@ -63,7 +61,7 @@ class Config
 
     @raw['php_dir'] = php_dirs[php_versions.index(@raw.fetch('php'))]
 
-    required_properties = ['username', 'root', 'local_root', 'host']
+    required_properties = ['user', 'root', 'local_root', 'host']
     @raw['sites'].each_key do |dict|
       required_properties.each do |property|
         begin
@@ -82,6 +80,11 @@ class Config
     sites = {}
     subdomains = {}
 
+    users = {}
+    groups = {}
+    user_id = 501
+    group_id = 901
+
     site_defaults = {}
     site_defaults['box_name'] = @config.fetch('name')
     site_defaults['is_subdomain'] = false
@@ -90,12 +93,31 @@ class Config
       # Make a deep copy of the hash so it's not altered as we are iterating
       site = Marshal.load(Marshal.dump(@config['sites'].fetch(dict)))
 
+      # User and Group ID
+      # Assign a UID based either on a previously-declared user or a new user
+      # Assign a GID based either on a previously-declared group, a new group, or the default
+
+      if users.key?(site['user'])
+        site['uid'] = users[site['user']]
+      else
+        site['uid'] = user_id += 1
+        users.merge!(site['user'] => site['uid'])
+      end
+
+      site['group'] = 'dreambox' unless site['group']
+      if groups.key?(site['group'])
+        site['gid'] = groups[site['group']]
+      else
+        site['gid'] = group_id += 1
+        groups.merge!(site['group'] => site['gid'])
+      end
+
       # Paths
       # Clean and build paths used by Vagrant and/or the provisioners
 
       site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
 
-      root_path = File.join('/home/', site.fetch('username'), trim_slashes(site.fetch('root')))
+      root_path = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
       site['root_path'] = (site.key?('public')) ?
         File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
 
@@ -133,7 +155,10 @@ class Config
           path = site['subdomains'][sub]
           subdomain_name = "#{sub}.#{dict}"
           subdomains[subdomain_name] = {
-            'username' => site.fetch('username'), # Inherited from the parent site
+            'user' => site.fetch('user'), # Inherited from the parent site
+            'uid' => site.fetch('uid'), # Inherited from the parent site
+            'group' => site.fetch('group'), # Inherited from the parent site
+            'gid' => site.fetch('gid'), # Inherited from the parent site
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
@@ -157,17 +182,11 @@ class Config
     @config['sites'] = @config.fetch('sites').merge(sites)
     @config['sites'] = @config.fetch('sites').merge(subdomains)
 
-    # REVIEW: Refactor as a method; call in the Vagrantfile
-    if @config['hosts'].length > 0
-      File.delete(@hosts_file) if File.exist?(@hosts_file)
-      # To be contatenated onto openssl.cnf during SSL setup
-      @config['hosts'].each.with_index(1) do |host, index|
-        File.open(@hosts_file, 'a+') { |file| file.puts("DNS.#{index} = #{host}") }
-      end
-
-      # We no longer need this
-      @config.delete('hosts')
-    end
+    # Build the hosts string
+    # To be echoed onto openssl.cnf during SSL setup
+    @config['hosts'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" } if @config['hosts'].length > 0
+    delimiter = (@config['hosts'].length > 0) ? '\n' : ''
+    @config['hosts'] = @config.fetch('hosts').join(delimiter)
 
     print_debug_info(@config, @config_config_file_path) if @config.key?('debug') && @config.fetch('debug')
   end
