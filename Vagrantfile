@@ -19,16 +19,13 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
-  # Set these so the provisioning scripts can be run via ssh
+  # Recreates the Packer file provisioner
   files = {
     'files' => '/tmp/files',
     'packages' => '/tmp/packages',
     'provisioners' => '/tmp/provisioners',
   }
-
-  files.each do | dir, path |
-    config.vm.provision "file", source: "#{dir}", destination: "#{path}"
-  end
+  files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
 
   # Development machine
   # Ubuntu 12.04
