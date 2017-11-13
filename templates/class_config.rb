@@ -182,9 +182,6 @@ class Config
     @config['sites'] = @config.fetch('sites').merge(sites)
     @config['sites'] = @config.fetch('sites').merge(subdomains)
 
-    # Add the template root
-    @config['template_root'] = @template_root
-
     # Build the hosts string
     # To be echoed onto openssl.cnf during SSL setup
     @config['hosts'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" } if @config['hosts'].length > 0
