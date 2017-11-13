@@ -101,7 +101,7 @@ unstructuredName    = An optional company name
 [v3_req]
 basicConstraints = CA:TRUE
 keyUsage = nonRepudiation, digitalSignature, keyEncipherment
-subjectAltName = @alt_names
+# subjectAltName = @alt_names
 
 ##########################################################################
 
