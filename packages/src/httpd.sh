@@ -52,7 +52,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: Apache 2.2.31 compiled from source on 12.04
+# Description: Apache 2.2.31 compiled from source on 14.04
 # Hit return through all prompts
 checkinstall -D make install;
 

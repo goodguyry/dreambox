@@ -3,11 +3,10 @@
 ##
 # php.sh
 #
-# Install PHP v7.0.14
+# Install PHP v7.0.24
 ##
 
-PACKAGE_NAME="php-7.0.14"
-# 7.0.24 + 7.1.10
+PACKAGE_NAME="php-7.0.24"
 PHP_DIR="php70"
 
 # TODO The setup is identical and thus can be shared between the two PHP files
@@ -129,7 +128,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: PHP 7.0.14 compiled from source on 12.04
+# Description: PHP 7.0.24 compiled from source on 14.04
 # Hit return through all prompts
 checkinstall -D make install;
 

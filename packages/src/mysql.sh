@@ -3,12 +3,11 @@
 ##
 # mysql.sh
 #
-# Install MySQL 5.5.40
+# Install MySQL 5.6.34
 # https://help.ubuntu.com/community/MYSQL5FromSource
 ##
 
-PACKAGE_NAME="mysql-5.5.40"
-# 5.6.34 (dpkg -l = 5.5.58)
+PACKAGE_NAME="mysql-5.6.34"
 
 # Update apt-get
 apt-get -qq update;
@@ -21,7 +20,7 @@ apt-get -y install libncurses5-dev;
 
 cd /usr/local/src/;
 
-# Download mysql 5.5.40
+# Download mysql 5.6.34
 wget http://dev.mysql.com/get/Downloads/MySQL-5.5/"$PACKAGE_NAME".tar.gz
 
 # Extract the files
@@ -39,7 +38,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: MySQL 5.5.40 with readline
+# Description: MySQL 5.6.34 with readline
 # Hit return through all prompts
 checkinstall -D make install;
 

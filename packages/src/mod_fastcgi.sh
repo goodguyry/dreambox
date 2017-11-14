@@ -38,7 +38,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: mod_fastcgi 2.4.6 compiled from source on 12.04
+# Description: mod_fastcgi 2.4.6 compiled from source on 14.04
 # Hit return through all prompts
 checkinstall -D make install;
 

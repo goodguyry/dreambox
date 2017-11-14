@@ -3,11 +3,11 @@
 ##
 # php.sh
 #
-# Install PHP v5.6.31
+# Install PHP v7.1.10
 ##
 
-PACKAGE_NAME="php-5.6.31"
-PHP_DIR="php56"
+PACKAGE_NAME="php-7.1.10"
+PHP_DIR="php71"
 
 # TODO The setup is identical and thus can be shared between the two PHP files
 
@@ -102,9 +102,7 @@ cd "${PACKAGE_NAME}"/;
 --with-kerberos \
 --with-mcrypt \
 --with-mhash \
---with-msql \
 --with-mysql-sock=/tmp/mysql.sock \
---with-mysql=mysqlnd \
 --with-mysqli=mysqlnd \
 --with-openssl \
 --with-pcre-regex \
@@ -123,18 +121,14 @@ cd "${PACKAGE_NAME}"/;
 --with-zend-vm=GOTO \
 --with-zlib-dir=/usr \
 --with-zlib \
---without-pear \
-CFLAGS='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Wformat-security' \
-CPPFLAGS=-D_FORTIFY_SOURCE=2 \
-CXXFLAGS='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Wformat-security' \
-LDFLAGS='-Wl,-Bsymbolic-functions -Wl,-z,relro';
+--without-pear;
 
 make clean;
 make;
 
 # Package into a deb file for quick install
 #
-# Description: PHP 5.6.31 compiled from source on 14.04
+# Description: PHP 7.1.10 compiled from source on 14.04
 # Hit return through all prompts
 checkinstall -D make install;
 

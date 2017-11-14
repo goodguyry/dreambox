@@ -28,7 +28,7 @@ Vagrant.configure(2) do |config|
   files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
 
   # Development machine
-  # Ubuntu 12.04
+  # Ubuntu 14.04
   config.vm.define 'dev', autostart: false do |dev|
     dev.vm.hostname = "dreambox.dev"
     dev.vm.network :private_network, ip: "192.168.12.34"

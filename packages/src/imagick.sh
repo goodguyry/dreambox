@@ -4,13 +4,12 @@
 # imagick.sh
 #
 # Install ImageMagick and imagick
-# - ImageMagick v6.6.9-10
+# - ImageMagick v6.7.7.10
 # - imagick v3.2.0RC1
 # Both require a PHP install (sudo /vagrant/bin/php.sh)
 ##
 
-PACKAGE_NAME="ImageMagick-6.6.9-10"
-# 6.7.7.10
+PACKAGE_NAME="ImageMagick-6.7.7.10"
 
 # Be sure the PHP bin is in the PATH
 export PATH=$PATH:/usr/local/php56/bin;
@@ -63,7 +62,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: ImageMagick 6.6.9 compiled from source on 12.04
+# Description: ImageMagick 6.6.9 compiled from source on 14.04
 # Hit return through all prompts
 checkinstall -D make install;
 
@@ -95,7 +94,7 @@ make;
 
 # Package into a deb file for quick install
 #
-# Description: imagick 3.2.0RC1 compiled from source on 12.04
+# Description: imagick 3.2.0RC1 compiled from source on 14.04
 # Hit return through all prompts
 checkinstall -D make install;
 
