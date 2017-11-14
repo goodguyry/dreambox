@@ -17,17 +17,10 @@ apt-get -qq update
 # Install utilities
 apt-get -y install build-essential chkconfig curl facter libreadline-gplv2-dev libssl-dev linux-headers-$(uname -r) vim zip zlib1g-dev git git-core git-stuff git-sh git-doc git-svn>/dev/null
 # E: Package 'chkconfig' has no installation candidate
+# https://askubuntu.com/questions/2263/chkconfig-alternative-for-ubuntu-server
 
 # Install libraries
-apt-get -y install libapr1 libaprutil1 libaspell15 libcurl3 libdjvulibre21 libfontconfig1 libgvc5 libicu48 libjasper1 libjpeg-turbo8 liblcms1 liblqr-1-0 libltdl7 libmcrypt4 libopenexr6 libpcre3 libpq5 librsvg2-2 libtidy-0.99-0 libtiff4 libwmf0.2-7 libxml2 libxpm4 libxslt1.1 ruby1.8-dev ruby-rails-2.3 >/dev/null
-# sudo apt-cache madison libgvc*
-# sudo apt-cache madison libicu*
-# sudo apt-cache madison libtiff*
-# sudo apt-get install ruby=1:1.9.3.4
-# E: Couldn't find any package by regex 'ruby1.8-dev'
-# Ruby Rails (two versions availabel):
-# - ruby-rails-4.0 | 4.0.2+dfsg-2
-# - ruby-rails-3.2 | 3.2.16-1
+apt-get -y install libapr1 libaprutil1 libaspell15 libcurl3 libdjvulibre21 libfontconfig1 libgvc6 libicu52 libjasper1 libjpeg-turbo8 liblcms1 liblqr-1-0 libltdl7 libmcrypt4 libopenexr6 libpcre3 libpq5 librsvg2-2 libtidy-0.99-0 libtiff5 libwmf0.2-7 libxml2 libxpm4 libxslt1.1 ruby ruby-dev ruby-rails-3.2 >/dev/null
 
 # Link and cache libraries
 ldconfig /usr/local/lib
