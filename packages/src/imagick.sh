@@ -10,6 +10,7 @@
 ##
 
 PACKAGE_NAME="ImageMagick-6.6.9-10"
+# 6.7.7.10
 
 # Be sure the PHP bin is in the PATH
 export PATH=$PATH:/usr/local/php56/bin;
@@ -18,7 +19,7 @@ export PATH=$PATH:/usr/local/php56/bin;
 apt-get -qq update;
 
 # Install utilities
-apt-get -y install autoconf build-essential checkinstall chkconfig libtool make pkg-config zip;
+apt-get -y install autoconf build-essential checkinstall sysv-rc-conf sysvinit-utils libtool make pkg-config zip;
 
 # Build ImageMagick dependencies
 apt-get -y install build-dep imagemagick;
@@ -72,6 +73,7 @@ zip /tmp/packages/"$PACKAGE_NAME".zip *.deb;
 # imagick
 
 MOD_NAME="imagick-3.2.0RC1";
+# 3.4.3
 
 cd /usr/local/src;
 

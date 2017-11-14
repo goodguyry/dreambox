@@ -9,8 +9,8 @@ echo 'Finishing Apache install'
 # Set Apache to start at boot
 cp /tmp/files/http/apache2 /etc/init.d/ && chmod +x /etc/init.d/apache2
 ln -s /usr/lib/insserv/insserv /sbin/insserv
-chkconfig --add apache2 > /dev/null 2>&1
-chkconfig --list apache2
+sysv-rc-conf apache2 on
+sysv-rc-conf --list apache2
 
 # Set permissions for htdocs
 chown -R www-data:www-data /usr/local/apache2/htdocs

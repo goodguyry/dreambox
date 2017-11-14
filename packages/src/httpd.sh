@@ -12,7 +12,7 @@ PACKAGE_NAME="httpd-2.2.31";
 apt-get -qq update;
 
 # Install utilities
-apt-get -y install autoconf checkinstall chkconfig libtool make zip;
+apt-get -y install autoconf checkinstall sysv-rc-conf sysvinit-utils libtool make zip;
 
 # Build Apache dependencies
 # apt-get -y build-dep apache2

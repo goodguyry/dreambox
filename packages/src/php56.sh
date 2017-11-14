@@ -7,6 +7,7 @@
 ##
 
 PACKAGE_NAME="php-5.6.29"
+# 5.6.31
 PHP_DIR="php56"
 
 # TODO The setup is identical and thus can be shared between the two PHP files
