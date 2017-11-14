@@ -19,14 +19,6 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
-  # Recreates the Packer file provisioner
-  files = {
-    'files' => '/tmp/files',
-    'packages' => '/tmp/packages',
-    'provisioners' => '/tmp/provisioners',
-  }
-  files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
-
   # Development machine
   # Ubuntu 14.04
   config.vm.define 'dev', autostart: false do |dev|
@@ -39,6 +31,14 @@ Vagrant.configure(2) do |config|
   config.vm.define 'test', primary: true do |test|
     test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"
+
+    # Recreates the Packer file provisioner
+    files = {
+      'files' => '/tmp/files',
+      'packages' => '/tmp/packages',
+      'provisioners' => '/tmp/provisioners',
+    }
+    files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
 
     # Start bash as a non-login shell
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
