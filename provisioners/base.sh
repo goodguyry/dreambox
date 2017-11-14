@@ -15,9 +15,7 @@ perl -p -i -e 's#http://us.archive.ubuntu.com/ubuntu#http://mirror.rackspace.com
 apt-get -qq update
 
 # Install utilities
-apt-get -y install build-essential chkconfig curl facter libreadline-gplv2-dev libssl-dev linux-headers-$(uname -r) vim zip zlib1g-dev git git-core git-stuff git-sh git-doc git-svn>/dev/null
-# E: Package 'chkconfig' has no installation candidate
-# https://askubuntu.com/questions/2263/chkconfig-alternative-for-ubuntu-server
+apt-get -y install build-essential sysv-rc-conf sysvinit-utils curl facter libreadline5 libreadline6 libreadline6-dev libssl-dev linux-headers-$(uname -r) vim zip zlib1g-dev git git-core git-stuff git-sh git-doc git-svn>/dev/null
 
 # Install libraries
 apt-get -y install libapr1 libaprutil1 libaspell15 libcurl3 libdjvulibre21 libfontconfig1 libgvc6 libicu52 libjasper1 libjpeg-turbo8 liblcms1 liblqr-1-0 libltdl7 libmcrypt4 libopenexr6 libpcre3 libpq5 librsvg2-2 libtidy-0.99-0 libtiff5 libwmf0.2-7 libxml2 libxpm4 libxslt1.1 ruby ruby-dev ruby-rails-3.2 >/dev/null

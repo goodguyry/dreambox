@@ -18,7 +18,7 @@ export PATH=$PATH:/usr/local/php56/bin;
 apt-get -qq update;
 
 # Install utilities
-apt-get -y install autoconf build-essential checkinstall chkconfig libtool make pkg-config zip;
+apt-get -y install autoconf build-essential checkinstall sysv-rc-conf sysvinit-utils libtool make pkg-config zip;
 
 # Build ImageMagick dependencies
 apt-get -y install build-dep imagemagick;
