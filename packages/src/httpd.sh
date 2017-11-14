@@ -15,7 +15,7 @@ apt-get -qq update;
 apt-get -y install autoconf checkinstall sysv-rc-conf sysvinit-utils libtool make zip;
 
 # Build Apache dependencies
-# apt-get -y build-dep apache2
+apt-get -y build-dep apache2
 
 # Link and cache libraries
 ldconfig /usr/local/lib;
