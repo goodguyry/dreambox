@@ -7,6 +7,7 @@
 ##
 
 PACKAGE_NAME="php-7.0.14"
+# 7.0.24 + 7.1.10
 PHP_DIR="php70"
 
 # TODO The setup is identical and thus can be shared between the two PHP files

@@ -8,6 +8,7 @@
 ##
 
 PACKAGE_NAME="mysql-5.5.40"
+# 5.6.34 (dpkg -l = 5.5.58)
 
 # Update apt-get
 apt-get -qq update;

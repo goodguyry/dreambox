@@ -10,6 +10,7 @@
 ##
 
 PACKAGE_NAME="ImageMagick-6.6.9-10"
+# 6.7.7.10
 
 # Be sure the PHP bin is in the PATH
 export PATH=$PATH:/usr/local/php56/bin;
@@ -72,6 +73,7 @@ zip /tmp/packages/"$PACKAGE_NAME".zip *.deb;
 # imagick
 
 MOD_NAME="imagick-3.2.0RC1";
+# 3.4.3
 
 cd /usr/local/src;
 
