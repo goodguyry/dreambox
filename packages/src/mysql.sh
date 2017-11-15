@@ -21,7 +21,7 @@ apt-get -y install libncurses5-dev;
 cd /usr/local/src/;
 
 # Download mysql 5.6.34
-wget http://dev.mysql.com/get/Downloads/MySQL-5.5/"$PACKAGE_NAME".tar.gz
+wget https://cdn.mysql.com/archives/mysql-5.6/"$PACKAGE_NAME".tar.gz
 
 # Extract the files
 gzip -d "$PACKAGE_NAME".tar.gz;
@@ -43,6 +43,7 @@ make;
 checkinstall -D make install;
 
 # Zip it into the synced directory
+mkdir -p /tmp/packages/;
 zip /tmp/packages/"$PACKAGE_NAME".zip *.deb;
 
 # Be sure the MySQL bin is in the PATH
