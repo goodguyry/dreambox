@@ -28,10 +28,11 @@ apt-get -y install build-essential checkinstall make zip;
 apt-get -y build-dep php5;
 
 # Install additional libraries
-apt-get -y install libaspell-dev libc-client2007e-dev libcurl3 libfcgi-dev libfcgi0ldbl libicu-dev libjpeg62-dbg libjpeg8 libmcrypt-dev libpq5 libssl-dev libtidy-dev libxslt1-dev;
+apt-get -y install libc-client2007e libc-client2007e-dev libfcgi-dev libfcgi0ldbl libjpeg62 libjpeg62-dbg libmcrypt-dev libmcrypt4 libreadline-dev mcrypt mlock
 
 # Link the imap library
 ln -s /usr/lib/libc-client.a /usr/lib/x86_64-linux-gnu/libc-client.a;
+ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h
 
 # Link and cache libraries
 ldconfig /usr/local/lib;
@@ -39,7 +40,7 @@ ldconfig /usr/local/lib;
 cd /usr/local/src/;
 
 # Download PHP
-wget http://de.php.net/get/"${PACKAGE_NAME}".tar.bz2/from/this/mirror -O "${PACKAGE_NAME}".tar.bz2;
+wget http://us2.php.net/get/"${PACKAGE_NAME}".tar.bz2/from/this/mirror -O "${PACKAGE_NAME}".tar.bz2;
 
 # Unpack the files
 tar jxf "${PACKAGE_NAME}".tar.bz2;
