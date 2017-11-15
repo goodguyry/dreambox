@@ -9,43 +9,7 @@
 PACKAGE_NAME="php-5.6.31"
 PHP_DIR="php56"
 
-# TODO The setup is identical and thus can be shared between the two PHP files
-
-# Create some needed directories
-mkdir -p /usr/local/"${PHP_DIR}";
-mkdir -p /etc/"${PHP_DIR}";
-
-debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password password root'
-debconf-set-selections <<< 'mysql-server-5.5 mysql-server/root_password_again password root'
-
-# Update apt-get
-apt-get -qq update;
-
-# Install utilities
-apt-get -y install build-essential checkinstall make zip;
-
-# Build PHP dependencies
-apt-get -y build-dep php5;
-
-# Install additional libraries
-apt-get -y install libaspell-dev libc-client2007e-dev libcurl3 libfcgi-dev libfcgi0ldbl libicu-dev libjpeg62-dbg libjpeg8 libmcrypt-dev libpq5 libssl-dev libtidy-dev libxslt1-dev;
-
-# Link the imap library
-ln -s /usr/lib/libc-client.a /usr/lib/x86_64-linux-gnu/libc-client.a;
-ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h;
-
-# Link and cache libraries
-ldconfig /usr/local/lib;
-
-cd /usr/local/src/;
-
-# Download PHP
-wget http://us2.php.net/get/"${PACKAGE_NAME}".tar.bz2/from/this/mirror -O "${PACKAGE_NAME}".tar.bz2;
-
-# Unpack the files
-tar jxf "${PACKAGE_NAME}".tar.bz2;
-
-cd "${PACKAGE_NAME}"/;
+source php_shared.sh
 
 # Configure and build
 ./configure \
@@ -103,7 +67,6 @@ cd "${PACKAGE_NAME}"/;
 --with-kerberos \
 --with-mcrypt \
 --with-mhash \
---with-msql \
 --with-mysql-sock=/tmp/mysql.sock \
 --with-mysql=mysqlnd \
 --with-mysqli=mysqlnd \
