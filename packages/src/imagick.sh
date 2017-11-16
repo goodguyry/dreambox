@@ -4,7 +4,7 @@
 # imagick.sh
 #
 # Install imagick v3.4.3
-# Requires a PHP install (sudo ./vagrant/packages/src/php56.sh)
+# Requires an ImageMagick install (sudo ./vagrant/packages/src/imagemagick.sh)
 ##
 
 MOD_NAME="imagick-3.4.3";
