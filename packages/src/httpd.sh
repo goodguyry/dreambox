@@ -34,19 +34,19 @@ cd "$PACKAGE_NAME"/;
 # Configure and build
 # https://httpd.apache.org/docs/2.2/programs/configure.html
 ./configure \
---enable-mods-shared='all actions alias autoindex cgi deflate expires headers rewrite ssl unique-id' \
---enable-actions \
---enable-alias \
---enable-autoindex \
---enable-cgi \
---enable-deflate \
---enable-expires \
---enable-headers \
---enable-rewrite \
---enable-ssl \
---enable-unique-id \
---with-included-apr \
---with-included-apr-util;
+  --enable-mods-shared='all actions alias autoindex cgi deflate expires headers rewrite ssl unique-id' \
+  --enable-actions \
+  --enable-alias \
+  --enable-autoindex \
+  --enable-cgi \
+  --enable-deflate \
+  --enable-expires \
+  --enable-headers \
+  --enable-rewrite \
+  --enable-ssl \
+  --enable-unique-id \
+  --with-included-apr \
+  --with-included-apr-util;
 
 make;
 
@@ -57,6 +57,7 @@ make;
 checkinstall -D make install;
 
 # Zip it into the synced directory
+mkdir -p /tmp/packages/;
 zip /tmp/packages/"$PACKAGE_NAME".zip *.deb;
 
 # Be sure the Apache bin is in the PATH
