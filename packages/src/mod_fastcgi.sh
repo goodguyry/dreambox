@@ -4,7 +4,7 @@
 # mod_fastcgi.sh
 #
 # Install the mod_fastcgi module v2.4.6
-# Requires an Apache install (sudo /vagrant/bin/httpd.sh)
+# Requires an Apache install (sudo ./vagrant/packages/src/httpd.sh)
 ##
 
 MOD_NAME="mod_fastcgi-2.4.6"

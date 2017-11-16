@@ -20,7 +20,7 @@ apt-get -y install libncurses5-dev;
 
 cd /usr/local/src/;
 
-# Download mysql 5.6.34
+# Download mysql 5.6
 wget https://cdn.mysql.com/archives/mysql-5.6/"$PACKAGE_NAME".tar.gz
 
 # Extract the files
