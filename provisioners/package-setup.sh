@@ -55,12 +55,19 @@ chgrp -R mysql . 2>&1
 # Create GRANT tables
 scripts/mysql_install_db --user=mysql >/dev/null
 
+# 2017-11-25 08:16:03 0 [Warning] TIMESTAMP with implicit DEFAULT value is deprecated. Please use --explicit_defaults_for_timestamp server option (see documentation for more details).
+# 2017-11-25 08:16:03 0 [Note] Ignoring --secure-file-priv value as server is running with --bootstrap.
+
 # Update permissions
 chown -R root . 2>&1
 chown -R mysql data 2>&1
 
 # Create the conf based on one of the pre-build confs
 cp support-files/my-medium.cnf /etc/my.cnf
+
+# cp:
+# cannot stat ‘support-files/my-medium.cnf’
+# : No such file or directory
 
 # Set MySQL to start at boot
 
