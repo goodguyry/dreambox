@@ -3,18 +3,27 @@
 # Install packages and move files into place
 #
 
-echo 'Installing packages and libraries'
-
 # Expect no interactive input
 export DEBIAN_FRONTEND=noninteractive
 
-# Add this repository to SourcesList
-perl -p -i -e 's#http://us.archive.ubuntu.com/ubuntu#http://mirror.rackspace.com/ubuntu#gi' /etc/apt/sources.list
+echo 'Updating repositories'
+
+# Switch to rackspace mirror
+perl -p -i -e 's#http://archive.ubuntu.com/ubuntu#http://mirror.rackspace.com/ubuntu#gi' /etc/apt/sources.list
+
+# Add the key for the Git Core PPA
+apt-key add /tmp/files/ppa-git-core-key
+
+# Add the git-core PPA
+sudo bash -c "echo -e \"deb http://ppa.launchpad.net/git-core/ppa/ubuntu lucid main\" >> /etc/apt/sources.list"
+sudo bash -c "echo -e \"deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu lucid main\" >> /etc/apt/sources.list"
 
 # Update apt-get
 apt-get -qq update
 
-echo "Install base packages"
+echo 'Installing packages and libraries'
+
+# Install base packages
 apt-get -y install \
   build-essential \
   sysv-rc-conf \
@@ -28,7 +37,7 @@ apt-get -y install \
 #   libterm-readkey-perl sysv-rc-conf unzip zip
 # 0 upgraded, 16 newly installed, 0 to remove and 10 not upgraded.
 
-echo "Install libraries"
+# Install libraries
 apt-get -y install \
   libapr1 \
   libaprutil1 \
@@ -81,57 +90,60 @@ update-grub
 # Unzip package archives
 find /tmp/packages/ -name '*.zip' -exec unzip -d /usr/local/src/ {} \; > /dev/null 2>&1
 
-echo "Install the packages"
+# Install the packages
 dpkg -i /usr/local/src/httpd_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/mysql_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/mod-fastcgi_*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/imagemagick-*.deb > /dev/null 2>&1
 dpkg -i /usr/local/src/imagick_*.deb > /dev/null 2>&1
-dpkg -i /usr/local/src/git_*.deb > /dev/null 2>&1
 
-echo "Additional packages"
+# Additional packages
+GIT_VERSION='1:2.3.7-0ppa1~ubuntu10.04.1'
 apt-get -y install \
-  git-doc \
+  git-buildpackage \
+  git-doc="${GIT_VERSION}" \
+  git-man="${GIT_VERSION}" \
   git-sh \
-  git-svn \
+  git-stuff \
+  git-svn="${GIT_VERSION}" \
+  git="${GIT_VERSION}" \
   ruby \
   ruby-dev \
   ruby-rails-3.2 \
   > /dev/null
 
 # The following NEW packages will be installed:
-#   bundler git-doc git-man git-sh git-svn liberror-perl libserf-1-1 libsvn-perl
-#   libsvn1 libyaml-libyaml-perl libyaml-perl rake ruby-actionmailer-3.2
-#   ruby-actionpack-3.2 ruby-activemodel-3.2 ruby-activerecord-3.2
-#   ruby-activeresource-3.2 ruby-activesupport-3.2 ruby-arel ruby-atomic
-#   ruby-blankslate ruby-builder ruby-dev ruby-hike ruby-i18n ruby-journey
-#   ruby-mail ruby-minitest ruby-multi-json ruby-net-http-persistent ruby-oj
-#   ruby-polyglot ruby-rack-cache ruby-rack-ssl ruby-rack-test ruby-rack1.4
-#   ruby-rails-3.2 ruby-railties-3.2 ruby-sprockets ruby-thor ruby-thread-safe
-#   ruby-tilt ruby-treetop ruby-tzinfo ruby1.9.1-dev rubygems-integration
-# The following packages will be upgraded:
-#   git
-# 1 upgraded, 46 newly installed, 1 to remove and 10 not upgraded.
-
-# dpkg: ruby-rack: dependency problems, but removing anyway as you requested:
-#  chef-zero depends on ruby-rack.
-
-# Preparing to unpack .../git_1%3a1.9.1-1ubuntu0.7_amd64.deb ...
-# stat:
-# cannot stat ‘/usr/lib/git-core/git-add’
-# : No such file or directory
-# dpkg: error processing archive /var/cache/apt/archives/git_1%3a1.9.1-1ubuntu0.7_amd64.deb (--unpack):
-#  subprocess new pre-installation script returned error exit status 1
-# Selecting previously unselected package git-man.
-# dpkg: considering deconfiguration of git, which would be broken by installation of git-man ...
-# dpkg: yes, will deconfigure git (broken by git-man)
-# Preparing to unpack .../git-man_1%3a1.9.1-1ubuntu0.7_all.deb ...
-
-# Errors were encountered while processing:
-#  /var/cache/apt/archives/git_1%3a1.9.1-1ubuntu0.7_amd64.deb
-# E
-# :
-# Sub-process /usr/bin/dpkg returned an error code (1)
+#   bundler cowbuilder cowdancer dctrl-tools debootstrap devscripts diffstat
+#   dput gettext git git-buildpackage git-doc git-man git-sh git-stuff git-svn
+#   hardening-includes intltool-debian libapt-pkg-perl libarchive-zip-perl
+#   libasprintf-dev libauthen-sasl-perl libautodie-perl libclone-perl
+#   libcommon-sense-perl libdigest-hmac-perl libdistro-info-perl
+#   libemail-valid-perl libencode-locale-perl liberror-perl
+#   libexporter-lite-perl libfile-basedir-perl libfile-listing-perl
+#   libfont-afm-perl libgettextpo-dev libgettextpo0 libhtml-form-perl
+#   libhtml-format-perl libhtml-parser-perl libhtml-tagset-perl
+#   libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl libhttp-date-perl
+#   libhttp-message-perl libhttp-negotiate-perl libio-html-perl libio-pty-perl
+#   libio-socket-inet6-perl libio-socket-ssl-perl libio-stringy-perl
+#   libipc-run-perl libipc-system-simple-perl libjson-perl libjson-xs-perl
+#   liblist-moreutils-perl liblwp-mediatypes-perl liblwp-protocol-https-perl
+#   libmailtools-perl libnet-dns-perl libnet-domain-tld-perl libnet-http-perl
+#   libnet-ip-perl libnet-smtp-ssl-perl libnet-ssleay-perl
+#   libparse-debcontrol-perl libperlio-gzip-perl libserf-1-1 libsocket6-perl
+#   libsub-identify-perl libsvn-perl libsvn1 libtext-levenshtein-perl
+#   libtie-ixhash-perl libunistring0 liburi-perl libwww-perl
+#   libwww-robotrules-perl libxdelta2 libyaml-libyaml-perl libyaml-perl lintian
+#   mr myrepos patchutils pbuilder pbzip2 pristine-tar python-dateutil
+#   python3-chardet python3-debian python3-magic python3-pkg-resources
+#   python3-six rake ruby-actionmailer-3.2 ruby-actionpack-3.2
+#   ruby-activemodel-3.2 ruby-activerecord-3.2 ruby-activeresource-3.2
+#   ruby-activesupport-3.2 ruby-arel ruby-atomic ruby-blankslate ruby-builder
+#   ruby-dev ruby-hike ruby-i18n ruby-journey ruby-mail ruby-minitest
+#   ruby-multi-json ruby-net-http-persistent ruby-oj ruby-polyglot
+#   ruby-rack-cache ruby-rack-ssl ruby-rack-test ruby-rack1.4 ruby-rails-3.2
+#   ruby-railties-3.2 ruby-sprockets ruby-thor ruby-thread-safe ruby-tilt
+#   ruby-treetop ruby-tzinfo ruby1.9.1-dev rubygems-integration t1utils wdiff
+#   xdelta
 
 # Link and cache libraries
 ldconfig /usr/local/lib
