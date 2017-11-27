@@ -1,0 +1,222 @@
+#! /bin/sh
+#
+### BEGIN INIT INFO
+# Provides: defaultdaemon
+# Required-Start: $remote_fs $syslog networking procps
+# Required-Stop:     $remote_fs $syslog
+# Default-Start: 2 3
+# Default-Stop: 0 1 4 6
+# Short-Description: Apache Starting
+# Description: Start all apache services
+### END INIT INFO
+
+
+#set some important ulimits in case they are not set elsewhere
+# ulimit -Hn 8000
+ulimit -Sn 8000 &>/dev/null
+# ulimit -Hu 5000
+ulimit -Su 5000 &>/dev/null
+
+SLEEP=3
+SLEEPATTEMPT=1
+STARTSLEEP=2
+PATH=/bin:/usr/bin:/sbin:/usr/sbin 
+NAME=httpd 
+MAXATTEMPTS=3
+
+COMMAND=$1
+
+NUMERRORS=0
+
+#if [ "x$RUN" = "xyes" ] ; then
+
+# Defaults
+RUN="yes"
+
+# Read config (will override defaults)
+[ -r /etc/default/httpd2 ] && . /etc/default/httpd2
+
+if [ $2 ];
+then
+	shift 1
+	SERVERS=$@
+else
+	SERVERS=$(/bin/ls /dh/apache2 | egrep -v "^template$|^logs$|\."|sort)
+fi
+
+trap "" SIGHUP
+trap "" SIGTERM
+
+start()
+{   
+	for S in $SERVERS
+	do
+		STARTATTEMPTS=$MAXATTEMPTS
+		while [ 1 ]
+		do
+			echo -n "Starting $S webserver..."
+			if test ! -e "/dh/apache2/$S"; then
+				echo "missing /dh/apache2/$S."
+				NUMERRORS=$(($NUMERRORS+1))
+				break
+			fi
+			if ( test -e /var/run/$S-httpd.pid && grep -q $S/$S-httpd /proc/`cat /var/run/$S-httpd.pid`/cmdline ) ; then
+				echo "already running!"
+				break
+			else
+				echo -n "starting..."
+				SOFTLIMIT_ARGS=''
+				# load startup parameters
+				if test -e "/dh/apache2/$S/etc/startup.sh"; then
+					. /dh/apache2/$S/etc/startup.sh
+				fi 
+
+				# try to start it
+				rm -f /dh/apache2/$S/logs/__db.session_cache
+				if $SOFTLIMIT_ARGS /dh/apache2/$S/$S-httpd -DModSSL -d /dh/apache2/$S ; then
+					echo -n "ok.."
+					N=0
+					STARTED=0
+					while [ $STARTED == 0 ] ; do
+						if ( test -e /var/run/$S-httpd.pid && test -d /proc/`cat /var/run/$S-httpd.pid` && grep -q $S/$S-httpd /proc/`cat /var/run/$S-httpd.pid`/cmdline ); then
+							STARTED=1
+							break
+						else
+							echo -n ".."
+							sleep 1
+							N=$(($N+1))
+							if [ $N == 4 ]; then
+								break;
+							fi
+						fi
+					done
+					if [ $STARTED ] ; then
+						echo "done."
+						break;
+					else
+						echo "didn't start?"
+						NUMERRORS=$(($NUMERRORS+1))
+					fi
+				else
+					echo "failed."
+					NUMERRORS=$(($NUMERRORS+1))
+				fi
+			fi
+			STARTATTEMPTS=$(($STARTATTEMPTS - 1))
+			if [ $STARTATTEMPTS == 0 ]; then 
+				break
+			fi
+			echo -n "sleeping..."
+			sleep $SLEEPATTEMPT
+		done
+	done
+}
+
+case "$COMMAND" in
+  start)
+		if [ "x$RUN" = "xyes" ] ; then
+			start
+		else
+			echo "Apache warning: apache2 has been deactivated."
+		fi
+    ;;
+
+   stat)
+       for S in $SERVERS
+       do
+       echo -n "$S : "
+       curl -s $S.`hostname`.dreamhost.com/dhstatus/ |grep requests |grep second
+
+    done
+    ;;
+
+  stop)
+    for S in $SERVERS
+    do
+      echo -n "Stopping $S webserver..."
+      if [ -e /var/run/$S-httpd.pid ]; then
+        PID=`cat /var/run/$S-httpd.pid`
+        kill $PID > /dev/null 2>&1
+        N=0
+        FAILED=0
+        while ( test -e /proc/$PID && grep -q $S/$S-httpd /proc/$PID/cmdline ); do
+		  N=$(($N+1))
+		  if [ $N == 5 ]; then
+			FAILED=1
+			break;
+	      fi
+		  echo -n "."
+		  sleep 1
+	    done
+	    if [ $FAILED == 0 ]; then
+	  	  echo "done."
+	    else
+	  	  echo "FAILED."
+	  	  NUMERRORS=$(($NUMERRORS+1))
+	    fi
+	  else
+        echo "not running."
+      fi
+	done
+    ;;
+
+  reload)
+    for S in $SERVERS
+    do
+      if [ -e /var/run/$S-httpd.pid ]; then
+        echo -n "Reloading $S..."
+		PID=`cat /var/run/$S-httpd.pid`
+        if ( grep -q $S/$S-httpd /proc/$PID/cmdline ); then
+          echo "USR1."
+          kill -USR1 $PID
+        else
+          $0 start $S
+        fi
+      else
+        $0 restart $S
+      fi
+    done
+    ;;   
+
+  restart)
+    for S in $SERVERS
+    do
+      $0 stop $S
+      sleep $SLEEP
+      $0 start $S
+    done
+    ;;
+
+  force-restart)
+    for S in $SERVERS
+    do
+	  # ask nicely
+      $0 stop $S
+      sleep $SLEEP
+	  # less nice
+	  $0 kill $S
+	  # ok!
+      $0 start $S
+    done
+    ;;
+
+  kill)
+  	for S in $SERVERS
+  	do
+    	echo -n "Killing $S webserver..."
+		# clean up stragglers
+		ps ax | grep apache2/$S/$S-httpd | awk '{print $1}' | xargs kill
+		sleep 1
+		# be more persuasive
+		ps ax | grep apache2/$S/$S-httpd | awk '{print $1}' | xargs kill -9
+	done
+	;;
+
+  *)
+    echo "Usage: /etc/init.d/$NAME {start|stop|reload|restart}"
+    exit 1
+    ;;
+esac
+
+exit $NUMERRORS
+

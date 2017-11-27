@@ -12,4 +12,5 @@
 # description: Apache is a World Wide Web server.  It is used to serve HTML files and CGI.
 ##
 
+# @todo: should be /usr/local/dh/apache2/template/sbin/apachectl
 /usr/local/apache2/bin/apachectl $@

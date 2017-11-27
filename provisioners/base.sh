@@ -6,17 +6,22 @@
 # Expect no interactive input
 export DEBIAN_FRONTEND=noninteractive
 
-echo 'Updating repositories'
+echo 'Updating apt sources.list'
 
-# Switch to rackspace mirror
-perl -p -i -e 's#http://archive.ubuntu.com/ubuntu#http://mirror.rackspace.com/ubuntu#gi' /etc/apt/sources.list
+# Add the keys for the DH repos
+apt-key add /tmp/files/keys/ksplice-key
+apt-key add /tmp/files/keys/newdream-key
 
-# Add the key for the Git Core PPA
-apt-key add /tmp/files/ppa-git-core-key
+# Backup the source list
+cp /etc/apt/sources.list /etc/apt/sources.list_bak
 
-# Add the git-core PPA
-sudo bash -c "echo -e \"deb http://ppa.launchpad.net/git-core/ppa/ubuntu lucid main\" >> /etc/apt/sources.list"
-sudo bash -c "echo -e \"deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu lucid main\" >> /etc/apt/sources.list"
+bash -c "cat << EOF > /etc/apt/sources.list
+deb http://www.ksplice.com/apt trusty ksplice
+deb http://debian.di.newdream.net/ trusty ndn
+deb http://mirror.newdream.net/ubuntu trusty main universe restricted
+deb http://mirror.newdream.net/ubuntu trusty-updates main universe restricted
+deb http://mirror.newdream.net/ubuntu trusty-security main universe restricted
+EOF"
 
 # Update apt-get
 apt-get -qq update
@@ -29,13 +34,6 @@ apt-get -y install \
   sysv-rc-conf \
   zip \
   > /dev/null
-
-# The following NEW packages will be installed:
-#   build-essential dpkg-dev g++ g++-4.8 libalgorithm-diff-perl
-#   libalgorithm-diff-xs-perl libalgorithm-merge-perl libcurses-perl
-#   libcurses-ui-perl libdpkg-perl libfile-fcntllock-perl libstdc++-4.8-dev
-#   libterm-readkey-perl sysv-rc-conf unzip zip
-# 0 upgraded, 16 newly installed, 0 to remove and 10 not upgraded.
 
 # Install libraries
 apt-get -y install \
@@ -59,14 +57,6 @@ apt-get -y install \
   zlib1g-dev \
   > /dev/null
 
-# The following NEW packages will be installed:
-#   aspell aspell-en dictionaries-common gsfonts libapr1 libaprutil1 libaspell15
-#   libcdt5 libcgraph6 libcroco3 libdjvulibre-text libdjvulibre21 libgvc6
-#   libilmbase6 liblcms1 liblqr-1-0 libmcrypt4 libopenexr6 libpathplan4 libpq5
-#   libreadline5 libreadline6-dev librsvg2-2 librsvg2-common libssl-dev
-#   libssl-doc libtidy-0.99-0 libtinfo-dev libwmf0.2-7 libxslt1.1 zlib1g-dev
-# 0 upgraded, 31 newly installed, 0 to remove and 10 not upgraded.
-
 # Link and cache libraries
 ldconfig /usr/local/lib
 
@@ -74,7 +64,7 @@ ldconfig /usr/local/lib
 echo 'UseDNS no' >> /etc/ssh/sshd_config
 
 # Remove 5s grub timeout to speed up booting
-cat <<EOF > /etc/default/grub
+cat << EOF > /etc/default/grub
 # If you change this file, run 'update-grub' afterwards to update
 # /boot/grub/grub.cfg.
 
@@ -87,63 +77,135 @@ EOF
 
 update-grub
 
-# Unzip package archives
-find /tmp/packages/ -name '*.zip' -exec unzip -d /usr/local/src/ {} \; > /dev/null 2>&1
-
-# Install the packages
-dpkg -i /usr/local/src/httpd_*.deb > /dev/null 2>&1
-dpkg -i /usr/local/src/mysql_*.deb > /dev/null 2>&1
-dpkg -i /usr/local/src/mod-fastcgi_*.deb > /dev/null 2>&1
-dpkg -i /usr/local/src/imagemagick-*.deb > /dev/null 2>&1
-dpkg -i /usr/local/src/imagick_*.deb > /dev/null 2>&1
-
 # Additional packages
-GIT_VERSION='1:2.3.7-0ppa1~ubuntu10.04.1'
+
+echo "Install Git packages"
 apt-get -y install \
+  git \
   git-buildpackage \
-  git-doc="${GIT_VERSION}" \
-  git-man="${GIT_VERSION}" \
+  git-doc \
+  git-man \
   git-sh \
   git-stuff \
-  git-svn="${GIT_VERSION}" \
-  git="${GIT_VERSION}" \
+  git-svn \
+  > /dev/null
+
+echo "Install Apache packages"
+apt-get -y install \
+  ndn-apache-helper \
+  ndn-apache22 \
+  ndn-apache22-modcband \
+  ndn-apache22-modcloudflare \
+  ndn-apache22-modfastcgi \
+  ndn-apache22-modfcgid \
+  ndn-apache22-modhtscanner \
+  ndn-apache22-modlimitipconn \
+  ndn-apache22-modpagespeed \
+  ndn-apache22-modsecurity2 \
+  ndn-apache22-modxsendfile \
+  ndn-apache22-svn \
+  > /dev/null
+
+# install-info: warning: no info dir entry in `/usr/share/info/dist.info.gz'
+# update-rc.d: warning:  stop runlevel arguments (none) do not match httpd2 Default-Stop values (0 1 4 6)
+# update-rc.d: warning:  start runlevel arguments (none) do not match httpd2 Default-Start values (2 3)
+# update-rc.d: warning:  stop runlevel arguments (4) do not match httpd2 Default-Stop values (0 1 4 6)
+#  System start/stop links for /etc/init.d/httpd2 already exist.
+
+# Install PHP packages
+
+echo "Install PHP packages"
+apt-get -y install \
+  ndn-php56 \
+  ndn-php56-imagick \
+  ndn-php56-mongo \
+  ndn-php56-xcache \
+  ndn-php70 \
+  ndn-php70-imagick \
+  ndn-php70-mongo \
+  ndn-php71 \
+  ndn-php71-imagick \
+  ndn-php71-mongo \
+  > /dev/null
+
+echo "Install MySQL packages"
+apt-get -y install \
+  mysql-client \
+  > /dev/null
+
+echo "Install Ruby packages"
+apt-get -y install \
   ruby \
   ruby-dev \
   ruby-rails-3.2 \
   > /dev/null
 
-# The following NEW packages will be installed:
-#   bundler cowbuilder cowdancer dctrl-tools debootstrap devscripts diffstat
-#   dput gettext git git-buildpackage git-doc git-man git-sh git-stuff git-svn
-#   hardening-includes intltool-debian libapt-pkg-perl libarchive-zip-perl
-#   libasprintf-dev libauthen-sasl-perl libautodie-perl libclone-perl
-#   libcommon-sense-perl libdigest-hmac-perl libdistro-info-perl
-#   libemail-valid-perl libencode-locale-perl liberror-perl
-#   libexporter-lite-perl libfile-basedir-perl libfile-listing-perl
-#   libfont-afm-perl libgettextpo-dev libgettextpo0 libhtml-form-perl
-#   libhtml-format-perl libhtml-parser-perl libhtml-tagset-perl
-#   libhtml-tree-perl libhttp-cookies-perl libhttp-daemon-perl libhttp-date-perl
-#   libhttp-message-perl libhttp-negotiate-perl libio-html-perl libio-pty-perl
-#   libio-socket-inet6-perl libio-socket-ssl-perl libio-stringy-perl
-#   libipc-run-perl libipc-system-simple-perl libjson-perl libjson-xs-perl
-#   liblist-moreutils-perl liblwp-mediatypes-perl liblwp-protocol-https-perl
-#   libmailtools-perl libnet-dns-perl libnet-domain-tld-perl libnet-http-perl
-#   libnet-ip-perl libnet-smtp-ssl-perl libnet-ssleay-perl
-#   libparse-debcontrol-perl libperlio-gzip-perl libserf-1-1 libsocket6-perl
-#   libsub-identify-perl libsvn-perl libsvn1 libtext-levenshtein-perl
-#   libtie-ixhash-perl libunistring0 liburi-perl libwww-perl
-#   libwww-robotrules-perl libxdelta2 libyaml-libyaml-perl libyaml-perl lintian
-#   mr myrepos patchutils pbuilder pbzip2 pristine-tar python-dateutil
-#   python3-chardet python3-debian python3-magic python3-pkg-resources
-#   python3-six rake ruby-actionmailer-3.2 ruby-actionpack-3.2
-#   ruby-activemodel-3.2 ruby-activerecord-3.2 ruby-activeresource-3.2
-#   ruby-activesupport-3.2 ruby-arel ruby-atomic ruby-blankslate ruby-builder
-#   ruby-dev ruby-hike ruby-i18n ruby-journey ruby-mail ruby-minitest
-#   ruby-multi-json ruby-net-http-persistent ruby-oj ruby-polyglot
-#   ruby-rack-cache ruby-rack-ssl ruby-rack-test ruby-rack1.4 ruby-rails-3.2
-#   ruby-railties-3.2 ruby-sprockets ruby-thor ruby-thread-safe ruby-tilt
-#   ruby-treetop ruby-tzinfo ruby1.9.1-dev rubygems-integration t1utils wdiff
-#   xdelta
+# dpkg: ruby-rack: dependency problems, but removing anyway as you requested:
+#  chef-zero depends on ruby-rack.
+
+echo "Install NDN packages"
+apt-get -y install \
+  ndn-analog \
+  ndn-areca \
+  ndn-clientscripts \
+  ndn-daemontools \
+  ndn-debuglogging \
+  ndn-dh-base \
+  ndn-dh-web-missing \
+  ndn-dh-web-parking \
+  ndn-dovecot \
+  ndn-imagemagick-policy \
+  ndn-iptables \
+  ndn-keyring \
+  ndn-libopenipmi0 \
+  ndn-localdata \
+  ndn-megacli \
+  ndn-misc \
+  ndn-netsaint-plugins openipmi- \
+  ndn-ntp-client \
+  ndn-openipmi \
+  ndn-passenger \
+  ndn-procwatch \
+  ndn-savelog \
+  ndn-sdbm-util \
+  ndn-sendarp \
+  ndn-smart-check \
+  ndn-twcli \
+  > /dev/null
+
+# ndn-netsaint-plugins (installs openipmi) apt-get install ndn-netsaint-plugins openipmi-
+# Setting up ipmitool (1.8.13-1ubuntu0.6) ...
+# * Starting IPMI event daemon
+# Could not open device at /dev/ipmi0 or /dev/ipmi/0 or /dev/ipmidev/0: No such file or directory
+# invoke-rc.d: initscript ipmievd, action "start" failed.
+# Unable to start ipmievd during installation.  Trying to disable.
+#
+# lsmod
+# service --status-all
+# service openipmi start
+# modprobe ipmi_msghandler
+# modprobe ipmi_devintf
+# modprobe ipmi_si
+#
+#
+# ndn-procwatch:
+# Starting process-watching daemon: /dh/etc/procwatch/on doesn't exist -- exiting.
+#
+# ndn-clientscripts:
+# * Running checkuptime: Bad response; retrying (2 tries left) at /usr/local/dh/bin/checkuptime.pl line 7.
+# Bad response; retrying (1 tries left) at /usr/local/dh/bin/checkuptime.pl line 7.
+# SSL_cert_file /usr/local/dh/etc/xmlrpc-physical.crt does not exist at /usr/share/perl5/IO/Socket/SSL.pm line 1637. at /usr/local/dh/bin/checkuptime.pl line 7.
+#
+# insserv: warning: script 'K01standby' missing LSB tags and overrides
+# insserv: warning: script 'friendly-recovery' missing LSB tags and overrides
+# insserv: warning: script 'standby' missing LSB tags and overrides
+# insserv: warning: script 'cron' missing LSB tags and overrides
+
+# Add PHP alternatives
+# update-alternatives --set php /usr/local/bin/php-5.6
+update-alternatives --install /usr/bin/php php /usr/local/bin/php-5.6 100
+update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.0 100
+update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.1 100
 
 # Link and cache libraries
 ldconfig /usr/local/lib
@@ -154,6 +216,7 @@ echo 'Copying files into place'
 cp /tmp/files/php/php-fastcgi-wrapper /usr/local/bin/ && chmod +x /usr/local/bin/php-fastcgi-wrapper
 
 # Apache config files
+# /usr/local/dh/apache2/template/etc/extra/
 [[ ! -d /usr/local/apache2/conf/vhosts ]] && mkdir /usr/local/apache2/conf/vhosts
 cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
 cp /tmp/files/http/ports.conf /usr/local/apache2/conf/vhosts/
@@ -172,9 +235,6 @@ declare -a FILES=(
 for INDEX in ${!FILES[*]}; do
   [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/
 done
-
-# PHP installers
-ls /usr/local/src/php_*.deb 1> /dev/null && cp /usr/local/src/php_*.deb /usr/local/dreambox
 
 # SSL config
 cp /tmp/files/ssl/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
