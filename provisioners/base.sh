@@ -61,10 +61,10 @@ apt-get -y install \
 ldconfig /usr/local/lib
 
 # Tweak sshd to prevent DNS resolution (speed up logins)
-echo 'UseDNS no' >> /etc/ssh/sshd_config
+bash -c "echo 'UseDNS no' >> /etc/ssh/sshd_config"
 
 # Remove 5s grub timeout to speed up booting
-cat << EOF > /etc/default/grub
+bash -c "cat << EOF > /etc/default/grub
 # If you change this file, run 'update-grub' afterwards to update
 # /boot/grub/grub.cfg.
 
@@ -73,7 +73,7 @@ GRUB_TIMEOUT=0
 GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX="debian-installer=en_US"
-EOF
+EOF"
 
 update-grub
 
@@ -106,14 +106,6 @@ apt-get -y install \
   ndn-apache22-svn \
   > /dev/null
 
-# install-info: warning: no info dir entry in `/usr/share/info/dist.info.gz'
-# update-rc.d: warning:  stop runlevel arguments (none) do not match httpd2 Default-Stop values (0 1 4 6)
-# update-rc.d: warning:  start runlevel arguments (none) do not match httpd2 Default-Start values (2 3)
-# update-rc.d: warning:  stop runlevel arguments (4) do not match httpd2 Default-Stop values (0 1 4 6)
-#  System start/stop links for /etc/init.d/httpd2 already exist.
-
-# Install PHP packages
-
 echo "Install PHP packages"
 apt-get -y install \
   ndn-php56 \
@@ -139,9 +131,6 @@ apt-get -y install \
   ruby-dev \
   ruby-rails-3.2 \
   > /dev/null
-
-# dpkg: ruby-rack: dependency problems, but removing anyway as you requested:
-#  chef-zero depends on ruby-rack.
 
 echo "Install NDN packages"
 apt-get -y install \
@@ -173,34 +162,6 @@ apt-get -y install \
   ndn-twcli \
   > /dev/null
 
-# ndn-netsaint-plugins (installs openipmi) apt-get install ndn-netsaint-plugins openipmi-
-# Setting up ipmitool (1.8.13-1ubuntu0.6) ...
-# * Starting IPMI event daemon
-# Could not open device at /dev/ipmi0 or /dev/ipmi/0 or /dev/ipmidev/0: No such file or directory
-# invoke-rc.d: initscript ipmievd, action "start" failed.
-# Unable to start ipmievd during installation.  Trying to disable.
-#
-# lsmod
-# service --status-all
-# service openipmi start
-# modprobe ipmi_msghandler
-# modprobe ipmi_devintf
-# modprobe ipmi_si
-#
-#
-# ndn-procwatch:
-# Starting process-watching daemon: /dh/etc/procwatch/on doesn't exist -- exiting.
-#
-# ndn-clientscripts:
-# * Running checkuptime: Bad response; retrying (2 tries left) at /usr/local/dh/bin/checkuptime.pl line 7.
-# Bad response; retrying (1 tries left) at /usr/local/dh/bin/checkuptime.pl line 7.
-# SSL_cert_file /usr/local/dh/etc/xmlrpc-physical.crt does not exist at /usr/share/perl5/IO/Socket/SSL.pm line 1637. at /usr/local/dh/bin/checkuptime.pl line 7.
-#
-# insserv: warning: script 'K01standby' missing LSB tags and overrides
-# insserv: warning: script 'friendly-recovery' missing LSB tags and overrides
-# insserv: warning: script 'standby' missing LSB tags and overrides
-# insserv: warning: script 'cron' missing LSB tags and overrides
-
 # Add PHP alternatives
 # update-alternatives --set php /usr/local/bin/php-5.6
 update-alternatives --install /usr/bin/php php /usr/local/bin/php-5.6 100
@@ -212,18 +173,10 @@ ldconfig /usr/local/lib
 
 echo 'Copying files into place'
 
-# Copy the PHP FastCGI Wrapper into place and make it executable
-cp /tmp/files/php/php-fastcgi-wrapper /usr/local/bin/ && chmod +x /usr/local/bin/php-fastcgi-wrapper
-
-# Apache config files
-# /usr/local/dh/apache2/template/etc/extra/
-[[ ! -d /usr/local/apache2/conf/vhosts ]] && mkdir /usr/local/apache2/conf/vhosts
-cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
-cp /tmp/files/http/ports.conf /usr/local/apache2/conf/vhosts/
-
-# Provisioners and support files
+# # Provisioners and support files
 declare -a FILES=(
   'files/http/httpd-vhosts.conf'
+  'files/http/ndn-vhost.conf'
   'files/php/php.ini'
   'provisioners/php.sh'
   'provisioners/ssl.sh'
@@ -239,14 +192,53 @@ done
 # SSL config
 cp /tmp/files/ssl/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
 
-# Add Apache, PHP and MySQL bins to PATH"
-# For this shell and all future shells
-export PATH=$PATH:/usr/local/apache2/bin
-export PATH=$PATH:/usr/local/mysql/bin
-echo "PATH=\$PATH:/usr/local/apache2/bin" >> /home/vagrant/.profile
-echo "PATH=\$PATH:/usr/local/mysql/bin" >> /home/vagrant/.profile
+# Apache setup
 
-# Remove existing motd and set up ours
+# Create VHosts directory
+[[ ! -d /dh/apache2/template/etc/extra/vhosts ]] && mkdir /dh/apache2/template/etc/extra/vhosts
+# cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
+# cp /tmp/files/http/ports.conf /dh/apache2/template/etc/extra/vhosts/
+
+echo "Replacing strings in configuration files"
+
+# Change httpd2 init script to use /bin/bash
+sed -i -r 's/(#! )(\/bin\/sh)/\1 \/bin\/bash/' /etc/init.d/httpd2;
+
+# Load mod_fcgid
+sed -i -r '/LoadModule rewrite_module.*\.so/a LoadModule fcgid_module lib/modules/mod_fcgid.so' \
+  /dh/apache2/template/etc/httpd.conf;
+# Include the VHost directory
+sed -i -r 's/(#)(Include etc\/extra\/)httpd-vhosts\.conf/\2vhosts\/\*/' \
+  /dh/apache2/template/etc/httpd.conf;
+
+# Duplicate template
+cp -r /dh/apache2/template /dh/apache2/apache2-dreambox;
+# Move httpd file to template root
+ln -s /dh/apache2/apache2-dreambox/sbin/httpd /dh/apache2/apache2-dreambox/apache2-dreambox-httpd;
+# Change the config paths
+sed -i -r 's/(\/usr\/local\/dh\/apache2\/)(template)/\1apache2-dreambox/' \
+  /dh/apache2/apache2-dreambox/etc/httpd.conf;
+# Set the PID path
+sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\//a PidFile "/var/run/apache2-dreambox-httpd.pid"' \
+  /dh/apache2/apache2-dreambox/etc/httpd.conf;
+
+# Create the logs directory
+# @TODO This could likely change to whatever... it just needs to match what's in ndn-vhost.conf
+mkdir -p /home/_domain_logs/vagrant/dreambox.http/http.dreambox-instance;
+# Copy the test vhost.conf into place
+# @TODO Once this is finalized, move to template with placeholder strings
+cp /vagrant/ndn-vhost.conf /dh/apache2/apache2-dreambox/etc/extra/vhosts/;
+# Create test domain path
+# @TODO Remove after testing
+mkdir -p /home/vagrant/dreambox.http;
+# Add a PHP info test page
+# @TODO Remove after testing
+bash -c "echo '<?php phpinfo(); ?>' >> /home/vagrant/dreambox.http/index.php";
+
+# Start Apache
+/etc/init.d/httpd2 start;
+
+# # Remove existing motd and set up ours
 rm -f /etc/update-motd.d/*
 for MOTD in /tmp/files/motd/*; do
   MOTD_FILE=${MOTD##*/}
