@@ -24,6 +24,9 @@ Vagrant.configure(2) do |config|
   config.vm.define 'dev', autostart: false do |dev|
     dev.vm.hostname = "dreambox.dev"
     dev.vm.network :private_network, ip: "192.168.12.34"
+
+    # Recreates the Packer file provisioner
+    config.vm.provision "file", source: "files", destination: "/tmp/files"
   end
 
   # Testing machine
