@@ -3,10 +3,13 @@
 # Post-install Apache setup.
 #
 
+TEMPLATE_PATH='/dh/apache2/template';
+INSTANCE_NAME='apache2-dreambox';
+INSTANCE_PATH="${TEMPLATE_PATH/%template/$INSTANCE_NAME}";
+
 # Create VHosts directory
-[[ ! -d /dh/apache2/template/etc/extra/vhosts ]] && mkdir /dh/apache2/template/etc/extra/vhosts
-# cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
-# cp /tmp/files/http/ports.conf /dh/apache2/template/etc/extra/vhosts/
+[[ ! -d "${TEMPLATE_PATH}"/etc/extra/vhosts ]] && mkdir "${TEMPLATE_PATH}"/etc/extra/vhosts
+cp /tmp/files/http/ports.conf "${TEMPLATE_PATH}"/etc/extra/vhosts/
 
 echo "Replacing strings in configuration files"
 
@@ -15,28 +18,28 @@ sed -i -r 's/(#! )(\/bin\/sh)/\1 \/bin\/bash/' /etc/init.d/httpd2;
 
 # Load mod_fcgid
 sed -i -r '/LoadModule rewrite_module.*\.so/a LoadModule fcgid_module lib/modules/mod_fcgid.so' \
-  /dh/apache2/template/etc/httpd.conf;
+  "${TEMPLATE_PATH}"/etc/httpd.conf;
 # Include the VHost directory
 sed -i -r 's/(#)(Include etc\/extra\/)httpd-vhosts\.conf/\2vhosts\/\*/' \
-  /dh/apache2/template/etc/httpd.conf;
+  "${TEMPLATE_PATH}"/etc/httpd.conf;
 
-# Duplicate template
-cp -r /dh/apache2/template /dh/apache2/apache2-dreambox;
-# Move httpd file to template root
-ln -s /dh/apache2/apache2-dreambox/sbin/httpd /dh/apache2/apache2-dreambox/apache2-dreambox-httpd;
+# Duplicate template as new instance
+cp -r "${TEMPLATE_PATH}" "${INSTANCE_PATH}";
+# Link httpd file to instance root
+ln -s "${INSTANCE_PATH}"/sbin/httpd "${INSTANCE_PATH}"/"${INSTANCE_NAME}"-httpd;
 # Change the config paths
-sed -i -r 's/(\/usr\/local\/dh\/apache2\/)(template)/\1apache2-dreambox/' \
-  /dh/apache2/apache2-dreambox/etc/httpd.conf;
+sed -i -r s'/(\/usr\/local\/dh\/apache2\/)(template)'/"\1${INSTANCE_NAME}/" \
+  "${INSTANCE_PATH}"/etc/httpd.conf;
 # Set the PID path
-sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\//a PidFile "/var/run/apache2-dreambox-httpd.pid"' \
-  /dh/apache2/apache2-dreambox/etc/httpd.conf;
+sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\'/"/a PidFile '/var/run/${INSTANCE_NAME}-httpd.pid'" \
+  "${INSTANCE_PATH}"/etc/httpd.conf;
 
 # Create the logs directory
 # @TODO This could likely change to whatever... it just needs to match what's in ndn-vhost.conf
 mkdir -p /home/_domain_logs/vagrant/dreambox.http/http.dreambox-instance;
 # Copy the test vhost.conf into place
 # @TODO Once this is finalized, move to template with placeholder strings
-cp /vagrant/ndn-vhost.conf /dh/apache2/apache2-dreambox/etc/extra/vhosts/;
+cp /vagrant/ndn-vhost.conf "${INSTANCE_PATH}"/etc/extra/vhosts/;
 # Create test domain path
 # @TODO Remove after testing
 mkdir -p /home/vagrant/dreambox.http;
