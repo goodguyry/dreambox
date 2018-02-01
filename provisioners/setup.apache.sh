@@ -36,8 +36,7 @@ sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\'/"/a PidFile '/var/run/${INS
   "${INSTANCE_PATH}"/etc/httpd.conf;
 
 # Create the logs directory
-# @todo This could likely change to whatever... it just needs to match what's in ndn-vhost.conf
-mkdir -p /home/_domain_logs/vagrant/dreambox.http/http.dreambox-instance;
+mkdir -p /var/log/apache2/dreambox;
 # Copy the test vhost.conf into place
 # @todo Once this is finalized, move to template with placeholder strings
 cp /vagrant/files/http/ndn-vhost.conf "${INSTANCE_PATH}"/etc/extra/vhosts/;
@@ -53,22 +52,6 @@ bash -c "echo '<?php phpinfo(); ?>' >> /home/vagrant/dreambox.http/index.php";
 ln -s /usr/lib/insserv/insserv /sbin/insserv
 sysv-rc-conf apache2 on
 sysv-rc-conf --list apache2
-
-# Set Apache logs
-# Remove any existing log directories
-# Create the logs directories
-# @todo Find a better place for these
-declare -a DIRECTORIES=(
-  /var/log/apache2
-  /var/log/apache2/dreambox
-)
-
-for DIRECTORY in ${DIRECTORIES[*]}; do
-  if [[ -d ${DIRECTORY} ]]; then
-    rm -r ${DIRECTORY}
-  fi
-  mkdir ${DIRECTORY}
-done
 
 # Start Apache
 /etc/init.d/httpd2 start;
