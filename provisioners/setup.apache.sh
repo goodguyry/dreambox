@@ -10,8 +10,11 @@ INSTANCE_NAME='apache2-dreambox';
 INSTANCE_PATH="${TEMPLATE_PATH/%template/$INSTANCE_NAME}";
 
 # Create VHosts directory
-[[ ! -d "${TEMPLATE_PATH}"/etc/extra/vhosts ]] && mkdir "${TEMPLATE_PATH}"/etc/extra/vhosts
-cp /tmp/files/http/ports.conf "${TEMPLATE_PATH}"/etc/extra/vhosts/
+[[ ! -d "${TEMPLATE_PATH}"/etc/vhosts ]] && mkdir "${TEMPLATE_PATH}"/etc/vhosts
+[[ ! -d "${TEMPLATE_PATH}"/etc/ssl.crt ]] && mkdir "${TEMPLATE_PATH}"/etc/ssl.crt
+
+# Move the ports file into place
+cp /tmp/files/http/ports.conf "${TEMPLATE_PATH}"/etc/vhosts/
 
 # Change httpd2 init script to use /bin/bash
 # There are error when running in Bash
@@ -21,7 +24,7 @@ sed -i -r 's/(#! )(\/bin\/sh)/\1 \/bin\/bash/' /etc/init.d/httpd2;
 sed -i -r '/LoadModule rewrite_module.*\.so/a LoadModule fcgid_module lib/modules/mod_fcgid.so' \
   "${TEMPLATE_PATH}"/etc/httpd.conf;
 # Include the VHost directory
-sed -i -r 's/(#)(Include etc\/extra\/)httpd-vhosts\.conf/\2vhosts\/\*/' \
+sed -i -r 's/(#)(Include etc\/)extra\/httpd-vhosts\.conf/\2vhosts\/\*/' \
   "${TEMPLATE_PATH}"/etc/httpd.conf;
 
 # Duplicate template as new instance
@@ -38,8 +41,9 @@ sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\'/"/a PidFile '/var/run/${INS
 # Create the logs directory
 mkdir -p /var/log/apache2/dreambox;
 # Copy the test vhost.conf into place
-# @todo Once this is finalized, move to template with placeholder strings
-cp /vagrant/files/http/ndn-vhost.conf "${INSTANCE_PATH}"/etc/extra/vhosts/;
+# @todo Once this is finalized, move into place as a template with placeholder strings
+cp /vagrant/files/http/ndn-vhost.conf "${INSTANCE_PATH}"/etc/vhosts/;
+
 # Create test domain path
 # @todo Remove after testing
 mkdir -p /home/vagrant/dreambox.http;

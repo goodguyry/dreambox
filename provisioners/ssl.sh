@@ -8,7 +8,7 @@ open_ssl_conf='/usr/lib/ssl/dreambox-openssl.cnf'
 # Check for a saved certificate and key
 if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; then
   echo "Using saved certs from /vagrant/certs/"
-  cp -f /vagrant/certs/"${name}".* /usr/local/apache2/conf/
+  cp -f /vagrant/certs/"${name}".* /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/
 else
   if [[ -n "${hosts}" ]]; then
     # Enable the alt_names pointer
@@ -24,13 +24,13 @@ else
     -newkey rsa:2048 \
     -extensions v3_req \
     -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=${host}/" \
-    -keyout "/usr/local/apache2/conf/${name}.key" \
-    -out "/usr/local/apache2/conf/${name}.crt" \
+    -keyout "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.key" \
+    -out "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.crt" \
     -config "${open_ssl_conf}";
 
   # Save these for next time
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
-  cp -f /usr/local/apache2/conf/"${name}".* /vagrant/certs
+  cp -f /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/"${name}".* /vagrant/certs
 fi
 
 if [[ $? -lt 1 ]]; then
