@@ -1,0 +1,47 @@
+#!/bin/sh
+
+config=/dh/etc/debuglogging.conf
+
+if [ ! -e ${config} ]; then
+	exit 0;
+fi
+
+mount -t configfs none /sys/kernel/config
+
+if [ ! -d /sys/kernel/config/netconsole ]; then
+	echo Necessary kernel support for Dynamic Netconsole appears to be missing;
+	exit 0;
+fi
+
+test -d /sys/kernel/config/netconsole/logcollector || mkdir /sys/kernel/config/netconsole/logcollector || exit 0
+
+case "$1" in
+  start)
+    echo "Starting debuglogger (netconsole)"
+    for i in `cat ${config}` ; do 
+      line=(`echo $i | tr '=' ' '`)
+      echo "echo ${line[1]} > /sys/kernel/config/netconsole/logcollector/${line[0]}"
+      echo ${line[1]} > /sys/kernel/config/netconsole/logcollector/${line[0]}
+    done
+    echo 1 > /sys/kernel/config/netconsole/logcollector/enabled
+  ;;
+
+  stop)
+    echo "Stopping debuglogger (netconsole)"
+    echo 0 > /sys/kernel/config/netconsole/logcollector/enabled
+  ;;
+
+  restart)
+    echo "Restartting debuglogger (netconsole)"
+    $0 stop
+    $0 start
+  ;;
+
+  *)
+    echo "Usage: $N {start|stop|restart}" >&2
+  ;;
+
+esac
+
+exit 0
+

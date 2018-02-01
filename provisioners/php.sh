@@ -11,6 +11,11 @@ else
   exit 1
 fi
 
+# cp:
+# cannot stat ‘/usr/local/php70/bin/php-cgi’
+# : No such file or directory
+# httpd (pid 12775) already running
+
 # Copy the .ini file into place
 mkdir -p /etc/"${php_dir}"
 cp /usr/local/dreambox/php.ini /etc/"${php_dir}"/

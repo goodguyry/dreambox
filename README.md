@@ -9,12 +9,13 @@ This project repo contains the code for [building the Dreambox base box][wiki_bu
 
 ## Package Versions
 
-- Ubuntu - `12.04 LTS`
+- Ubuntu - `14.04 LTS`
 - PHP
-    - `5.6.29`
-    - `7.0.14`
+    - `5.6.31`
+    - `7.0.24`
+    - `7.1.10`
 - Apache - `2.2.31` (FastCGI)
-- MySQL - `5.5.40`
+- MySQL - `5.6.34`
 
 _Python and Ruby environments are not set up. Contributions are welcome and appreciated._
 

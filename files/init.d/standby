@@ -1,0 +1,134 @@
+#!/usr/bin/perl
+
+# dh2 standby script (for failover)
+#
+# invoke upon entry into runlevel 2.  checks logical identity (defined
+# in /dh/etc/logical-identity) to see if it's up.  if not (ie no other
+# machine has taken over in its stead) switches to runlevel 3, which
+# assumes that persona, starts services, etc.
+#
+# if logical identity is already up (taken over), standby exits and 
+# machine remains in runlevel 2.
+
+use strict;
+use Sys::Syslog qw(:DEFAULT setlogsock);  
+
+my $verbose = 1;
+my $ping = "ping -n -q";
+my $logical_runlevel = 2;
+my $standby_runlevel = 4;
+
+my $command = shift @ARGV;
+
+setlogsock 'unix';
+openlog 'standby', 'pid', 'daemon';
+
+sub my_syslog {
+	eval {
+		local $SIG{"__DIE__"}= sub { };
+		Sys::Syslog::syslog(@_);
+	}
+}
+
+sub p($) {
+	my $p = shift;
+	print "standby: $p";
+	my_syslog 'info', $p;
+}
+
+sub d($) {
+	my $p = shift;
+	p $p;
+	exit 1;
+}
+
+
+# background!
+#if (fork()) {
+#	print "Backgrounding dh2 standby agent with 5 second delay.\n";
+#	exit 0;
+#}
+
+p "[-- dh2 standby agent --]\n";
+
+#p "sleeping 5 seconds for init to chill out\n";
+#sleep 5;
+
+
+
+if ($command eq 'start') {
+	# load physical identity
+	open(I,"/etc/network/physical-identity") || d "missing /etc/network/physical-identity\n";
+	my $pip = <I>;
+	my $phost = <I>;
+	my $pfqdn = <I>;
+	my $rl = <I>;
+	close I;
+	chomp($pip);
+	chomp($phost);
+	chomp($pfqdn);
+	chomp($rl);
+	$standby_runlevel = $rl if $rl;
+
+	unless ($pip) {
+		d "No physical node, not doing anything.";
+		exit 0;
+	}
+	p "Physical node: $phost ($pfqdn), $pip, standby runlevel $standby_runlevel\n" if $verbose;
+	
+	# load logical identity
+	open(I,"/etc/network/logical-identity") || d "missing /etc/network/logical-identity\n";
+	my $lip = <I>;
+	my $lhost = <I>;
+	my $lfqdn = <I>;
+	my $lrl = <I>;
+	close I;
+	chomp($lip);
+	chomp($lhost);
+	chomp($lfqdn);
+	chomp($lrl);
+	$logical_runlevel = $lrl if $lrl;
+
+	unless ($lip) {
+		d "No logical node, not doing anything.\n";
+		exit 0;
+	}
+
+	p "Logical node: $lhost ($lfqdn), $lip, runlevel $logical_runlevel\n" if $verbose;
+
+
+	# did we boot?
+	my ($lastrunlevel, $currunlevel) = split(/\s+/,`runlevel`);
+	p "Runlevel $lastrunlevel -> $currunlevel\n";
+
+	if ($currunlevel != $standby_runlevel) {
+		d "not in standby runlevel ($standby_runlevel) , not doing anything\n";
+	}
+
+	if ($lastrunlevel eq 'N') {
+		
+		# ping logical host
+		my $count = 10;
+		p "Just booted!  Pinging $lip (count $count) ...\n";
+#		my $r = system "$ping -c $count $lip > /dev/null";
+#		my $r = 1;
+		my $out = `$ping -c $count $lip`;
+		my $r = $out =~ / 0 received/;
+		if ($r) {
+			# unreachable!
+			p "$lip unreachable!  switching to runlevel $logical_runlevel\n";
+			system "telinit $logical_runlevel > /dev/null";
+		} elsif ($out =~ / packets received/) {
+			p "$lip reachable!  we've been taken over, reamining in this runlevel.\n";
+		} else {
+			p "ping died!  something's funny, remaining in this runlevel.\n";
+		}
+	} else {
+		p "we just boot, not doing anything.\n";
+	}
+}
+
+1;
+
+
+
