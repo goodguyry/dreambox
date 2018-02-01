@@ -5,7 +5,7 @@
 
 echo "Finishing Apache setup"
 
-TEMPLATE_PATH='/dh/apache2/template';
+TEMPLATE_PATH='/usr/local/dh/apache2/template';
 INSTANCE_NAME='apache2-dreambox';
 INSTANCE_PATH="${TEMPLATE_PATH/%template/$INSTANCE_NAME}";
 
