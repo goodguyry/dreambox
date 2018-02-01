@@ -50,13 +50,17 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "provisioners/base.sh"
 
-    test.vm.provision "Package Setup",
+    test.vm.provision "Apache Setup",
       type: "shell",
-      path: "provisioners/package-setup.sh"
+      path: "provisioners/setup.apache.sh"
+
+    test.vm.provision "MySQL Setup",
+      type: "shell",
+      path: "provisioners/setup.mysql.sh"
 
     test.vm.provision "PHP Install",
       type: "shell",
-      path: "provisioners/php.sh",
+      path: "provisioners/setup.php.sh",
       :env => Dreambox.config
 
     if Dreambox.config['ssl_enabled'] then
