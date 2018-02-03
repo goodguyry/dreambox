@@ -38,7 +38,6 @@ Vagrant.configure(2) do |config|
     # Recreates the Packer file provisioner
     files = {
       'files' => '/tmp/files',
-      'packages' => '/tmp/packages',
       'provisioners' => '/tmp/provisioners',
     }
     files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
