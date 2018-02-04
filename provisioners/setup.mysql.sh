@@ -48,4 +48,4 @@ echo "${SECURE_MYSQL}";
 sysv-rc-conf --level 345 mysql on;
 
 echo "Starting MySQL"
-/etc/init.d/mysql start;
+/etc/init.d/mysql restart;
