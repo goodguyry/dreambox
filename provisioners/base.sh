@@ -188,8 +188,6 @@ echo 'Copying files into place'
 declare -a FILES=(
   'files/http/httpd-vhosts.conf'
   'files/http/ndn-vhost.conf'
-  'files/php/php.ini'
-  'provisioners/php.sh'
   'provisioners/ssl.sh'
   'provisioners/user.sh'
   'provisioners/vhost.sh'

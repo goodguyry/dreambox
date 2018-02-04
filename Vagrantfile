@@ -57,11 +57,6 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "provisioners/setup.mysql.sh"
 
-    test.vm.provision "PHP Install",
-      type: "shell",
-      path: "provisioners/setup.php.sh",
-      :env => Dreambox.config
-
     if Dreambox.config['ssl_enabled'] then
       test.vm.provision "SSL Setup",
         type: "shell",
