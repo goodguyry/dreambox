@@ -70,7 +70,7 @@
   # - The vhost.conf filename should be based on site's name
   {
     'name' => "Paths: The vhost.conf filename should be based on site's name.",
-    'expect' => '/usr/local/apache2/conf/vhosts/full-one.conf',
+    'expect' => '/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/full-one.conf',
     'actual' => @tests.the['full'].config['sites']['full-one']['vhost_file'],
   },
 
@@ -82,7 +82,7 @@
   # - The vhost.conf filename should be based on site's subdomain and name joined by a dot.
   {
     'name' => "Paths: The vhost.conf filename should be based on site's subdomain and name joined by a dot.",
-    'expect' => '/usr/local/apache2/conf/vhosts/app.full-one.conf',
+    'expect' => '/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/app.full-one.conf',
     'actual' => @tests.the['full'].config['sites']['app.full-one']['vhost_file'],
   },
 
