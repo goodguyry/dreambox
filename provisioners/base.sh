@@ -186,7 +186,6 @@ echo 'Copying files into place'
 
 # # Provisioners and support files
 declare -a FILES=(
-  'files/http/httpd-vhosts.conf'
   'files/http/ndn-vhost.conf'
   'provisioners/ssl.sh'
   'provisioners/user.sh'
