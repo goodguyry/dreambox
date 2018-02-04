@@ -37,6 +37,7 @@ apt-get -y install \
 
 # Install libraries
 apt-get -y install \
+  expect \
   libapr1 \
   libaprutil1 \
   libaspell15 \
@@ -121,8 +122,18 @@ apt-get -y install \
   > /dev/null
 
 echo "Install MySQL packages"
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
+
 apt-get -y install \
-  mysql-client \
+  libmysqlclient-dev \
+  libmysqlclient18:amd64 \
+  libnss-mysql-bg \
+  mysql-client-5.6 \
+  mysql-client-core-5.6 \
+  mysql-server-5.6 \
+  mysql-server-core-5.6 \
+  mysql-common-5.6 \
   > /dev/null
 
 echo "Install Ruby packages"

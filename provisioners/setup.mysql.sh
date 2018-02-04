@@ -4,43 +4,48 @@
 # https://dev.mysql.com/doc/refman/5.5/en/installing-source-distribution.html
 #
 
-echo "Finishing MySQL install"
+echo "Finishing MySQL install";
 
-# Create user and group
-groupadd mysql
-useradd -g mysql mysql
+# Create mysql group
+if grep -q mysql /etc/group; then
+  echo "Group mysql already exists";
+else
+  groupadd mysql;
+fi
 
-# @review: /tmp/vagrant-shell: line 49: cd: /usr/local/mysql: No such file or directory
-# @todo: should this be /etc/mysql/ ?
-cd /usr/local/mysql 2>&1
-
-# Update permissions
-chown -R mysql . 2>&1
-chgrp -R mysql . 2>&1
-
-# Create GRANT tables
-# @review: /tmp/vagrant-shell: line 56: scripts/mysql_install_db: No such file or directory
-scripts/mysql_install_db --user=mysql >/dev/null
+# Create mysql user
+if $(getent passwd mysql >/dev/null); then
+  echo "User mysql already exists.";
+else
+  useradd -g mysql mysql;
+fi;
 
 # Update permissions
-chown -R root . 2>&1
-chown -R mysql data 2>&1
+chgrp -R mysql /etc/mysql;
+chown -R mysql /var/lib/mysql;
 
-# Create the conf based on one of the pre-build confs
-# @review: cannot stat ‘support-files/my-medium.cnf’
-# @review: there's a /etc/mysql/my.cnf...
-cp support-files/my-medium.cnf /etc/my.cnf
+SECURE_MYSQL=$(expect -c "
+set timeout 10
+spawn mysql_secure_installation
+expect \"Enter current password for root (enter for none):\"
+send \"root\r\"
+expect \"Change the root password?\"
+send \"n\r\"
+expect \"Remove anonymous users?\"
+send \"y\r\"
+expect \"Disallow root login remotely?\"
+send \"y\r\"
+expect \"Remove test database and access to it?\"
+send \"y\r\"
+expect \"Reload privilege tables now?\"
+send \"y\r\"
+expect eof
+");
+
+echo "${SECURE_MYSQL}";
 
 # Set MySQL to start at boot
-
-# @review: cannot stat ‘support-files/mysql.server’
-cp support-files/mysql.server /etc/init.d/mysql.server
-# @review: update-rc.d: /etc/init.d/mysql.server: file does not exist
-update-rc.d mysql.server defaults
-
-# @review: /tmp/vagrant-shell: line 77: cd: OLDPWD not set
-cd - >/dev/null
+sysv-rc-conf --level 345 mysql on;
 
 echo "Starting MySQL"
-/etc/init.d/mysql.server start
-# /tmp/vagrant-shell: line 86: /etc/init.d/mysql.server: No such file or directory
+/etc/init.d/mysql start;
