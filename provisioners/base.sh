@@ -62,7 +62,7 @@ apt-get -y install \
 ldconfig /usr/local/lib
 
 # Tweak sshd to prevent DNS resolution (speed up logins)
-bash -c "echo 'UseDNS no' >> /etc/ssh/sshd_config"
+bash -c "echo -e '\rUseDNS no' >> /etc/ssh/sshd_config"
 
 # Remove 5s grub timeout to speed up booting
 bash -c "cat << EOF > /etc/default/grub
