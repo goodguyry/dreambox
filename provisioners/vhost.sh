@@ -4,6 +4,7 @@
 #
 
 port_file='/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/ports.conf'
+cert_path="/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${box_name}"
 
 # Set the new vhost conf file in place
 cp /usr/local/dreambox/ndn-vhost.conf "${vhost_file}"
@@ -12,11 +13,11 @@ cp /usr/local/dreambox/ndn-vhost.conf "${vhost_file}"
 [[ ! -d /var/log/apache2/dreambox/"${host}" ]] && mkdir -p /var/log/apache2/dreambox/"${host}"
 
 # Set Apache directory
-ESCAPED_SITE_ROOT=$(echo "${root_path}" | sed 's/\(\W\)/\\\1/g');
-sed -i s/"\/usr\/local\/dh\/apache2\/apache2-dreambox\/htdocs"/"${ESCAPED_SITE_ROOT}"/ "${vhost_file}";
+ESCAPED_ROOT_PATH=$(echo "${root_path}" | sed 's/\(\W\)/\\\1/g');
+sed -i s/"%root_path%"/"${ESCAPED_ROOT_PATH}"/ "${vhost_file}";
 
-# ServerName
-sed -i -r s/"(ServerName\s)\w*\.\w*"/"\1${host}/" "${vhost_file}"
+# Update hostname throughout
+sed -i -r s/"%host%"/"${host}/" "${vhost_file}"
 
 # Update vhost file for SSL
 if [[ 'true' == $ssl ]]; then
@@ -29,9 +30,9 @@ if [[ 'true' == $ssl ]]; then
   # SSLEngine on
   sed -i -r 's/(SSLEngine\s)\w*/\1on/' "${vhost_file}"
   # SSLCertificateFile
-  sed -i -r s/'(#\s)(SSLCertificateFile\s)(\/usr\/local\/dh\/apache2\/apache2-dreambox\/etc\/ssl.crt\/)\w*\.crt'/"\2\3${box_name}\.crt"/ "${vhost_file}"
+  sed -i -r s/'(#\s)(SSLCertificateFile\s)(%cert_path%)\w*\.crt'/"\2${cert_path}\.crt"/ "${vhost_file}"
   # SSLCertificateKeyFile
-  sed -i -r s/'(#\s)(SSLCertificateKeyFile\s)(\/usr\/local\/dh\/apache2\/apache2-dreambox\/etc\/ssl.crt\/)\w*\.key'/"\2\3${box_name}\.key"/ "${vhost_file}"
+  sed -i -r s/'(#\s)(SSLCertificateKeyFile\s)(%cert_path%)\w*\.key'/"\2${cert_path}\.key"/ "${vhost_file}"
 else
   # Enable the NameVirtualHost on port 80
   sed -i -r 's/(#\s)(NameVirtualHost\s\*:80)/\2/' "${port_file}"
