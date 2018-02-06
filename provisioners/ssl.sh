@@ -31,10 +31,10 @@ else
   # Save these for next time
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
   cp -f /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/"${name}".* /vagrant/certs
-fi
 
-if [[ $? -lt 1 ]]; then
-  echo -e "SSL certificate created: ${name}.crt\n"
-else
-  echo -e "SSL setup error..."
+  if [[ $? -lt 1 ]]; then
+    echo -e "SSL certificate created: ${name}.crt\n"
+  else
+    echo -e "SSL setup error..."
+  fi
 fi
