@@ -19,7 +19,8 @@ else
 
   # Create the certificate
   openssl req \
-    -x509 -nodes \
+    -x509 \
+    -nodes \
     -days 365 \
     -newkey rsa:2048 \
     -extensions v3_req \
@@ -27,6 +28,51 @@ else
     -keyout "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.key" \
     -out "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.crt" \
     -config "${open_ssl_conf}";
+
+#
+# https://forums.freebsd.org/threads/62285/
+#
+# openssl.conf
+# [ san_cert ]
+# basicConstraints    = CA:FALSE
+# nsRevocationUrl     = https://XXXXXXX.XXX/otCA.crl
+# subjectAltName      = ${ENV::SAN}
+# extendedKeyUsage    = serverAuth
+#
+# Here is how you issue a CA cert:
+#
+# openssl req \
+#   -new \
+#   -x509 \
+#   -newkey rsa:2048 \
+#   -sha256 \
+#   -days 3650 \
+#   -extensions v3_ca \
+#   -keyout private/cakey.pem \
+#   -out cacert.pem \
+#   -config ../openssl.cnf
+#
+# You'll need to configure openssl.cnf to use your new CA. Try this guide: http://www.freebsdmadeeasy.com/tutorials/freebsd/create-a-ca-with-openssl.php
+#
+# These are the commands I use to issue the server cert. Note the SAN variable. It is a comma separated list. Any domain you want to be able to access your web server from should be in the list. For example if your hostname is fbsd and your FQDN is fbsd.home:
+#
+# openssl req \
+#   -new \
+#   -newkey rsa:2048 \
+#   -sha256 \
+#   -nodes \
+#   -out fbsd-req.pem \
+#   -keyout private/fbsd.pem \
+#   -config ../openssl.cnf
+#
+# export SAN=DNS:fbsd,DNS:fbsd.home
+# openssl ca \
+#   -config /etc/ssl/openssl.cnf \
+#   -extensions san_cert \
+#   -md sha256 \
+#   -out certs/fbsd.pem \
+#   -infiles reqs/fbsd-req.pem
+#
 
   # Save these for next time
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs

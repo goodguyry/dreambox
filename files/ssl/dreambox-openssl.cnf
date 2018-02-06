@@ -29,7 +29,7 @@ crl = $dir/crl.pem # The current CRL
 private_key = $dir/private/cakey.pem# The private key
 RANDFILE = $dir/private/.rand  # private random number file
 
-x509_extensions = usr_cert # The extentions to add to the cert
+# x509_extensions = usr_cert # The extentions to add to the cert
 
 # Comment out the following two lines for the "traditional"
 # (and highly broken) format.
@@ -207,7 +207,7 @@ authorityKeyIdentifier = keyid:always,issuer
 # extensions.
 #basicConstraints = critical,CA:true
 # So we do this instead.
-basicConstraints = CA:true
+basicConstraints = CA:TRUE
 
 # Key usage: this is typical for a CA certificate. However since it will
 # prevent it being used as an test self-signed certificate it is best
