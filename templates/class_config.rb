@@ -135,16 +135,10 @@ class Config
         @config['ssl_enabled'] = ssl_enabled = true
       end
 
-      if ssl_enabled
-        if @config.key?('host')
-          add_host(site.fetch('host'))
-        else
-          @config['host'] = site.fetch('host')
-        end
-      end
+      add_host(site.fetch('host')) if ssl_enabled
 
       if site['aliases'].kind_of? Array
-	site['aliases'].each { |the_alias| add_host(the_alias) } if ssl_enabled
+        site['aliases'].each { |the_alias| add_host(the_alias) } if ssl_enabled
         # Aliases will be printed in the site's Apache conf
         site['aliases'] = site.fetch('aliases').join(' ')
       end
