@@ -73,32 +73,6 @@ include Helpers
   },
 
   # Condition:
-  # - A site's alias has a prefixed '*.'
-  #
-  # Expected Outcome:
-  # - The prefixed '*.' should be removed from the String.
-  #
-  # Additional Information:
-  # - The wildcard can break the subdomains and shouldn't be
-  #   used in the SSL certificate
-  {
-    'name' => "sanitize_alias: The prefixed '*.' should be removed from the String.",
-    'expect' => 'example.dev',
-    'actual' => @tests.the['full'].sanitize_alias('*.example.dev'),
-  },
-
-  # Condition:
-  # - A site's alias does not have a prefixed '*.'
-  #
-  # Expected Outcome:
-  # - The String should not be altered.
-  {
-    'name' => "sanitize_alias: The String should not be altered.",
-    'expect' => 'example.dev',
-    'actual' => @tests.the['full'].sanitize_alias('example.dev'),
-  },
-
-  # Condition:
   # - A site's host has a prefixed 'www.'.
   #
   # Expected Outcome:

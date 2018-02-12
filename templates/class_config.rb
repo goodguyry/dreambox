@@ -144,7 +144,7 @@ class Config
       end
 
       if site['aliases'].kind_of? Array
-        site['aliases'].each { |the_alias| add_host(sanitize_alias(the_alias)) } if ssl_enabled
+	site['aliases'].each { |the_alias| add_host(the_alias) } if ssl_enabled
         # Aliases will be printed in the site's Apache conf
         site['aliases'] = site.fetch('aliases').join(' ')
       end

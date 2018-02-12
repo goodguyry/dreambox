@@ -18,10 +18,6 @@ module Helpers
     trim_ending_slash(trim_beginning_slash(str))
   end
 
-  def sanitize_alias(host)
-    ('*.' == host[0..1]) ? host[2..-1] : host
-  end
-
   def add_host(host)
     @config['hosts'] = @config.fetch('hosts').push(host) unless @config.fetch('hosts').include?(host)
   end
