@@ -200,7 +200,8 @@ for INDEX in ${!FILES[*]}; do
 done
 
 # SSL config
-cp /tmp/files/ssl/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
+# @todo move this to ssl.sh
+dpkg -i /tmp/files/debs/dreambox-ca-certificates.deb
 
 # # Remove existing motd and set up ours
 rm -f /etc/update-motd.d/*

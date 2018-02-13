@@ -4,7 +4,6 @@
 #
 
 port_file='/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/ports.conf'
-cert_path="/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${box_name}"
 
 # Set the new vhost conf file in place
 cp /usr/local/dreambox/ndn-vhost.conf "${vhost_file}"
@@ -29,11 +28,10 @@ if [[ 'true' == $ssl ]]; then
   sed -i -r 's/\*:80/\*:443/g' "${vhost_file}"
   # SSLEngine on
   sed -i -r 's/(SSLEngine\s)\w*/\1on/' "${vhost_file}"
-  # SSLCertificateFile
-  ESCAPED_CERT_PATH=$(echo "${cert_path}" | sed 's/\(\W\)/\\\1/g');
-  sed -i -r s/'(#\s)(SSLCertificateFile\s)(%cert_path%)'/"\2${ESCAPED_CERT_PATH}\.crt"/ "${vhost_file}"
+  # SSLCertificateFile & SSLCertificateKeyFile
+  sed -i -r s/'(#\s)(SSLCertificate.*)(%cert_name%)'/"\2${box_name}"/ "${vhost_file}"
   # SSLCertificateKeyFile
-  sed -i -r s/'(#\s)(SSLCertificateKeyFile\s)(%cert_path%)'/"\2${ESCAPED_CERT_PATH}\.key"/ "${vhost_file}"
+  # sed -i -r s/'(#\s)(SSLCertificateKeyFile.*)(%cert_name%)'/"\2${box_name}\.key"/ "${vhost_file}"
 else
   # Enable the NameVirtualHost on port 80
   sed -i -r 's/(#\s)(NameVirtualHost\s\*:80)/\2/' "${port_file}"

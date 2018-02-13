@@ -10,10 +10,12 @@ if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; the
   echo "Using saved certs from /vagrant/certs/"
   cp -f /vagrant/certs/"${name}".* /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/
 else
+  # Enable the alt_names pointer
+  # sed -i -r 's/(#\s)(subjectAltName\s=\s\@alt_names)/\2/' "${open_ssl_conf}"
+  # Add the DNS Hosts string to `open_ssl_conf`
+  # bash -c "echo -e \"\nDNS.1 = ${host}\" >> ${open_ssl_conf}"
+  # Add the DNS Hosts string to `open_ssl_conf`
   if [[ -n "${hosts}" ]]; then
-    # Enable the alt_names pointer
-    sed -i -r 's/(#\s)(subjectAltName\s=\s\@alt_names)/\2/' "${open_ssl_conf}"
-    # Add the DNS Hosts string to `open_ssl_conf`
     bash -c "echo -e \"${hosts}\" >> ${open_ssl_conf}"
   fi
 
@@ -24,10 +26,18 @@ else
     -days 365 \
     -newkey rsa:2048 \
     -extensions v3_req \
-    -subj "/C=US/ST=Washington/L=Seattle/O=IT/CN=${host}/" \
+    -subj '/C=US/ST=Washington/L=Seattle/O=Dreambox/OU=Dreambox CA/CN=Dreambox Self-Signed/' \
     -keyout "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.key" \
     -out "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.crt" \
     -config "${open_ssl_conf}";
+
+# sudo openssl x509 \
+#   -in /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.crt \
+#   -inform PEM \
+#   -out /usr/local/share/ca-certificates/${name}.crt
+# sudo update-ca-certificates
+
+# https://jamielinux.com/docs/openssl-certificate-authority/create-the-root-pair.html
 
 #
 # https://forums.freebsd.org/threads/62285/

@@ -1,0 +1,35 @@
+#! /bin/bash
+
+set -e;
+
+CA_PATH='/root/ca';
+SHARE_DIR='/usr/local/share/ca-certificates';
+APACHE_SSL_DIR='/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/';
+
+if (! test -d "${CA_PATH}"); then
+  exit 1;
+fi;
+
+# Install the root and intermediate certs.
+if (! test -e ${SHARE_DIR}/intermediate.crt && ! test -e ${SHARE_DIR}/ca.crt); then
+  cp "${CA_PATH}/intermediate/certs/intermediate.crt" "${SHARE_DIR}/intermediate.crt";
+  cp "${CA_PATH}/certs/ca.crt" "${SHARE_DIR}/ca.crt";
+
+  [[ $? -lt 1 ]] && update-ca-certificates;
+fi;
+
+# Set root permissions.
+chmod 700 "${CA_PATH}/private";
+chmod 400 "${CA_PATH}/private/ca.key";
+chmod 444 "${CA_PATH}/certs/ca.crt";
+# Set intermediate permissions.
+chmod 700 "${CA_PATH}/intermediate/private";
+chmod 400 "${CA_PATH}/intermediate/private/intermediate.key";
+chmod 444 "${CA_PATH}/intermediate/certs/intermediate.crt";
+# Set chain cert permissions.
+chmod 444 "${CA_PATH}/intermediate/certs/ca-chain.cert.pem";
+
+# Move chain file into Apache SSL directory.
+cp "${CA_PATH}/intermediate/certs/ca-chain.cert.pem" /usr/local/dreambox/;
+
+exit $?
