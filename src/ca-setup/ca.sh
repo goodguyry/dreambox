@@ -5,7 +5,9 @@
 set -e
 
 PKG_NAME='dreambox-ca-certificates';
-SOURCE_DIR="/vagrant/src/${PKG_NAME}";
+SOURCE_DIR="/vagrant/src";
+PKG_DIR="${SOURCE_DIR}/${PKG_NAME}";
+
 # The directory structure.
 declare -a DIRS=(
   /root/ca/certs
@@ -26,10 +28,10 @@ declare -a ECHO_FILES=(
 );
 
 #
-# Create the root pair
+# Create the root pair.
 #
 
-echo -e "\nPrepare the directory structure and files"
+echo -e "Prepare the directory structure and files"
 mkdir /root/ca;
 for DIR in ${!DIRS[*]}; do
   [[ ! -d "/tmp/${DIRS[$DIR]}" ]] && mkdir -p "${DIRS[$DIR]}";
@@ -40,18 +42,18 @@ for FILE in ${!ECHO_FILES[*]}; do
   bash -c "echo 1000 > \"${ECHO_FILES[$FILE]}\"";
 done;
 
-echo -e "\nSet the configuration files"
-cp "${SOURCE_DIR}"/DEBIAN/source/openssl.intermediate.cnf /root/ca/intermediate/openssl.cnf;
-cp "${SOURCE_DIR}"/DEBIAN/source/openssl.cnf /root/ca/openssl.cnf;
+echo -e "Set the configuration files"
+cp "${SOURCE_DIR}"/ca-setup/openssl.intermediate.cnf /root/ca/intermediate/openssl.cnf;
+cp "${SOURCE_DIR}"/ca-setup/openssl.cnf /root/ca/openssl.cnf;
 
-echo -e "\nCreate root key and cert";
-# Create the root key
+echo -e "Create root key and cert";
+# Create the root key.
 openssl genrsa \
   -aes256 \
   -out /root/ca/private/ca.key \
   4096;
 
-# Create the root certificate
+# Create the root certificate.
 openssl req \
   -config /root/ca/openssl.cnf \
   -key /root/ca/private/ca.key \
@@ -64,10 +66,10 @@ openssl req \
   -out /root/ca/certs/ca.crt;
 
 #
-# Create the intermediate pair
+# Create the intermediate pair.
 #
 
-echo -e "\nCreate intermediate key and crs";
+echo -e "Create intermediate key and crs";
 
 # Create the intermediate key
 openssl genrsa -out /root/ca/intermediate/private/intermediate.key 4096;
@@ -81,7 +83,7 @@ openssl req \
   -key /root/ca/intermediate/private/intermediate.key \
   -out /root/ca/intermediate/csr/intermediate.csr;
 
-echo -e "\nSign the intermediate cert";
+echo -e "Sign the intermediate cert";
 
 openssl ca \
   -config /root/ca/openssl.cnf \
@@ -92,21 +94,29 @@ openssl ca \
   -in /root/ca/intermediate/csr/intermediate.csr \
   -out /root/ca/intermediate/certs/intermediate.crt;
 
-echo -e "\nCreate the certificate chain file";
+echo -e "Create the certificate chain file";
 
 bash -c "cat /root/ca/intermediate/certs/intermediate.crt /root/ca/certs/ca.crt > /root/ca/intermediate/certs/ca-chain.cert.pem";
 
 #
-# Create the Root Cert package
+# Create the Root Cert package.
 #
 
-# cp -a "${SOURCE_DIR}" ~/ && cd ~;
-# mkdir "${PKG_NAME}"/root;
-# cp -a /root/ca "${PKG_NAME}"/root/;
+# Set up the source directory.
+cp -a "${PKG_DIR}" ~/ && cd ~;
 
-# # Build the deb package
-# dpkg-deb --build "${PKG_NAME}";
-# # Copy to repo
-# cp "${PKG_NAME}".deb /vagrant/files/debs;
+# Create directories.
+mkdir "${PKG_NAME}"/root;
+mkdir -p "${PKG_NAME}"/usr/local/dreambox/;
+
+# Copy the /root/ca directory structure.
+cp -a /root/ca "${PKG_NAME}"/root/;
+# Copy the chain file into the dreambox directory.
+cp "${PKG_NAME}"/root/ca/intermediate/certs/ca-chain.cert.pem "${PKG_NAME}"/usr/local/dreambox/;
+
+# Build the deb package
+dpkg-deb --build "${PKG_NAME}";
+# Copy to repo
+cp "${PKG_NAME}".deb /vagrant/files/debs;
 
 exit $?

@@ -29,7 +29,4 @@ chmod 444 "${CA_PATH}/intermediate/certs/intermediate.crt";
 # Set chain cert permissions.
 chmod 444 "${CA_PATH}/intermediate/certs/ca-chain.cert.pem";
 
-# Move chain file into Apache SSL directory.
-cp "${CA_PATH}/intermediate/certs/ca-chain.cert.pem" /usr/local/dreambox/;
-
 exit $?

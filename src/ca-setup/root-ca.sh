@@ -229,7 +229,7 @@ sudo cp intermediate/certs/vhost.crt \
 sudo cp intermediate/private/vhost.key \
   /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/
 
-sudo cp intermediate/certs/ca-chain.cert.pem \
+sudo cp /usr/local/dreambox/ca-chain.cert.pem \
   /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/
 
 # Copy to /vagrant/certs

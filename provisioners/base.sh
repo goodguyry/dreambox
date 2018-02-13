@@ -187,6 +187,7 @@ echo 'Copying files into place'
 # Provisioners and support files
 # @todo move these to a .deb package
 declare -a FILES=(
+  'files/debs/dreambox-ca-certificates.deb'
   'files/http/ndn-vhost.conf'
   'files/http/ports.conf'
   'provisioners/ssl.sh'
@@ -198,10 +199,6 @@ declare -a FILES=(
 for INDEX in ${!FILES[*]}; do
   [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/
 done
-
-# SSL config
-# @todo move this to ssl.sh
-dpkg -i /tmp/files/debs/dreambox-ca-certificates.deb
 
 # # Remove existing motd and set up ours
 rm -f /etc/update-motd.d/*

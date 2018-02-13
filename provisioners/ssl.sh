@@ -1,96 +1,82 @@
 #!/bin/bash
 #
-# Create the SSL certificate, then finish setup
+# Sign server and client certificates
 #
 
-open_ssl_conf='/usr/lib/ssl/dreambox-openssl.cnf'
+set -e;
+
+# @todo remove these - they come from the config
+name='dreambox'
+hosts='\nDNS.1 = www.dreambox.test'
+
+# Install root and intermediate certs
+dpkg -i /usr/local/dreambox/dreambox-ca-certificates.deb
+
+SSL_DIR_PATH='/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt'
+KEY_FILE="${SSL_DIR_PATH}/${name}.key"
+CRT_FILE="${SSL_DIR_PATH}/${name}.crt"
+SSL_CONF='/root/ca/intermediate/openssl.cnf'
+
+# Copy the chain file into place
+cp /usr/local/dreambox/ca-chain.cert.pem  "${SSL_DIR_PATH}"
 
 # Check for a saved certificate and key
 if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; then
   echo "Using saved certs from /vagrant/certs/"
-  cp -f /vagrant/certs/"${name}".* /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/
+  cp -f /vagrant/certs/"${name}".* "${SSL_DIR_PATH}"
 else
-  # Enable the alt_names pointer
-  # sed -i -r 's/(#\s)(subjectAltName\s=\s\@alt_names)/\2/' "${open_ssl_conf}"
-  # Add the DNS Hosts string to `open_ssl_conf`
-  # bash -c "echo -e \"\nDNS.1 = ${host}\" >> ${open_ssl_conf}"
-  # Add the DNS Hosts string to `open_ssl_conf`
+  # Open permissions for /root/ca
+  # @review is this necessary?
+  # chmod 755 /root/
+
+  # Create a key
+  openssl genrsa -out "${KEY_FILE}" 2048
+  chmod 400 "${KEY_FILE}"
+
   if [[ -n "${hosts}" ]]; then
-    bash -c "echo -e \"${hosts}\" >> ${open_ssl_conf}"
+    bash -c "echo -e \"${hosts}\" >> ${SSL_CONF}"
   fi
 
-  # Create the certificate
+  # Create a certificate
   openssl req \
-    -x509 \
-    -nodes \
-    -days 365 \
-    -newkey rsa:2048 \
-    -extensions v3_req \
-    -subj '/C=US/ST=Washington/L=Seattle/O=Dreambox/OU=Dreambox CA/CN=Dreambox Self-Signed/' \
-    -keyout "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.key" \
-    -out "/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.crt" \
-    -config "${open_ssl_conf}";
+    -config "${SSL_CONF}" \
+    -key "${KEY_FILE}" \
+    -new \
+    -sha256 \
+    -subj '/C=US/ST=Washington/L=Seattle/O=Dreambox/OU=Dreambox Web Services/CN=Dreambox VHost/' \
+    -out "/root/ca/intermediate/csr/${name}.csr"
 
-# sudo openssl x509 \
-#   -in /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/${name}.crt \
-#   -inform PEM \
-#   -out /usr/local/share/ca-certificates/${name}.crt
-# sudo update-ca-certificates
+  # Sign the vhost certificate
+  /usr/bin/expect <<EOF
+    spawn openssl ca \
+      -config "${SSL_CONF}" \
+      -extensions server_cert \
+      -days 375 \
+      -notext \
+      -md sha256 \
+      -in "/root/ca/intermediate/csr/${name}.csr" \
+      -out "${CRT_FILE}";
+    expect "Sign the certificate?"
+    send "y\r"
+    expect "1 out of 1 certificate requests certified, commit?"
+    send "y\r"
+    expect eof
+EOF
 
-# https://jamielinux.com/docs/openssl-certificate-authority/create-the-root-pair.html
-
-#
-# https://forums.freebsd.org/threads/62285/
-#
-# openssl.conf
-# [ san_cert ]
-# basicConstraints    = CA:FALSE
-# nsRevocationUrl     = https://XXXXXXX.XXX/otCA.crl
-# subjectAltName      = ${ENV::SAN}
-# extendedKeyUsage    = serverAuth
-#
-# Here is how you issue a CA cert:
-#
-# openssl req \
-#   -new \
-#   -x509 \
-#   -newkey rsa:2048 \
-#   -sha256 \
-#   -days 3650 \
-#   -extensions v3_ca \
-#   -keyout private/cakey.pem \
-#   -out cacert.pem \
-#   -config ../openssl.cnf
-#
-# You'll need to configure openssl.cnf to use your new CA. Try this guide: http://www.freebsdmadeeasy.com/tutorials/freebsd/create-a-ca-with-openssl.php
-#
-# These are the commands I use to issue the server cert. Note the SAN variable. It is a comma separated list. Any domain you want to be able to access your web server from should be in the list. For example if your hostname is fbsd and your FQDN is fbsd.home:
-#
-# openssl req \
-#   -new \
-#   -newkey rsa:2048 \
-#   -sha256 \
-#   -nodes \
-#   -out fbsd-req.pem \
-#   -keyout private/fbsd.pem \
-#   -config ../openssl.cnf
-#
-# export SAN=DNS:fbsd,DNS:fbsd.home
-# openssl ca \
-#   -config /etc/ssl/openssl.cnf \
-#   -extensions san_cert \
-#   -md sha256 \
-#   -out certs/fbsd.pem \
-#   -infiles reqs/fbsd-req.pem
-#
+  if [[ $? -lt 1 ]]; then
+    echo -e "SSL key and certificate created:"
+    echo -e ">> ${KEY_FILE}"
+    echo -e ">> ${CRT_FILE}"
+  else
+    echo -e "There was an error signing the certificate..."
+  fi
 
   # Save these for next time
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
-  cp -f /usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt/"${name}".* /vagrant/certs
+  cp -f "${SSL_DIR_PATH}/${name}".* /vagrant/certs
 
-  if [[ $? -lt 1 ]]; then
-    echo -e "SSL certificate created: ${name}.crt\n"
-  else
-    echo -e "SSL setup error..."
-  fi
+  # Open permissions for /root/ca
+  chmod 755 /root/
 fi
+
+exit $?;

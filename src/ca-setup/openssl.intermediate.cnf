@@ -133,4 +133,3 @@ keyUsage = critical, digitalSignature
 extendedKeyUsage = critical, OCSPSigning
 
 [alt_names]
-DNS.1 = www.dreambox.test
