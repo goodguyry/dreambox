@@ -184,9 +184,11 @@ ldconfig /usr/local/lib
 
 echo 'Copying files into place'
 
-# # Provisioners and support files
+# Provisioners and support files
+# @todo move these to a .deb package
 declare -a FILES=(
   'files/http/ndn-vhost.conf'
+  'files/http/ports.conf'
   'provisioners/ssl.sh'
   'provisioners/user.sh'
   'provisioners/vhost.sh'

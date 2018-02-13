@@ -10,18 +10,26 @@ INSTANCE_NAME='apache2-dreambox';
 INSTANCE_PATH="${TEMPLATE_PATH/%template/$INSTANCE_NAME}";
 
 # Create necessary directories
-[[ ! -d "${TEMPLATE_PATH}"/etc/vhosts ]] && mkdir "${TEMPLATE_PATH}"/etc/vhosts
-[[ ! -d "${TEMPLATE_PATH}"/etc/ssl.crt ]] && mkdir "${TEMPLATE_PATH}"/etc/ssl.crt
-[[ ! -d /var/log/apache2/dreambox ]] && mkdir -p /var/log/apache2/dreambox
+declare -a DIRS=(
+  "${TEMPLATE_PATH}"/etc/vhosts
+  "${TEMPLATE_PATH}"/etc/ssl.crt
+  /var/log/apache2/dreambox
+)
+
+for INDEX in ${!DIRS[*]}; do
+  [[ ! -d "${DIRS[$INDEX]}" ]] && mkdir -p "${DIRS[$INDEX]}";
+done
 
 # Move the ports file into place
-cp /tmp/files/http/ports.conf "${TEMPLATE_PATH}"/etc/vhosts/
+# @todo put this in the deb package
+cp /usr/local/dreambox/ports.conf "${TEMPLATE_PATH}"/etc/vhosts/
 
 # Change httpd2 init script to use /bin/bash
 # There are error when running in Bash
 sed -i -r 's/(#! )(\/bin\/sh)/\1 \/bin\/bash/' /etc/init.d/httpd2;
 
 # Load mod_fcgid
+# @todo maybe just move this to the repo with the changes set
 sed -i -r '/LoadModule rewrite_module.*\.so/a LoadModule fcgid_module lib/modules/mod_fcgid.so' \
   "${TEMPLATE_PATH}"/etc/httpd.conf;
 # Include the VHost directory
@@ -36,6 +44,7 @@ ln -s "${INSTANCE_PATH}"/sbin/httpd "${INSTANCE_PATH}"/"${INSTANCE_NAME}"-httpd;
 sed -i -r s'/(\/usr\/local\/dh\/apache2\/)(template)'/"\1${INSTANCE_NAME}/" \
   "${INSTANCE_PATH}"/etc/httpd.conf;
 # Set the PID path
+# @include this in the file and change the path all at once above
 sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\'/"/a PidFile '/var/run/${INSTANCE_NAME}-httpd.pid'" \
   "${INSTANCE_PATH}"/etc/httpd.conf;
 
