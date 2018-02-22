@@ -206,3 +206,6 @@ for MOTD in /tmp/files/motd/*; do
   MOTD_FILE=${MOTD##*/}
   cp "${MOTD}" /etc/update-motd.d/ && chmod +x /etc/update-motd.d/"${MOTD_FILE}"
 done
+# This helps make sure the message is displayed correctly on the first login
+sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/login
+sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/sshd
