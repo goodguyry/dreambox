@@ -37,6 +37,7 @@ apt-get -y install \
 
 # Install libraries
 apt-get -y install \
+  expect \
   libapr1 \
   libaprutil1 \
   libaspell15 \
@@ -61,7 +62,7 @@ apt-get -y install \
 ldconfig /usr/local/lib
 
 # Tweak sshd to prevent DNS resolution (speed up logins)
-bash -c "echo 'UseDNS no' >> /etc/ssh/sshd_config"
+bash -c "echo -e '\rUseDNS no' >> /etc/ssh/sshd_config"
 
 # Remove 5s grub timeout to speed up booting
 bash -c "cat << EOF > /etc/default/grub
@@ -121,8 +122,18 @@ apt-get -y install \
   > /dev/null
 
 echo "Install MySQL packages"
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
+
 apt-get -y install \
-  mysql-client \
+  libmysqlclient-dev \
+  libmysqlclient18:amd64 \
+  libnss-mysql-bg \
+  mysql-client-5.6 \
+  mysql-client-core-5.6 \
+  mysql-server-5.6 \
+  mysql-server-core-5.6 \
+  mysql-common-5.6 \
   > /dev/null
 
 echo "Install Ruby packages"
@@ -173,12 +184,12 @@ ldconfig /usr/local/lib
 
 echo 'Copying files into place'
 
-# # Provisioners and support files
+# Provisioners and support files
+# @todo move these to a .deb package
 declare -a FILES=(
-  'files/http/httpd-vhosts.conf'
+  'files/debs/dreambox-ca-certificates.deb'
   'files/http/ndn-vhost.conf'
-  'files/php/php.ini'
-  'provisioners/php.sh'
+  'files/http/ports.conf'
   'provisioners/ssl.sh'
   'provisioners/user.sh'
   'provisioners/vhost.sh'
@@ -189,58 +200,12 @@ for INDEX in ${!FILES[*]}; do
   [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/
 done
 
-# SSL config
-cp /tmp/files/ssl/dreambox-openssl.cnf /usr/lib/ssl/dreambox-openssl.cnf
-
-# Apache setup
-
-# Create VHosts directory
-[[ ! -d /dh/apache2/template/etc/extra/vhosts ]] && mkdir /dh/apache2/template/etc/extra/vhosts
-# cp /tmp/files/http/httpd.conf /usr/local/apache2/conf/
-# cp /tmp/files/http/ports.conf /dh/apache2/template/etc/extra/vhosts/
-
-echo "Replacing strings in configuration files"
-
-# Change httpd2 init script to use /bin/bash
-sed -i -r 's/(#! )(\/bin\/sh)/\1 \/bin\/bash/' /etc/init.d/httpd2;
-
-# Load mod_fcgid
-sed -i -r '/LoadModule rewrite_module.*\.so/a LoadModule fcgid_module lib/modules/mod_fcgid.so' \
-  /dh/apache2/template/etc/httpd.conf;
-# Include the VHost directory
-sed -i -r 's/(#)(Include etc\/extra\/)httpd-vhosts\.conf/\2vhosts\/\*/' \
-  /dh/apache2/template/etc/httpd.conf;
-
-# Duplicate template
-cp -r /dh/apache2/template /dh/apache2/apache2-dreambox;
-# Move httpd file to template root
-ln -s /dh/apache2/apache2-dreambox/sbin/httpd /dh/apache2/apache2-dreambox/apache2-dreambox-httpd;
-# Change the config paths
-sed -i -r 's/(\/usr\/local\/dh\/apache2\/)(template)/\1apache2-dreambox/' \
-  /dh/apache2/apache2-dreambox/etc/httpd.conf;
-# Set the PID path
-sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\//a PidFile "/var/run/apache2-dreambox-httpd.pid"' \
-  /dh/apache2/apache2-dreambox/etc/httpd.conf;
-
-# Create the logs directory
-# @TODO This could likely change to whatever... it just needs to match what's in ndn-vhost.conf
-mkdir -p /home/_domain_logs/vagrant/dreambox.http/http.dreambox-instance;
-# Copy the test vhost.conf into place
-# @TODO Once this is finalized, move to template with placeholder strings
-cp /vagrant/ndn-vhost.conf /dh/apache2/apache2-dreambox/etc/extra/vhosts/;
-# Create test domain path
-# @TODO Remove after testing
-mkdir -p /home/vagrant/dreambox.http;
-# Add a PHP info test page
-# @TODO Remove after testing
-bash -c "echo '<?php phpinfo(); ?>' >> /home/vagrant/dreambox.http/index.php";
-
-# Start Apache
-/etc/init.d/httpd2 start;
-
 # # Remove existing motd and set up ours
 rm -f /etc/update-motd.d/*
 for MOTD in /tmp/files/motd/*; do
   MOTD_FILE=${MOTD##*/}
   cp "${MOTD}" /etc/update-motd.d/ && chmod +x /etc/update-motd.d/"${MOTD_FILE}"
 done
+# This helps make sure the message is displayed correctly on the first login
+sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/login
+sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/sshd

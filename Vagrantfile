@@ -38,7 +38,6 @@ Vagrant.configure(2) do |config|
     # Recreates the Packer file provisioner
     files = {
       'files' => '/tmp/files',
-      'packages' => '/tmp/packages',
       'provisioners' => '/tmp/provisioners',
     }
     files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
@@ -50,14 +49,13 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "provisioners/base.sh"
 
-    test.vm.provision "Package Setup",
+    test.vm.provision "Apache Setup",
       type: "shell",
-      path: "provisioners/package-setup.sh"
+      path: "provisioners/setup.apache.sh"
 
-    test.vm.provision "PHP Install",
+    test.vm.provision "MySQL Setup",
       type: "shell",
-      path: "provisioners/php.sh",
-      :env => Dreambox.config
+      path: "provisioners/setup.mysql.sh"
 
     if Dreambox.config['ssl_enabled'] then
       test.vm.provision "SSL Setup",

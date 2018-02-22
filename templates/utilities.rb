@@ -18,10 +18,6 @@ module Helpers
     trim_ending_slash(trim_beginning_slash(str))
   end
 
-  def sanitize_alias(host)
-    ('*.' == host[0..1]) ? host[2..-1] : host
-  end
-
   def add_host(host)
     @config['hosts'] = @config.fetch('hosts').push(host) unless @config.fetch('hosts').include?(host)
   end
@@ -48,9 +44,7 @@ module Helpers
     printf "%-20s %s\n", 'PHP Version', config['php']
     printf "%-20s %s\n", 'PHP Dir', config['php_dir']
     printf "%-20s %s\n", 'SSL Enabled', config['ssl_enabled']
-    printf "%-20s %s\n", 'Hosts', config['hosts'] if 0 < "#{config['hosts']}".length
-    dns_hosts_file = File.join(File.dirname(__FILE__), 'dns-hosts.txt')
-    printf "%-20s %s\n", 'DNS Hosts File', dns_hosts_file if File.exist?(dns_hosts_file)
+    printf "%-20s %s\n", 'Hosts', config['hosts'] if @config['hosts'].length > 0
 
     puts ''
 

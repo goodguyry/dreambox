@@ -168,7 +168,7 @@
   # - All of the SSL-enabled site's host and alias values should be added
   #   to the root `hosts` property by Config as a string.
   {
-    'name' => 'SSL Off: The DNS Hosts file should contain all SSL-enabled hosts.',
+    'name' => 'SSL Off: The `hosts` property should contain all SSL-enabled hosts.',
     'expect' => 'DNS.1 = example-two.dev\nDNS.2 = www.example-two.dev\nDNS.3 = help.example-two.dev',
     'actual' => @tests.the['full'].config['hosts'],
   },
@@ -191,19 +191,6 @@
     'name' => 'SSL On: the root `ssl_enabled` property should be true.',
     'expect' => true,
     'actual' => @tests.the['typical'].config['ssl_enabled'],
-  },
-
-  # Conditions:
-  # - The root `ssl` value is `true`
-  # - The root `host` property is not declared in the config
-  #
-  # Expected Outcome:
-  # - The root `host` value should be filled in with the first SSL-enabled
-  #   site's host value.
-  {
-    'name' => 'SSL On: The root `host` value should be the first SSL-enabled host declared.',
-    'expect' => 'example.dev',
-    'actual' => @tests.the['typical'].config['host'],
   },
 
   # Conditions:
@@ -243,7 +230,7 @@
   # - The hosts string should contain the SSL-enabled site's aliases.
   {
     'name' => "SSL On: The DNS Hosts file should contain the SSL-enabled site's aliases.",
-    'expect' => 'DNS.1 = www.example.dev\nDNS.2 = example.dev',
+    'expect' => 'DNS.1 = example.dev\nDNS.2 = www.example.dev\nDNS.3 = *.example.dev',
     'actual' => @tests.the['typical'].config['hosts'],
   },
 

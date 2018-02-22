@@ -85,6 +85,8 @@ class Config
     user_id = 501
     group_id = 901
 
+    vhosts_dir = '/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/'
+
     site_defaults = {}
     site_defaults['box_name'] = @config.fetch('name')
     site_defaults['is_subdomain'] = false
@@ -121,7 +123,7 @@ class Config
       site['root_path'] = (site.key?('public')) ?
         File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
 
-      site['vhost_file'] = File.join('/usr/local/apache2/conf/vhosts/', "#{dict}.conf")
+      site['vhost_file'] = File.join("#{vhosts_dir}", "#{dict}.conf")
 
       # SSL
       # Inherit the SSL setting from the root unless set in the site
@@ -133,16 +135,10 @@ class Config
         @config['ssl_enabled'] = ssl_enabled = true
       end
 
-      if ssl_enabled
-        if @config.key?('host')
-          add_host(site.fetch('host'))
-        else
-          @config['host'] = site.fetch('host')
-        end
-      end
+      add_host(site.fetch('host')) if ssl_enabled
 
       if site['aliases'].kind_of? Array
-        site['aliases'].each { |the_alias| add_host(sanitize_alias(the_alias)) } if ssl_enabled
+        site['aliases'].each { |the_alias| add_host(the_alias) } if ssl_enabled
         # Aliases will be printed in the site's Apache conf
         site['aliases'] = site.fetch('aliases').join(' ')
       end
@@ -161,7 +157,7 @@ class Config
             'gid' => site.fetch('gid'), # Inherited from the parent site
             'root_path' => File.join(root_path, trim_slashes(path)),
             'is_subdomain' => true,
-            'vhost_file' => File.join('/usr/local/apache2/conf/vhosts/', "#{subdomain_name}.conf"),
+            'vhost_file' => File.join("#{vhosts_dir}", "#{subdomain_name}.conf"),
             'host' => "#{sub}.#{ remove_www(site.fetch('host')) }",
             'ssl' => site.fetch('ssl'), # Inherited from the parent site
             'box_name' => @config.fetch('name')
