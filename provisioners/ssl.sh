@@ -5,10 +5,6 @@
 
 set -e;
 
-# @todo remove these - they come from the config
-name='dreambox'
-hosts='\nDNS.1 = www.dreambox.test'
-
 # Install root and intermediate certs
 dpkg -i /usr/local/dreambox/dreambox-ca-certificates.deb
 
@@ -22,22 +18,19 @@ cp /usr/local/dreambox/ca-chain.cert.pem  "${SSL_DIR_PATH}"
 
 # Check for a saved certificate and key
 if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; then
-  echo "Using saved certs from /vagrant/certs/"
-  cp -f /vagrant/certs/"${name}".* "${SSL_DIR_PATH}"
+  echo "Using saved certs (${name}) from /vagrant/certs/"
+  cp -f "/vagrant/certs/${name}".* "${SSL_DIR_PATH}"
 else
-  # Open permissions for /root/ca
-  # @review is this necessary?
-  # chmod 755 /root/
+  # Adds the SAN hosts
+  if [[ -n "${hosts}" ]]; then
+    bash -c "echo -e \"${hosts}\" >> ${SSL_CONF}"
+  fi
 
   # Create a key
   openssl genrsa -out "${KEY_FILE}" 2048
   chmod 400 "${KEY_FILE}"
 
-  if [[ -n "${hosts}" ]]; then
-    bash -c "echo -e \"${hosts}\" >> ${SSL_CONF}"
-  fi
-
-  # Create a certificate
+  # Create a certificate signing request
   openssl req \
     -config "${SSL_CONF}" \
     -key "${KEY_FILE}" \
@@ -67,16 +60,16 @@ EOF
     echo -e "SSL key and certificate created:"
     echo -e ">> ${KEY_FILE}"
     echo -e ">> ${CRT_FILE}"
+
+    # Save these for next time
+    [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
+    cp -f "${SSL_DIR_PATH}/${name}".* /vagrant/certs
+
+    # Open permissions for /root/ca
+    chmod 755 /root/
   else
     echo -e "There was an error signing the certificate..."
   fi
-
-  # Save these for next time
-  [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
-  cp -f "${SSL_DIR_PATH}/${name}".* /vagrant/certs
-
-  # Open permissions for /root/ca
-  chmod 755 /root/
 fi
 
 exit $?;
