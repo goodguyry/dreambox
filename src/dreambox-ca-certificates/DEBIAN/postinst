@@ -29,4 +29,7 @@ chmod 444 "${CA_PATH}/intermediate/certs/intermediate.crt";
 # Set chain cert permissions.
 chmod 444 "${CA_PATH}/intermediate/certs/ca-chain.cert.pem";
 
+# Give us a good, random serial to start with
+openssl rand -hex 16 > "${CA_PATH}/intermediate/serial";
+
 exit $?
