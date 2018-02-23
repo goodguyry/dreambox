@@ -4,6 +4,7 @@
 #
 
 set -e;
+set -u;
 
 # Install root and intermediate certs
 dpkg -i /usr/local/dreambox/dreambox-ca-certificates.deb;

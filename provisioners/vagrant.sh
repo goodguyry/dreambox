@@ -3,6 +3,8 @@
 # Vagrant-specific setup
 #
 
+set -e;
+
 # Vagrant specific
 date > /etc/vagrant_box_build_time;
 
@@ -15,3 +17,5 @@ chown -R vagrant /home/vagrant/.ssh;
 
 # Customize the message of the day
 echo 'Development Environment' > /etc/motd;
+
+exit $?;

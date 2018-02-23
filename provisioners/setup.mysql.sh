@@ -4,6 +4,8 @@
 # https://dev.mysql.com/doc/refman/5.5/en/installing-source-distribution.html
 #
 
+set -e;
+
 echo "Finishing MySQL install";
 
 # Create mysql group
@@ -49,3 +51,5 @@ sysv-rc-conf --level 345 mysql on;
 
 echo "Starting MySQL";
 /etc/init.d/mysql restart;
+
+exit $?;

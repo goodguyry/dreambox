@@ -3,6 +3,8 @@
 # Install packages and move files into place
 #
 
+set -e;
+
 # Expect no interactive input
 export DEBIAN_FRONTEND=noninteractive;
 
@@ -210,3 +212,5 @@ done;
 # This helps make sure the message is displayed correctly on the first login
 sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/login;
 sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/sshd;
+
+exit $?;

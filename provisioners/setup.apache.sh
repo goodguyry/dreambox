@@ -3,6 +3,8 @@
 # Post-install Apache setup.
 #
 
+set -e;
+
 echo "Finishing Apache setup";
 
 TEMPLATE_PATH='/usr/local/dh/apache2/template';
@@ -54,3 +56,5 @@ sysv-rc-conf --list apache2;
 
 # Start Apache
 /etc/init.d/httpd2 start;
+
+exit $?;

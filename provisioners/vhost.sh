@@ -3,6 +3,9 @@
 # Set up the virtual host
 #
 
+set -e;
+set -u;
+
 port_file='/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/ports.conf';
 
 # Set the new vhost conf file in place
@@ -46,3 +49,5 @@ chown -R "${user}:${group}" "/home/${user}";
 
 # Restart Apache
 /etc/init.d/httpd2 restart;
+
+exit $?;

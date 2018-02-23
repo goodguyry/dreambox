@@ -3,6 +3,8 @@
 # VirtualBox-specific setup
 #
 
+set -e;
+
 # Bail if we are not running inside VirtualBox.
 if [[ `facter virtual` != "virtualbox" ]]; then
     exit 0;
@@ -17,3 +19,5 @@ ln -s /opt/VBoxGuestAdditions-*/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditio
 
 umount /mnt/virtualbox;
 rm -rf /home/vagrant/VBoxGuest*.iso;
+
+exit $?;

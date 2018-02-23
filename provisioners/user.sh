@@ -3,6 +3,9 @@
 # Create the site's user and group
 #
 
+set -e;
+set -u;
+
 # Create the group
 if grep -q $group /etc/group; then
   echo "Group ${group} already exists";
@@ -23,3 +26,5 @@ fi;
 
 # Update permissions
 chown -R "${user}:${group}" "/home/${user}";
+
+exit $?;

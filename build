@@ -22,3 +22,5 @@ packer build -force -var-file=templates/common.json templates/dreambox.json;
 # Add the box to vagrant as 'dreambox_pre'
 vagrant box add --force dreambox_pre/virtualbox _builds/dreambox.virtualbox.*.box;
 vagrant box add --force dreambox_pre/vmware _builds/dreambox.vmware.*.box;
+
+exit $?;

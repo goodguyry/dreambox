@@ -3,6 +3,8 @@
 # VMWare-specific setup
 #
 
+set -e;
+
 # Bail if we are not running inside VMWare.
 if [[ `facter virtual` != "vmware" ]]; then
     exit 0;
@@ -20,3 +22,5 @@ rm -fr /home/vagrant/linux.iso;
 
 /tmp/vmware-tools-distrib/vmware-install.pl -d;
 rm -fr /tmp/vmware-tools-distrib;
+
+exit $?;
