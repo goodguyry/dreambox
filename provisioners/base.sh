@@ -85,7 +85,7 @@ update-grub;
 
 # Install additional packages.
 
-echo "Install Git packages";
+echo 'Install Git packages';
 apt-get -y install \
   git \
   git-buildpackage \
@@ -96,7 +96,7 @@ apt-get -y install \
   git-svn \
   > /dev/null;
 
-echo "Install Apache packages";
+echo 'Install Apache packages';
 apt-get -y install \
   ndn-apache-helper \
   ndn-apache22 \
@@ -112,7 +112,7 @@ apt-get -y install \
   ndn-apache22-svn \
   > /dev/null;
 
-echo "Install PHP packages";
+echo 'Install PHP packages';
 apt-get -y install \
   ndn-php56 \
   ndn-php56-imagick \
@@ -126,7 +126,7 @@ apt-get -y install \
   ndn-php71-mongo \
   > /dev/null;
 
-echo "Install MySQL packages";
+echo 'Install MySQL packages';
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root';
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root';
 
@@ -141,14 +141,14 @@ apt-get -y install \
   mysql-common-5.6 \
   > /dev/null;
 
-echo "Install Ruby packages";
+echo 'Install Ruby packages';
 apt-get -y install \
   ruby \
   ruby-dev \
   ruby-rails-3.2 \
   > /dev/null;
 
-echo "Install NDN packages";
+echo 'Install NDN packages';
 apt-get -y install \
   ndn-analog \
   ndn-areca \
@@ -209,7 +209,7 @@ done;
 rm -f /etc/update-motd.d/*
 for MOTD in /tmp/files/motd/*; do
   MOTD_FILE=${MOTD##*/};
-  cp "${MOTD}" /etc/update-motd.d/ && chmod +x /etc/update-motd.d/"${MOTD_FILE}";
+  cp "${MOTD}" /etc/update-motd.d/ && chmod +x "/etc/update-motd.d/${MOTD_FILE}";
 done;
 
 # This helps make sure the message is displayed correctly on the first login.

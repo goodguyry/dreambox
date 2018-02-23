@@ -6,7 +6,7 @@
 
 set -e;
 
-echo "Finishing Apache setup";
+echo 'Finishing Apache setup';
 
 TEMPLATE_PATH='/usr/local/dh/apache2/template';
 INSTANCE_NAME='apache2-dreambox';
@@ -14,8 +14,8 @@ INSTANCE_PATH="${TEMPLATE_PATH/%template/$INSTANCE_NAME}";
 
 # Create necessary directories.
 declare -a DIRS=(
-  "${TEMPLATE_PATH}"/etc/vhosts
-  "${TEMPLATE_PATH}"/etc/ssl.crt
+  "${TEMPLATE_PATH}/etc/vhosts"
+  "${TEMPLATE_PATH}/etc/ssl.crt"
   /var/log/apache2/dreambox
 );
 
@@ -24,7 +24,7 @@ for INDEX in ${!DIRS[*]}; do
 done;
 
 # Move the ports file into place.
-cp /usr/local/dreambox/ports.conf "${TEMPLATE_PATH}"/etc/vhosts/;
+cp /usr/local/dreambox/ports.conf "${TEMPLATE_PATH}/etc/vhosts/";
 
 # Change httpd2 init script to use /bin/bash.
 # There are error when running in Bash.
@@ -52,7 +52,7 @@ sed -i -r s'/(\/usr\/local\/dh\/apache2\/)(template)'/"\1${INSTANCE_NAME}/" \
 # Set the PID path.
 # @include this in the file and change the path all at once above.
 sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\'/"/a PidFile '/var/run/${INSTANCE_NAME}-httpd.pid'" \
-  "${INSTANCE_PATH}"/etc/httpd.conf;
+  "${INSTANCE_PATH}/etc/httpd.conf";
 
 # Set Apache to start at boot.
 sysv-rc-conf apache2 on;

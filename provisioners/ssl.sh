@@ -60,9 +60,9 @@ EOF;
 
   if [[ $? -lt 1 ]]; then
     # Success!
-    echo -e "SSL key and certificate created:";
-    echo -e ">> ${KEY_FILE}";
-    echo -e ">> ${CRT_FILE}";
+    echo 'SSL key and certificate created:';
+    echo ">> ${KEY_FILE}";
+    echo ">> ${CRT_FILE}";
 
     # Save these for next time.
     [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs;
@@ -71,7 +71,7 @@ EOF;
     # Open permissions for /root/ca.
     chmod 755 /root/;
   else
-    echo -e "There was an error signing the certificate...";
+    echo 'There was an error signing the certificate...';
   fi;
 fi;
 

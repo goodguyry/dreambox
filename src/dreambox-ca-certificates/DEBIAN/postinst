@@ -11,7 +11,7 @@ if (! test -d "${CA_PATH}"); then
 fi;
 
 # Install the root and intermediate certs.
-if (! test -e ${SHARE_DIR}/intermediate.crt && ! test -e ${SHARE_DIR}/ca.crt); then
+if (! test -e "${SHARE_DIR}/intermediate.crt" && ! test -e "${SHARE_DIR}/ca.crt"); then
   cp "${CA_PATH}/intermediate/certs/intermediate.crt" "${SHARE_DIR}";
   cp "${CA_PATH}/certs/ca.crt" "${SHARE_DIR}";
 

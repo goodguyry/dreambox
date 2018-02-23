@@ -7,18 +7,18 @@
 
 set -e;
 
-echo "Finishing MySQL install";
+echo 'Finishing MySQL install';
 
 # Create the mysql group.
 if grep -q mysql /etc/group; then
-  echo "Group mysql already exists";
+  echo 'Group mysql already exists';
 else
   groupadd mysql;
 fi;
 
 # Create the mysql user.
 if $(getent passwd mysql >/dev/null); then
-  echo "User mysql already exists.";
+  echo 'User mysql already exists.';
 else
   useradd -g mysql mysql;
 fi;
