@@ -1,6 +1,9 @@
 #! /bin/bash
 
+#
+# Create a Certificate Authority.
 # https://jamielinux.com/docs/openssl-certificate-authority/index.html
+#
 
 set -e;
 
@@ -28,11 +31,9 @@ declare -a ECHO_FILES=(
   /root/ca/intermediate/crlnumber
 );
 
-#
 # Create the root pair.
-#
 
-echo -e "Prepare the directory structure and files";
+# Prepare the directory structure and files
 mkdir /root/ca;
 for DIR in ${!DIRS[*]}; do
   [[ ! -d "/tmp/${DIRS[$DIR]}" ]] && mkdir -p "${DIRS[$DIR]}";
@@ -43,11 +44,10 @@ for FILE in ${!ECHO_FILES[*]}; do
   bash -c "echo 1000 > \"${ECHO_FILES[$FILE]}\"";
 done;
 
-echo -e "Set the configuration files";
+# Set the configuration files
 cp "${SOURCE_DIR}"/ca-setup/openssl.intermediate.cnf /root/ca/intermediate/openssl.cnf;
 cp "${SOURCE_DIR}"/ca-setup/openssl.cnf /root/ca/openssl.cnf;
 
-echo -e "Create root key and cert";
 # Create the root key.
 openssl genrsa \
   -aes256 \
@@ -66,11 +66,7 @@ openssl req \
   -subj '/C=US/ST=Washington/L=Seattle/O=Dreambox/OU=Dreambox Certificate Authority/CN=Dreambox Root CA/' \
   -out /root/ca/certs/ca.crt;
 
-#
-# Create the intermediate pair.
-#
-
-echo -e "Create intermediate key and crs";
+# Create the intermediate key and cert.
 
 # Create the intermediate key
 openssl genrsa -out /root/ca/intermediate/private/intermediate.key 4096;
@@ -84,8 +80,7 @@ openssl req \
   -key /root/ca/intermediate/private/intermediate.key \
   -out /root/ca/intermediate/csr/intermediate.csr;
 
-echo -e "Sign the intermediate cert";
-
+# Sign the intermediate cert
 openssl ca \
   -config /root/ca/openssl.cnf \
   -extensions v3_intermediate_ca \
@@ -95,13 +90,10 @@ openssl ca \
   -in /root/ca/intermediate/csr/intermediate.csr \
   -out /root/ca/intermediate/certs/intermediate.crt;
 
-echo -e "Create the certificate chain file";
-
+# Create the certificate chain file
 bash -c "cat /root/ca/intermediate/certs/intermediate.crt /root/ca/certs/ca.crt > /root/ca/intermediate/certs/ca-chain.cert.pem";
 
-#
 # Create the Root Cert package.
-#
 
 # Set up the source directory.
 cp -a "${PKG_DIR}" ~/ && cd ~;

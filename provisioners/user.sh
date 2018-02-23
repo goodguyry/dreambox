@@ -1,19 +1,20 @@
 #!/bin/bash
+
 #
-# Create the site's user and group
+# Create the site's user and group.
 #
 
 set -e;
 set -u;
 
-# Create the group
+# Create the group.
 if grep -q $group /etc/group; then
   echo "Group ${group} already exists";
 else
   addgroup --gid $gid $group;
 fi;
 
-# Create the user
+# Create the user.
 if $(getent passwd $user >/dev/null); then
   echo "User ${user} already exists.";
 else
@@ -24,7 +25,7 @@ else
   echo "${user} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers;
 fi;
 
-# Update permissions
+# Update home directory permissions.
 chown -R "${user}:${group}" "/home/${user}";
 
 exit $?;

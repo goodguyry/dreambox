@@ -1,6 +1,7 @@
 #!/bin/bash
+
 #
-# VirtualBox-specific setup
+# VirtualBox-specific setup.
 #
 
 set -e;

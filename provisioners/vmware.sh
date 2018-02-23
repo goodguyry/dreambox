@@ -1,6 +1,7 @@
 #!/bin/bash
+
 #
-# VMWare-specific setup
+# VMWare-specific setup.
 #
 
 set -e;

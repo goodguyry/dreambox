@@ -1,22 +1,25 @@
 #!/bin/bash
+
 #
-# Install packages and move files into place
+# Install packages and move files into place.
 #
 
 set -e;
 
-# Expect no interactive input
+# Expect no interactive input.
 export DEBIAN_FRONTEND=noninteractive;
 
 echo 'Updating apt sources.list';
 
-# Add the keys for the DH repos
+# Add the keys for the DH repos.
+# @see http://keyserver.ubuntu.com/
 apt-key add /tmp/files/keys/ksplice-key;
 apt-key add /tmp/files/keys/newdream-key;
 
-# Backup the source list
+# Backup the source list.
 cp /etc/apt/sources.list /etc/apt/sources.list_bak;
 
+# Update package sources.
 bash -c "cat << EOF > /etc/apt/sources.list
 deb http://www.ksplice.com/apt trusty ksplice
 deb http://debian.di.newdream.net/ trusty ndn
@@ -25,21 +28,21 @@ deb http://mirror.newdream.net/ubuntu trusty-updates main universe restricted
 deb http://mirror.newdream.net/ubuntu trusty-security main universe restricted
 EOF";
 
-# Update apt-get
+# Update apt-get.
 apt-get -qq update;
 
 echo 'Installing packages and libraries';
 
-# Install base packages
+# Install base packages.
 apt-get -y install \
   build-essential \
+  expect \
   sysv-rc-conf \
   zip \
   > /dev/null;
 
-# Install libraries
+# Install libraries.
 apt-get -y install \
-  expect \
   libapr1 \
   libaprutil1 \
   libaspell15 \
@@ -60,13 +63,13 @@ apt-get -y install \
   zlib1g-dev \
   > /dev/null;
 
-# Link and cache libraries
+# Link and cache libraries.
 ldconfig /usr/local/lib;
 
-# Tweak sshd to prevent DNS resolution (speed up logins)
+# Tweak sshd to prevent DNS resolution (speed up logins).
 bash -c "echo -e '\rUseDNS no' >> /etc/ssh/sshd_config";
 
-# Remove 5s grub timeout to speed up booting
+# Remove 5s grub timeout to speed up booting.
 bash -c "cat << EOF > /etc/default/grub
 # If you change this file, run 'update-grub' afterwards to update
 # /boot/grub/grub.cfg.
@@ -80,7 +83,7 @@ EOF";
 
 update-grub;
 
-# Additional packages
+# Install additional packages.
 
 echo "Install Git packages";
 apt-get -y install \
@@ -175,19 +178,19 @@ apt-get -y install \
   ndn-twcli \
   > /dev/null;
 
-# Add PHP alternatives
+# Add PHP alternatives.
 # update-alternatives --set php /usr/local/bin/php-5.6
 update-alternatives --install /usr/bin/php php /usr/local/bin/php-5.6 100;
 update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.0 100;
 update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.1 100;
 
-# Link and cache libraries
+# Link and cache libraries.
 ldconfig /usr/local/lib;
 
 echo 'Copying files into place';
 
-# Provisioners and support files
-# @todo move these to a .deb package
+# Move provisioners and support files into place.
+# @todo move these to a .deb package.
 declare -a FILES=(
   'files/debs/dreambox-ca-certificates.deb'
   'files/http/ndn-vhost.conf'
@@ -202,14 +205,14 @@ for INDEX in ${!FILES[*]}; do
   [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/;
 done;
 
-# # Remove existing motd and set up ours
+# Remove existing motd and set up ours.
 rm -f /etc/update-motd.d/*
 for MOTD in /tmp/files/motd/*; do
   MOTD_FILE=${MOTD##*/};
   cp "${MOTD}" /etc/update-motd.d/ && chmod +x /etc/update-motd.d/"${MOTD_FILE}";
 done;
 
-# This helps make sure the message is displayed correctly on the first login
+# This helps make sure the message is displayed correctly on the first login.
 sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/login;
 sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/sshd;
 
