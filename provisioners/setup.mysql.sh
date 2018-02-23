@@ -11,7 +11,7 @@ if grep -q mysql /etc/group; then
   echo "Group mysql already exists";
 else
   groupadd mysql;
-fi
+fi;
 
 # Create mysql user
 if $(getent passwd mysql >/dev/null); then
@@ -47,5 +47,5 @@ echo "${SECURE_MYSQL}";
 # Set MySQL to start at boot
 sysv-rc-conf --level 345 mysql on;
 
-echo "Starting MySQL"
+echo "Starting MySQL";
 /etc/init.d/mysql restart;

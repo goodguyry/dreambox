@@ -20,13 +20,13 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PROJECT_URL='https://github.com/goodguyry/dreambox'
-DOCS_PATH='/wiki'
-ISSUES_PATH='/issues'
-UPGRADE_PATH='/wiki/Upgrading-Dreambox'
+PROJECT_URL='https://github.com/goodguyry/dreambox';
+DOCS_PATH='/wiki';
+ISSUES_PATH='/issues';
+UPGRADE_PATH='/wiki/Upgrading-Dreambox';
 
-printf "\n* Documentation:\n${PROJECT_URL}%s\n" "${DOCS_PATH}"
+printf "\n* Documentation:\n${PROJECT_URL}%s\n" "${DOCS_PATH}";
 
-printf "\n* Issues:\n${PROJECT_URL}%s\n" "${ISSUES_PATH}"
+printf "\n* Issues:\n${PROJECT_URL}%s\n" "${ISSUES_PATH}";
 
-printf "\n* >>> If you're experiencing issues after upgrading, please see the upgrade docs:\n${PROJECT_URL}%s\n\n" "${UPGRADE_PATH}"
+printf "\n* >>> If you're experiencing issues after upgrading, please see the upgrade docs:\n${PROJECT_URL}%s\n\n" "${UPGRADE_PATH}";

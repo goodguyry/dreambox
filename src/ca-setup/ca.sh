@@ -2,7 +2,7 @@
 
 # https://jamielinux.com/docs/openssl-certificate-authority/index.html
 
-set -e
+set -e;
 
 PKG_NAME='dreambox-ca-certificates';
 SOURCE_DIR="/vagrant/src";
@@ -20,6 +20,7 @@ declare -a DIRS=(
   /root/ca/intermediate/private
   /root/ca/intermediate/csr
 );
+
 # Files into which content is echoed.
 declare -a ECHO_FILES=(
   /root/ca/serial
@@ -31,7 +32,7 @@ declare -a ECHO_FILES=(
 # Create the root pair.
 #
 
-echo -e "Prepare the directory structure and files"
+echo -e "Prepare the directory structure and files";
 mkdir /root/ca;
 for DIR in ${!DIRS[*]}; do
   [[ ! -d "/tmp/${DIRS[$DIR]}" ]] && mkdir -p "${DIRS[$DIR]}";
@@ -42,7 +43,7 @@ for FILE in ${!ECHO_FILES[*]}; do
   bash -c "echo 1000 > \"${ECHO_FILES[$FILE]}\"";
 done;
 
-echo -e "Set the configuration files"
+echo -e "Set the configuration files";
 cp "${SOURCE_DIR}"/ca-setup/openssl.intermediate.cnf /root/ca/intermediate/openssl.cnf;
 cp "${SOURCE_DIR}"/ca-setup/openssl.cnf /root/ca/openssl.cnf;
 
@@ -119,4 +120,4 @@ dpkg-deb --build "${PKG_NAME}";
 # Copy to repo
 cp "${PKG_NAME}".deb /vagrant/files/debs;
 
-exit $?
+exit $?;
