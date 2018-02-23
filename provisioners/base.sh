@@ -6,15 +6,10 @@
 
 set -e;
 
-# Expect no interactive input.
-export DEBIAN_FRONTEND=noninteractive;
-
-echo 'Updating apt sources.list';
-
 # Add the keys for the DH repos.
 # @see http://keyserver.ubuntu.com/
-apt-key add /tmp/files/keys/ksplice-key;
-apt-key add /tmp/files/keys/newdream-key;
+apt-key add /usr/local/dreambox/keys/ksplice.key;
+apt-key add /usr/local/dreambox/keys/newdream.key;
 
 # Backup the source list.
 cp /etc/apt/sources.list /etc/apt/sources.list_bak;
@@ -186,34 +181,5 @@ update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.1 100;
 
 # Link and cache libraries.
 ldconfig /usr/local/lib;
-
-echo 'Copying files into place';
-
-# Move provisioners and support files into place.
-# @todo move these to a .deb package.
-declare -a FILES=(
-  'files/debs/dreambox-ca-certificates.deb'
-  'files/http/ndn-vhost.conf'
-  'files/http/ports.conf'
-  'provisioners/ssl.sh'
-  'provisioners/user.sh'
-  'provisioners/vhost.sh'
-);
-
-[[ ! -d /usr/local/dreambox ]] && mkdir /usr/local/dreambox;
-for INDEX in ${!FILES[*]}; do
-  [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/;
-done;
-
-# Remove existing motd and set up ours.
-rm -f /etc/update-motd.d/*
-for MOTD in /tmp/files/motd/*; do
-  MOTD_FILE=${MOTD##*/};
-  cp "${MOTD}" /etc/update-motd.d/ && chmod +x "/etc/update-motd.d/${MOTD_FILE}";
-done;
-
-# This helps make sure the message is displayed correctly on the first login.
-sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/login;
-sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/sshd;
 
 exit $?;

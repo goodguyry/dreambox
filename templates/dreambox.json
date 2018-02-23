@@ -10,20 +10,12 @@
       "destination": "/tmp"
     },
     {
-      "type": "file",
-      "source": "{{ pwd }}/packages",
-      "destination": "/tmp"
-    },
-    {
-      "type": "file",
-      "source": "{{ pwd }}/provisioners",
-      "destination": "/tmp"
-    },
-    {
       "type": "shell",
       "scripts": [
+        "{{ pwd }}/provisioners/set-files.sh",
         "{{ pwd }}/provisioners/base.sh",
-        "{{ pwd }}/provisioners/package-setup.sh",
+        "{{ pwd }}/provisioners/setup.apache.sh",
+        "{{ pwd }}/provisioners/setup.mysql.sh",
         "{{ pwd }}/provisioners/virtualbox.sh",
         "{{ pwd }}/provisioners/vmware.sh",
         "{{ pwd }}/provisioners/vagrant.sh",
@@ -99,25 +91,31 @@
     }
   ],
   "post-processors": [
-    [{
-      "type": "vagrant",
-      "only": ["virtualbox-iso"],
-      "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.box",
-      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
-      "include": [
-        "{{ pwd }}/templates/class_config.rb",
-        "{{ pwd }}/templates/utilities.rb"
-      ]
-    },
-    {
-      "type": "vagrant",
-      "only": ["vmware-iso"],
-      "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.box",
-      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
-      "include": [
-        "{{ pwd }}/templates/class_config.rb",
-        "{{ pwd }}/templates/utilities.rb"
-      ]
-    }]
+    [
+      {
+        "type": "vagrant",
+        "only": [
+          "virtualbox-iso"
+        ],
+        "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.box",
+        "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
+        "include": [
+          "{{ pwd }}/templates/class_config.rb",
+          "{{ pwd }}/templates/utilities.rb"
+        ]
+      },
+      {
+        "type": "vagrant",
+        "only": [
+          "vmware-iso"
+        ],
+        "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.box",
+        "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
+        "include": [
+          "{{ pwd }}/templates/class_config.rb",
+          "{{ pwd }}/templates/utilities.rb"
+        ]
+      }
+    ]
   ]
 }

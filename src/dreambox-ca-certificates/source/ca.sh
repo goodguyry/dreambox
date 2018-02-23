@@ -96,7 +96,7 @@ bash -c "cat /root/ca/intermediate/certs/intermediate.crt /root/ca/certs/ca.crt 
 # Create the Root Cert package.
 
 # Set up the source directory.
-cp -a "${PKG_DIR}" ~/ && cd ~;
+rsync -av --exclude='source' "${PKG_DIR}" /home/vagrant && cd ~;
 
 # Create directories.
 mkdir "${PKG_NAME}/root";
@@ -110,6 +110,6 @@ cp "${PKG_NAME}/root/ca/intermediate/certs/ca-chain.cert.pem" "${PKG_NAME}/usr/l
 # Build the deb package
 dpkg-deb --build "${PKG_NAME}";
 # Copy to repo
-cp "${PKG_NAME}.deb" /vagrant/files/debs;
+cp "${PKG_NAME}.deb" /vagrant/files/;
 
 exit $?;

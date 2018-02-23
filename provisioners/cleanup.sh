@@ -19,19 +19,8 @@ mkdir /etc/udev/rules.d/70-persistent-net.rules;
 rm -rf /dev/.udev/;
 rm /lib/udev/rules.d/75-persistent-net-generator.rules;
 
-# Removing temporary files.
-# @todo Can we get rid of this?
-declare -a TMP=(
-  'files'
-  'packages'
-  'scripts'
-  'provisioners'
-  'packages'
-);
-
-for FILE in ${TMP[@]}; do
-  [[ -d "/tmp/${FILE}" ]] && rm -rf "/tmp/${FILE}";
-done;
+# Remove temporary files.
+[[ -d /tmp/files ]] && rm -rf /tmp/files;
 
 # Adding a 2 sec delay to the interface up, to make the dhclient happy.
 echo 'pre-up sleep 2' >> /etc/network/interfaces;
