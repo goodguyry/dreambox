@@ -1,43 +1,48 @@
 #!/bin/bash
+
 #
-# Install packages and move files into place
+# Install packages and move files into place.
 #
 
-# Expect no interactive input
-export DEBIAN_FRONTEND=noninteractive
+set -e;
 
-echo 'Updating apt sources.list'
+# Expect no interactive input.
+export DEBIAN_FRONTEND=noninteractive;
 
-# Add the keys for the DH repos
-apt-key add /tmp/files/keys/ksplice-key
-apt-key add /tmp/files/keys/newdream-key
+echo 'Updating apt sources.list';
 
-# Backup the source list
-cp /etc/apt/sources.list /etc/apt/sources.list_bak
+# Add the keys for the DH repos.
+# @see http://keyserver.ubuntu.com/
+apt-key add /tmp/files/keys/ksplice-key;
+apt-key add /tmp/files/keys/newdream-key;
 
+# Backup the source list.
+cp /etc/apt/sources.list /etc/apt/sources.list_bak;
+
+# Update package sources.
 bash -c "cat << EOF > /etc/apt/sources.list
 deb http://www.ksplice.com/apt trusty ksplice
 deb http://debian.di.newdream.net/ trusty ndn
 deb http://mirror.newdream.net/ubuntu trusty main universe restricted
 deb http://mirror.newdream.net/ubuntu trusty-updates main universe restricted
 deb http://mirror.newdream.net/ubuntu trusty-security main universe restricted
-EOF"
+EOF";
 
-# Update apt-get
-apt-get -qq update
+# Update apt-get.
+apt-get -qq update;
 
-echo 'Installing packages and libraries'
+echo 'Installing packages and libraries';
 
-# Install base packages
+# Install base packages.
 apt-get -y install \
   build-essential \
+  expect \
   sysv-rc-conf \
   zip \
-  > /dev/null
+  > /dev/null;
 
-# Install libraries
+# Install libraries.
 apt-get -y install \
-  expect \
   libapr1 \
   libaprutil1 \
   libaspell15 \
@@ -56,15 +61,15 @@ apt-get -y install \
   libwmf0.2-7 \
   libxslt1.1 \
   zlib1g-dev \
-  > /dev/null
+  > /dev/null;
 
-# Link and cache libraries
-ldconfig /usr/local/lib
+# Link and cache libraries.
+ldconfig /usr/local/lib;
 
-# Tweak sshd to prevent DNS resolution (speed up logins)
-bash -c "echo -e '\rUseDNS no' >> /etc/ssh/sshd_config"
+# Tweak sshd to prevent DNS resolution (speed up logins).
+bash -c "echo -e '\rUseDNS no' >> /etc/ssh/sshd_config";
 
-# Remove 5s grub timeout to speed up booting
+# Remove 5s grub timeout to speed up booting.
 bash -c "cat << EOF > /etc/default/grub
 # If you change this file, run 'update-grub' afterwards to update
 # /boot/grub/grub.cfg.
@@ -74,13 +79,13 @@ GRUB_TIMEOUT=0
 GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo Debian`
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX="debian-installer=en_US"
-EOF"
+EOF";
 
-update-grub
+update-grub;
 
-# Additional packages
+# Install additional packages.
 
-echo "Install Git packages"
+echo 'Install Git packages';
 apt-get -y install \
   git \
   git-buildpackage \
@@ -89,9 +94,9 @@ apt-get -y install \
   git-sh \
   git-stuff \
   git-svn \
-  > /dev/null
+  > /dev/null;
 
-echo "Install Apache packages"
+echo 'Install Apache packages';
 apt-get -y install \
   ndn-apache-helper \
   ndn-apache22 \
@@ -105,9 +110,9 @@ apt-get -y install \
   ndn-apache22-modsecurity2 \
   ndn-apache22-modxsendfile \
   ndn-apache22-svn \
-  > /dev/null
+  > /dev/null;
 
-echo "Install PHP packages"
+echo 'Install PHP packages';
 apt-get -y install \
   ndn-php56 \
   ndn-php56-imagick \
@@ -119,11 +124,11 @@ apt-get -y install \
   ndn-php71 \
   ndn-php71-imagick \
   ndn-php71-mongo \
-  > /dev/null
+  > /dev/null;
 
-echo "Install MySQL packages"
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root'
+echo 'Install MySQL packages';
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root';
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root';
 
 apt-get -y install \
   libmysqlclient-dev \
@@ -134,16 +139,16 @@ apt-get -y install \
   mysql-server-5.6 \
   mysql-server-core-5.6 \
   mysql-common-5.6 \
-  > /dev/null
+  > /dev/null;
 
-echo "Install Ruby packages"
+echo 'Install Ruby packages';
 apt-get -y install \
   ruby \
   ruby-dev \
   ruby-rails-3.2 \
-  > /dev/null
+  > /dev/null;
 
-echo "Install NDN packages"
+echo 'Install NDN packages';
 apt-get -y install \
   ndn-analog \
   ndn-areca \
@@ -171,21 +176,21 @@ apt-get -y install \
   ndn-sendarp \
   ndn-smart-check \
   ndn-twcli \
-  > /dev/null
+  > /dev/null;
 
-# Add PHP alternatives
+# Add PHP alternatives.
 # update-alternatives --set php /usr/local/bin/php-5.6
-update-alternatives --install /usr/bin/php php /usr/local/bin/php-5.6 100
-update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.0 100
-update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.1 100
+update-alternatives --install /usr/bin/php php /usr/local/bin/php-5.6 100;
+update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.0 100;
+update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.1 100;
 
-# Link and cache libraries
-ldconfig /usr/local/lib
+# Link and cache libraries.
+ldconfig /usr/local/lib;
 
-echo 'Copying files into place'
+echo 'Copying files into place';
 
-# Provisioners and support files
-# @todo move these to a .deb package
+# Move provisioners and support files into place.
+# @todo move these to a .deb package.
 declare -a FILES=(
   'files/debs/dreambox-ca-certificates.deb'
   'files/http/ndn-vhost.conf'
@@ -193,19 +198,22 @@ declare -a FILES=(
   'provisioners/ssl.sh'
   'provisioners/user.sh'
   'provisioners/vhost.sh'
-)
+);
 
-[[ ! -d /usr/local/dreambox ]] && mkdir /usr/local/dreambox
+[[ ! -d /usr/local/dreambox ]] && mkdir /usr/local/dreambox;
 for INDEX in ${!FILES[*]}; do
-  [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/
-done
+  [[ -r "/tmp/${FILES[$INDEX]}" ]] && cp "/tmp/${FILES[$INDEX]}" /usr/local/dreambox/;
+done;
 
-# # Remove existing motd and set up ours
+# Remove existing motd and set up ours.
 rm -f /etc/update-motd.d/*
 for MOTD in /tmp/files/motd/*; do
-  MOTD_FILE=${MOTD##*/}
-  cp "${MOTD}" /etc/update-motd.d/ && chmod +x /etc/update-motd.d/"${MOTD_FILE}"
-done
-# This helps make sure the message is displayed correctly on the first login
-sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/login
-sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/sshd
+  MOTD_FILE=${MOTD##*/};
+  cp "${MOTD}" /etc/update-motd.d/ && chmod +x "/etc/update-motd.d/${MOTD_FILE}";
+done;
+
+# This helps make sure the message is displayed correctly on the first login.
+sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/login;
+sed -i -r 's/(motd=\/run\/motd\.dynamic)( noupdate)/\1/' /etc/pam.d/sshd;
+
+exit $?;
