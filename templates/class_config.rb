@@ -168,6 +168,8 @@ class Config
             'vhost_file' => File.join("#{vhosts_dir}", "#{subdomain_name}.conf"),
             'host' => "#{sub}.#{ remove_www(site.fetch('host')) }",
             'ssl' => site.fetch('ssl'), # Inherited from the parent site
+            'php' => site.fetch('php'), # Inherited from the parent site
+            'php_dir' => site.fetch('php_dir'), # Inherited from the parent site
             'box_name' => @config.fetch('name')
           }
           add_host(subdomains[subdomain_name].fetch('host')) if ssl_enabled
