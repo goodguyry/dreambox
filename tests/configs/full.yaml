@@ -1,15 +1,17 @@
 # Test configuration featuring multiple sites with full feature set
 #
-# The hosts list should contain only the first site's host,
-# aliases and subdomains, because:
-# - Only one site is missing an `ssl` setting, so the site
-#   inherits the root SSL value.
-# - There is a host declared on the config root `host`
+# The root SSL setting isinherited by the first site, but overridden by
+#   the second site's SSL setting.
+#
+# The root PHP version is overridden by the first site's PHP setting,but
+#   inherited by the second site.
+#
+# There is a host declared on the config root `host`
 #   property, so the site's host doesn't need to be repurposed
 #   as the root host.
 
 name: 'dreambox-tests'
-php: '7'
+php: '71'
 ssl: false
 host: main-host.dev
 
@@ -17,6 +19,7 @@ sites:
   'full-one':
     user: user
     group: shared_group
+    php: '56'
     root: example.com
     public: public
     local_root: web/

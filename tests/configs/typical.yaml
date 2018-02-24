@@ -1,16 +1,19 @@
 # Test configuration featuring a typical setup
 #
-# The root host inherit the first SSL-enabled host declared. The
-# hosts list should contain only SSL-enabled aliases.
+# The root SSL setting isinherited by the first site, but overridden by
+#   the second site's SSL setting.
+#
+# The root PHP version defaults to 70 and is inherited by the second site,
+#   but is overridden by the first site's PHP setting,
 
 name: 'dreambox-tests'
-php: '5'
 ssl: true
 
 sites:
   'typical-one':
     user: user
     group: example_group
+    php: '56'
     root: example.com
     local_root: web/
     host: example.dev
