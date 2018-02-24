@@ -24,34 +24,24 @@ for INDEX in ${!DIRS[*]}; do
 done;
 
 # Move the ports file into place.
+cp /usr/local/dreambox/httpd.conf "${TEMPLATE_PATH}/etc/";
 cp /usr/local/dreambox/ports.conf "${TEMPLATE_PATH}/etc/vhosts/";
 
 # Change httpd2 init script to use /bin/bash.
 # There are error when running in Bash.
 sed -i -r 's/(#! )(\/bin\/sh)/\1 \/bin\/bash/' /etc/init.d/httpd2;
 
-# Update httpd.conf.
-
-# Load mod_fcgid.
-# @todo maybe just include this file in the repo with the changes in place.
-sed -i -r '/LoadModule rewrite_module.*\.so/a LoadModule fcgid_module lib/modules/mod_fcgid.so' \
-  "${TEMPLATE_PATH}"/etc/httpd.conf;
-# Include the VHost directory.
-sed -i -r 's/(#)(Include etc\/)extra\/httpd-vhosts\.conf/\2vhosts\/\*/' \
-  "${TEMPLATE_PATH}"/etc/httpd.conf;
-
 # Set up the Apache instance.
 
 # Duplicate the template as new instance.
 cp -r "${TEMPLATE_PATH}" "${INSTANCE_PATH}";
 # Link the httpd file to instance root.
-ln -s "${INSTANCE_PATH}"/sbin/httpd "${INSTANCE_PATH}"/"${INSTANCE_NAME}"-httpd;
+ln -s "${INSTANCE_PATH}/sbin/httpd" "${INSTANCE_PATH}"/"${INSTANCE_NAME}-httpd";
 # Change the httpd.conf paths.
-sed -i -r s'/(\/usr\/local\/dh\/apache2\/)(template)'/"\1${INSTANCE_NAME}/" \
-  "${INSTANCE_PATH}"/etc/httpd.conf;
+sed -i -r 's/(\/usr\/local\/dh\/apache2\/)(template)'/"\1${INSTANCE_NAME}/" \
+  "${INSTANCE_PATH}/etc/httpd.conf";
 # Set the PID path.
-# @include this in the file and change the path all at once above.
-sed -i -r '/ServerRoot \"\/usr\/local\/dh\/apache2\'/"/a PidFile '/var/run/${INSTANCE_NAME}-httpd.pid'" \
+sed -i -r 's/(PidFile \"\/var\/run\/)(template)(-httpd\.pid\")'/"\1${INSTANCE_NAME}\3/" \
   "${INSTANCE_PATH}/etc/httpd.conf";
 
 # Set Apache to start at boot.

@@ -22,4 +22,4 @@ sites:
   #   subdomains: { 'help': '/app/help/' }
   #   ssl: false
 
-debug: true
+# debug: true
