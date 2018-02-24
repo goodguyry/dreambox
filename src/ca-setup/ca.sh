@@ -7,9 +7,7 @@
 
 set -e;
 
-PKG_NAME='dreambox-ca-certificates';
-SOURCE_DIR='/vagrant/src';
-PKG_DIR="${SOURCE_DIR}/${PKG_NAME}";
+SOURCE_DIR='/vagrant/src/ca-setup';
 
 # The directory structure.
 declare -a DIRS=(
@@ -45,8 +43,8 @@ for FILE in ${!ECHO_FILES[*]}; do
 done;
 
 # Set the configuration files
-cp "${SOURCE_DIR}/ca-setup/openssl.intermediate.cnf" /root/ca/intermediate/openssl.cnf;
-cp "${SOURCE_DIR}/ca-setup/openssl.cnf" /root/ca/openssl.cnf;
+cp "${SOURCE_DIR}/openssl.intermediate.cnf" /root/ca/intermediate/openssl.cnf;
+cp "${SOURCE_DIR}/openssl.cnf" /root/ca/openssl.cnf;
 
 # Create the root key.
 openssl genrsa \
@@ -92,24 +90,5 @@ openssl ca \
 
 # Create the certificate chain file
 bash -c "cat /root/ca/intermediate/certs/intermediate.crt /root/ca/certs/ca.crt > /root/ca/intermediate/certs/ca-chain.cert.pem";
-
-# Create the Root Cert package.
-
-# Set up the source directory.
-cp -a "${PKG_DIR}" ~/ && cd ~;
-
-# Create directories.
-mkdir "${PKG_NAME}/root";
-mkdir -p "${PKG_NAME}/usr/local/dreambox/";
-
-# Copy the /root/ca directory structure.
-cp -a /root/ca "${PKG_NAME}/root/";
-# Copy the chain file into the dreambox directory.
-cp "${PKG_NAME}/root/ca/intermediate/certs/ca-chain.cert.pem" "${PKG_NAME}/usr/local/dreambox/";
-
-# Build the deb package
-dpkg-deb --build "${PKG_NAME}";
-# Copy to repo
-cp "${PKG_NAME}.deb" /vagrant/files/debs;
 
 exit $?;
