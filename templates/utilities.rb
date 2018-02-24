@@ -54,6 +54,8 @@ module Helpers
       printf "%-20s %s\n", 'user', items['user']
       printf "%-20s %s\n", 'uid', items['uid']
       printf "%-20s %s\n", 'group', items['group']
+      printf "%-20s %s\n", 'php', items['php']
+      printf "%-20s %s\n", 'php_dir', items['php_dir']
       printf "%-20s %s\n", 'gid', items['gid']
       printf "%-20s %s\n", 'root_path', items['root_path']
       printf "%-20s %s\n", 'root', items['root']

@@ -40,12 +40,12 @@ class Config
     @raw = YAML.load_file(@config_config_file_path)
 
     # Allowed PHP values and associated PHP install directories
-    php_versions = ['5', '7']
-    php_dirs = ['php56', 'php70']
+    @php_versions = ['56', '70', '71']
+    @php_dirs = ['php56', 'php70', 'php71']
 
     box_defaults = {}
     box_defaults['name'] = 'dreambox'
-    box_defaults['php'] = php_versions.first
+    box_defaults['php'] = @php_versions.at(1)
     box_defaults['ssl'] = false
     box_defaults['ssl_enabled'] = false
     box_defaults['hosts'] = []
@@ -54,12 +54,12 @@ class Config
     @raw = box_defaults.merge(@raw)
 
     begin
-      raise KeyError unless php_versions.include?(@raw.fetch('php'))
+      raise KeyError unless @php_versions.include?(@raw.fetch('php').to_s)
     rescue KeyError => e
-      handle_error(e, "Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}")
+      handle_error(e, "Accepted `php` values are '#{@php_versions.first}', '#{@php_versions.at(1)}', and '#{@php_versions.last}'")
     end
 
-    @raw['php_dir'] = php_dirs[php_versions.index(@raw.fetch('php'))]
+    @raw['php_dir'] = @php_dirs[@php_versions.index(@raw.fetch('php').to_s)]
 
     required_properties = ['user', 'root', 'local_root', 'host']
     @raw['sites'].each_key do |dict|
@@ -90,6 +90,8 @@ class Config
     site_defaults = {}
     site_defaults['box_name'] = @config.fetch('name')
     site_defaults['is_subdomain'] = false
+    site_defaults['php'] = @config.fetch('php')
+    site_defaults['php_dir'] = @config.fetch('php_dir')
 
     @config['sites'].each_key do |dict|
       # Make a deep copy of the hash so it's not altered as we are iterating
@@ -113,6 +115,17 @@ class Config
         site['gid'] = group_id += 1
         groups.merge!(site['group'] => site['gid'])
       end
+
+      # PHP Version
+      # Collect the root PHP version unless the site's version is set
+      # Set the `php_dir` based on the collected PHP version
+      site['php'] =
+        if site.key?('php')
+          site.fetch('php').to_s
+        else
+          @config.fetch('php').to_s
+        end
+      site['php_dir'] = @php_dirs[@php_versions.index(site.fetch('php'))]
 
       # Paths
       # Clean and build paths used by Vagrant and/or the provisioners
@@ -160,6 +173,8 @@ class Config
             'vhost_file' => File.join("#{vhosts_dir}", "#{subdomain_name}.conf"),
             'host' => "#{sub}.#{ remove_www(site.fetch('host')) }",
             'ssl' => site.fetch('ssl'), # Inherited from the parent site
+            'php' => site.fetch('php'), # Inherited from the parent site
+            'php_dir' => site.fetch('php_dir'), # Inherited from the parent site
             'box_name' => @config.fetch('name')
           }
           add_host(subdomains[subdomain_name].fetch('host')) if ssl_enabled

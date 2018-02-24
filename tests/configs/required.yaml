@@ -1,7 +1,7 @@
 # Test configuration featuring only required settings
 #
 # The box defaults will be inherited by this config:
-# - PHP version 5
+# - PHP version 70
 # - SSL disabled
 # - 'dreambox' box name
 
