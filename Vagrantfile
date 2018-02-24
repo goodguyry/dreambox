@@ -59,14 +59,14 @@ Vagrant.configure(2) do |config|
     if Dreambox.config['ssl_enabled'] then
       test.vm.provision "SSL Setup",
         type: "shell",
-        path: "provisioners/ssl.sh",
+        inline: "/bin/bash /usr/local/dreambox/ssl.sh",
         :env => Dreambox.config
     end
 
     Dreambox.config['sites'].each do |site, conf|
       test.vm.provision "User Setup: #{conf['user']}",
         type: "shell",
-        path: "provisioners/user.sh",
+        inline: "/bin/bash /usr/local/dreambox/user.sh",
         :env => conf
 
       if (! conf['is_subdomain']) then
@@ -78,7 +78,7 @@ Vagrant.configure(2) do |config|
 
       test.vm.provision "VHost Setup: #{conf['host']}",
         type: "shell",
-        path: "provisioners/vhost.sh",
+        inline: "/bin/bash /usr/local/dreambox/vhost.sh",
         :env => conf
     end
   end
