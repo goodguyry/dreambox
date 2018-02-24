@@ -13,7 +13,7 @@ sites:
   'typical-one':
     user: user
     group: example_group
-    php: '56'
+    php: 56
     root: example.com
     local_root: web/
     host: example.dev

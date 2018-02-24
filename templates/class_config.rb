@@ -54,12 +54,12 @@ class Config
     @raw = box_defaults.merge(@raw)
 
     begin
-      raise KeyError unless @php_versions.include?(@raw.fetch('php'))
+      raise KeyError unless @php_versions.include?(@raw.fetch('php').to_s)
     rescue KeyError => e
       handle_error(e, "Accepted `php` values are '#{@php_versions.first}', '#{@php_versions.at(1)}', and '#{@php_versions.last}'")
     end
 
-    @raw['php_dir'] = @php_dirs[@php_versions.index(@raw.fetch('php'))]
+    @raw['php_dir'] = @php_dirs[@php_versions.index(@raw.fetch('php').to_s)]
 
     required_properties = ['user', 'root', 'local_root', 'host']
     @raw['sites'].each_key do |dict|
@@ -119,7 +119,12 @@ class Config
       # PHP Version
       # Collect the root PHP version unless the site's version is set
       # Set the `php_dir` based on the collected PHP version
-      site['php'] = @config.fetch('php') unless site.key?('php')
+      site['php'] =
+        if site.key?('php')
+          site.fetch('php').to_s
+        else
+          @config.fetch('php').to_s
+        end
       site['php_dir'] = @php_dirs[@php_versions.index(site.fetch('php'))]
 
       # Paths

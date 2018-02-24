@@ -1,5 +1,5 @@
 name: 'dreambox'
-php: '71'
+php: 71
 ssl: true
 
 sites:

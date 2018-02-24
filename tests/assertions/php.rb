@@ -79,4 +79,17 @@
     'actual' => @tests.the['required'].config['sites']['required']['php_dir'],
   },
 
+  ## ===> Multiple value types for PHP
+
+  # Condition:
+  # - The site `php` value is 56 (non-string value).
+  #
+  # Expected Outcome:
+  # - A PHP value declared as a number should be converted to a string.
+  {
+    'name' => "PHP Number: A PHP value declared as a number should be converted to a string.",
+    'expect' => '56',
+    'actual' => @tests.the['typical'].config['sites']['typical-one']['php'],
+  },
+
 ])
