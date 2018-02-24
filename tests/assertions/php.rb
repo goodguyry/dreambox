@@ -49,11 +49,23 @@
   # - The site `php` value is '56'.
   #
   # Expected Outcome:
-  # - The site's `php_dir` value should match the site's version.
+  # - The site's `php_dir` value should override the root value.
   {
-    'name' => "PHP 56: The site's `php_dir` value should override the root value.",
+    'name' => "PHP Override: The site's `php_dir` value should override the root value.",
     'expect' => 'php56',
     'actual' => @tests.the['full'].config['sites']['full-one']['php_dir'],
+  },
+
+  # Conditions:
+  # - The root `php` value is '71'.
+  # - The site `php` value is '56'.
+  #
+  # Expected Outcome:
+  # - The site's `php` value should match the site's version.
+  {
+    'name' => "PHP Override: The site's `php` value should match the site's version.",
+    'expect' => '56',
+    'actual' => @tests.the['full'].config['sites']['full-one']['php'],
   },
 
   # Condition:
@@ -62,7 +74,7 @@
   # Expected Outcome:
   # - The site `php_dir` property should inherit the default version from the root.
   {
-    'name' => "PHP 70: The site's `php_dir` value should override the root value.",
+    'name' => "Missing PHP: The site's `php_dir` value should override the root value.",
     'expect' => 'php70',
     'actual' => @tests.the['required'].config['sites']['required']['php_dir'],
   },
