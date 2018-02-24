@@ -39,6 +39,9 @@ else
   sed -i -r 's/(#\s)(NameVirtualHost\s\*:80)/\2/' "${port_file}";
 fi
 
+# Set the CGI script based on the PHP version
+sed -i -r s/'%php_dir%'/"${php_dir}"/ "${vhost_file}";
+
 # Create root path.
 # For when the site's public directory isn't the site root.
 [[ ! -d "${root_path}" ]] && mkdir -p "${root_path}";
