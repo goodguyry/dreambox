@@ -40,12 +40,12 @@ class Config
     @raw = YAML.load_file(@config_config_file_path)
 
     # Allowed PHP values and associated PHP install directories
-    php_versions = ['5', '7']
-    php_dirs = ['php56', 'php70']
+    php_versions = ['56', '70', '71']
+    php_dirs = ['php56', 'php70', 'php71']
 
     box_defaults = {}
     box_defaults['name'] = 'dreambox'
-    box_defaults['php'] = php_versions.first
+    box_defaults['php'] = php_versions.at(1)
     box_defaults['ssl'] = false
     box_defaults['ssl_enabled'] = false
     box_defaults['hosts'] = []
@@ -56,7 +56,7 @@ class Config
     begin
       raise KeyError unless php_versions.include?(@raw.fetch('php'))
     rescue KeyError => e
-      handle_error(e, "Accepted `php` values are '#{php_versions.first}' and '#{php_versions.last}")
+      handle_error(e, "Accepted `php` values are '#{php_versions.first}', '#{php_versions.at(1)}', and '#{php_versions.last}'")
     end
 
     @raw['php_dir'] = php_dirs[php_versions.index(@raw.fetch('php'))]
