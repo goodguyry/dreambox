@@ -19,9 +19,14 @@ Ubuntu `14.04 LTS`
 | ndn-apache22      | 2.2.31-5   |
 | mysql-server-5.6  | 5.6.33     |
 
-_Python and Ruby environments are not set up. Contributions are welcome and appreciated._
+The following are installed, but may require additional configuration and/or packages (Contributions are welcome and appreciated):
+* Perl
+* PostgreSQL
+* Python
+* Ruby
+* SQLite
 
-See [the Wiki][getting_started] for additional setup options and documentation.
+See [the Wiki][getting_started] for additional documentation.
 
 ## References
 

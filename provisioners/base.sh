@@ -41,7 +41,9 @@ apt-get -y install \
 apt-get -y install \
   libapr1 \
   libaprutil1 \
+  libaprutil1-dbd-sqlite3 \
   libaspell15 \
+  libdbd-sqlite3-perl \
   libdjvulibre21 \
   libgvc6 \
   liblcms1 \
@@ -52,6 +54,8 @@ apt-get -y install \
   libreadline5 \
   libreadline6-dev \
   librsvg2-2 \
+  libsqlite0-dev \
+  libsqlite3-dev \
   libssl-dev \
   libtidy-0.99-0 \
   libwmf0.2-7 \
@@ -81,8 +85,9 @@ update-grub;
 
 # Install additional packages.
 
-echo 'Install Git packages';
+echo 'Install miscellaneous packages';
 apt-get -y install \
+  dh-python \
   git \
   git-buildpackage \
   git-doc \
@@ -90,7 +95,15 @@ apt-get -y install \
   git-sh \
   git-stuff \
   git-svn \
+  postgresql-client \
+  python-pysqlite2 \
+  python-sqlite \
+  ruby-sqlite3 \
+  sqlite \
+  subversion \
+  subversion-tools \
   > /dev/null;
+
 
 echo 'Install Apache packages';
 apt-get -y install \
