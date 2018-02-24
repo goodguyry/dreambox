@@ -33,6 +33,7 @@ apt-get -y install \
   build-essential \
   expect \
   sysv-rc-conf \
+  tree \
   zip \
   > /dev/null;
 
