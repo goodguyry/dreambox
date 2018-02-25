@@ -56,7 +56,7 @@ else
     expect "1 out of 1 certificate requests certified, commit?"
     send "y\r"
     expect eof
-EOF;
+EOF
 
   if [[ $? -lt 1 ]]; then
     # Success!
