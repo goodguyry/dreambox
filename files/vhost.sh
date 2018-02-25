@@ -7,7 +7,7 @@
 set -e;
 set -u;
 
-port_file='/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/ports.conf';
+port_file='/usr/local/dh/apache2/apache2-dreambox/etc/ports.conf';
 
 # Set the new vhost conf file in place.
 cp /usr/local/dreambox/ndn-vhost.conf "${vhost_file}";
@@ -24,10 +24,8 @@ sed -i -r s/"%host%"/"${host}/" "${vhost_file}";
 
 # Update vhost file for SSL.
 if [[ 'true' == $ssl ]]; then
-  # Enable the NameVirtualHost on port 443.
-  sed -i -r 's/(#\s)(NameVirtualHost\s\*:443)/\2/' "${port_file}";
-  # Listen 443.
-  sed -i -r 's/(#\s)(Listen\s)(80)/\2443/' "${vhost_file}";
+  # Listen and NameVirtualHost on port 443.
+  sed -i -r 's/(#\s)(.*443)/\2/' "${port_file}";
   # <VirtualHost *:443>.
   sed -i -r 's/\*:80/\*:443/g' "${vhost_file}";
   # SSLEngine on.
@@ -35,9 +33,9 @@ if [[ 'true' == $ssl ]]; then
   # SSLCertificateFile & SSLCertificateKeyFile.
   sed -i -r s/'(#\s)(SSLCertificate.*)(%cert_name%)'/"\2${box_name}"/ "${vhost_file}";
 else
-  # Enable the NameVirtualHost on port 80.
-  sed -i -r 's/(#\s)(NameVirtualHost\s\*:80)/\2/' "${port_file}";
-fi
+  # Listen and NameVirtualHost on port 80.
+  sed -i -r 's/(#\s)(.*80)/\2/' "${port_file}";
+fi;
 
 # Set the CGI script based on the PHP version
 sed -i -r s/'%php_dir%'/"${php_dir}"/ "${vhost_file}";

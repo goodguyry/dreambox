@@ -1,6 +1,6 @@
 name: 'dreambox'
 php: 71
-# ssl: true
+ssl: true
 
 sites:
   'dreambox':
@@ -11,15 +11,15 @@ sites:
     host: 'www.dreambox.test' # required
     # aliases:
     #   - 'dreambox.test'
-    # subdomains:
-    #   app: 'app/'
+    subdomains:
+      app: 'app/'
   'example':
     user: example_user
     php: '56'
     root: example.com
     local_root: web
     host: example.test
-  #   subdomains: { 'help': '/app/help/' }
-  #   ssl: false
+    subdomains: { 'help': '/app/help/' }
+    ssl: false
 
 # debug: true
