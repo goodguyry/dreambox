@@ -22,6 +22,15 @@ sed -i s/"%root_path%"/"${ESCAPED_ROOT_PATH}"/ "${vhost_file}";
 # Update hostname throughout.
 sed -i -r s/"%host%"/"${host}/" "${vhost_file}";
 
+# Add alias(es)
+if [[ ! -z ${aliases+x} ]]; then
+  sed -i -r 's/(#\s)(ServerAlias)/\2/' "${vhost_file}";
+  sed -i -r s/'%aliases%'/"${aliases}"/ "${vhost_file}";
+fi;
+
+# Set the CGI script based on the PHP version
+sed -i -r s/'%php_dir%'/"${php_dir}"/ "${vhost_file}";
+
 # Update vhost file for SSL.
 if [[ 'true' == $ssl ]]; then
   # Listen and NameVirtualHost on port 443.
@@ -36,9 +45,6 @@ else
   # Listen and NameVirtualHost on port 80.
   sed -i -r 's/(#\s)(.*80)/\2/' "${port_file}";
 fi;
-
-# Set the CGI script based on the PHP version
-sed -i -r s/'%php_dir%'/"${php_dir}"/ "${vhost_file}";
 
 # Create root path.
 # For when the site's public directory isn't the site root.
