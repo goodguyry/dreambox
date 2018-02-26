@@ -1,6 +1,6 @@
 name: 'dreambox'
 php: 71
-# ssl: true
+ssl: true
 
 sites:
   'dreambox':
@@ -11,6 +11,7 @@ sites:
     host: 'www.dreambox.test' # required
     aliases:
       - 'dreambox.test'
+      - 'www2.dreambox.test'
     subdomains:
       app: 'app/'
   'example':
