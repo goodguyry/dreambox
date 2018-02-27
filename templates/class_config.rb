@@ -132,9 +132,10 @@ class Config
 
       site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
 
-      root_path = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
-      site['root_path'] = (site.key?('public')) ?
-        File.join(root_path, trim_slashes(site.fetch('public'))) : root_path
+      site['sync_folder'] = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
+      site['document_root'] = (site.key?('public')) ?
+        File.join(site['sync_folder'], trim_slashes(site.fetch('public'))) :
+        site['sync_folder']
 
       site['vhost_file'] = File.join("#{vhosts_dir}", "#{dict}.conf")
 
@@ -168,7 +169,7 @@ class Config
             'uid' => site.fetch('uid'), # Inherited from the parent site
             'group' => site.fetch('group'), # Inherited from the parent site
             'gid' => site.fetch('gid'), # Inherited from the parent site
-            'root_path' => File.join(root_path, trim_slashes(path)),
+            'document_root' => File.join(site['document_root'], trim_slashes(path)),
             'is_subdomain' => true,
             'vhost_file' => File.join("#{vhosts_dir}", "#{subdomain_name}.conf"),
             'host' => "#{sub}.#{ remove_www(site.fetch('host')) }",

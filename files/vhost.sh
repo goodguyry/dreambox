@@ -16,8 +16,8 @@ cp /usr/local/dreambox/ndn-vhost.conf "${vhost_file}";
 [[ ! -d /var/log/apache2/dreambox/"${host}" ]] && mkdir -p /var/log/apache2/dreambox/"${host}";
 
 # Set Apache directory.
-ESCAPED_ROOT_PATH=$(echo "${root_path}" | sed 's/\(\W\)/\\\1/g');
-sed -i s/"%root_path%"/"${ESCAPED_ROOT_PATH}"/ "${vhost_file}";
+ESCAPED_DOCUMENT_ROOT=$(echo "${document_root}" | sed 's/\(\W\)/\\\1/g');
+sed -i s/"%document_root%"/"${ESCAPED_DOCUMENT_ROOT}"/ "${vhost_file}";
 
 # Update hostname throughout.
 sed -i -r s/"%host%"/"${host}/" "${vhost_file}";
@@ -47,8 +47,8 @@ else
 fi;
 
 # Create root path.
-# For when the site's public directory isn't the site root.
-[[ ! -d "${root_path}" ]] && mkdir -p "${root_path}";
+# For when the site's document root isn't the site root.
+[[ ! -d "${document_root}" ]] && mkdir -p "${document_root}";
 
 # Update permissions.
 chown -R "${user}:${group}" "/home/${user}";

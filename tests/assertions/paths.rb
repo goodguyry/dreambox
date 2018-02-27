@@ -7,12 +7,12 @@
 @tests.assertions.push(*[
 
   # Expected Outcome:
-  # - The site's `root_path` property created by Config should have the
+  # - The site's `document_root` property created by Config should have the
   #   correct path
   {
-    'name' => "Paths: The site's `root_path` property should have the correct path.",
+    'name' => "Paths: The site's `document_root` property should have the correct path.",
     'expect' => '/home/user-two/example-two.com',
-    'actual' => @tests.the['full'].config['sites']['full-two']['root_path'],
+    'actual' => @tests.the['full'].config['sites']['full-two']['document_root'],
   },
 
   # Conditions:
@@ -21,12 +21,25 @@
   # - The site's `public` property has a valid String value.
   #
   # Expected Outcome:
-  # - The site's `root_path` property created by Config should have the
+  # - The site's `document_root` property created by Config should have the
   #   correct path with a public folder.
   {
-    'name' => "Paths: The site's `root_path` property should have the correct path with a public folder.",
+    'name' => "Paths: The site's `document_root` property should have the correct path with a public folder.",
     'expect' => '/home/user/example.com/public',
-    'actual' => @tests.the['full'].config['sites']['full-one']['root_path'],
+    'actual' => @tests.the['full'].config['sites']['full-one']['document_root'],
+  },
+
+  # Conditions:
+  # - The site's `user` property has a valid String value.
+  # - The site's `root` property has a valid String value.
+  # - The site's `public` property has a valid String value.
+  #
+  # Expected Outcome:
+  # - The site's `sync_folder` property created by Config should unaffected by the public folder.
+  {
+    'name' => "Paths: The site's `sync_folder` property created by Config should unaffected by the public folder.",
+    'expect' => '/home/user/example.com',
+    'actual' => @tests.the['full'].config['sites']['full-one']['sync_folder'],
   },
 
   # Conditions:
@@ -35,12 +48,12 @@
   # - The site has a valid subdomain delcaration
   #
   # Expected Outcome:
-  # - The subdomain's `root_path` property created by Config should have the
+  # - The subdomain's `document_root` property created by Config should have the
   #   correct path.
   {
-    'name' => "Paths: The subdomain's `root_path` property created by Config should have the correct path.",
+    'name' => "Paths: The subdomain's `document_root` property created by Config should have the correct path.",
     'expect' => '/home/user-two/example-two.com/app/help',
-    'actual' => @tests.the['full'].config['sites']['help.full-two']['root_path'],
+    'actual' => @tests.the['full'].config['sites']['help.full-two']['document_root'],
   },
 
   # Conditions:
@@ -50,7 +63,7 @@
   # - The parent site's `public` property has a valid String value.
   #
   # Expected Outcome:
-  # - The subdomain's `root_path` property created by Config should have the
+  # - The subdomain's `document_root` property created by Config should have the
   #   correct path with a public folder.
   #
   # Additional Information:
@@ -58,9 +71,9 @@
   #   the public folder path is required if it needs to be included in the
   #   subdomain root path.
   {
-    'name' => "Paths: The subdomain's `root_path` property created by Config should have the correct path with a public folder.",
-    'expect' => '/home/user/example.com/app',
-    'actual' => @tests.the['full'].config['sites']['app.full-one']['root_path'],
+    'name' => "Paths: The subdomain's `document_root` property created by Config should have the correct path with a public folder.",
+    'expect' => '/home/user/example.com/public/app',
+    'actual' => @tests.the['full'].config['sites']['app.full-one']['document_root'],
   },
 
   # Condition:
