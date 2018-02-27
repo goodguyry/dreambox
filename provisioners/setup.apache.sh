@@ -25,7 +25,7 @@ done;
 
 # Move the ports file into place.
 cp /usr/local/dreambox/httpd.conf "${TEMPLATE_PATH}/etc/";
-cp /usr/local/dreambox/ports.conf "${TEMPLATE_PATH}/etc/vhosts/";
+cp /usr/local/dreambox/ports.conf "${TEMPLATE_PATH}/etc/";
 
 # Change httpd2 init script to use /bin/bash.
 # There are error when running in Bash.

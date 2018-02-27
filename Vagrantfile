@@ -11,6 +11,7 @@ Dreambox = Config.new(dreambox_config_file)
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
+  config.vm.box_url = "https://vagrantcloud.com/ubuntu/boxes/trusty64"
 
   config.vm.network :forwarded_port, guest: 80, host: 8080, auto_correct: true
 
@@ -70,7 +71,7 @@ Vagrant.configure(2) do |config|
         :env => conf
 
       if (! conf['is_subdomain']) then
-        test.vm.synced_folder conf['local_root'], conf['root_path'],
+        test.vm.synced_folder conf['local_root'], conf['sync_folder'],
           owner: "#{conf['uid']}",
           group: "#{conf['gid']}",
           mount_options: ["dmode=775,fmode=664"]
