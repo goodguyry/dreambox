@@ -37,10 +37,10 @@ cp -r "${TEMPLATE_PATH}" "${INSTANCE_PATH}";
 # Link the httpd file to instance root.
 ln -s "${INSTANCE_PATH}/sbin/httpd" "${INSTANCE_PATH}"/"${INSTANCE_NAME}-httpd";
 # Change the httpd.conf paths.
-sed -i -r 's/(\/usr\/local\/dh\/apache2\/)(template)'/"\1${INSTANCE_NAME}/" \
+sed -i -r "s/(\/usr\/local\/dh\/apache2\/)(template)/\1${INSTANCE_NAME}/" \
   "${INSTANCE_PATH}/etc/httpd.conf";
 # Set the PID path.
-sed -i -r 's/(PidFile \"\/var\/run\/)(template)(-httpd\.pid\")'/"\1${INSTANCE_NAME}\3/" \
+sed -i -r "s/(PidFile \"\/var\/run\/)(template)(-httpd\.pid\")/\1${INSTANCE_NAME}\3/" \
   "${INSTANCE_PATH}/etc/httpd.conf";
 
 # Set Apache to start at boot.
