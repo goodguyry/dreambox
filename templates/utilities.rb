@@ -40,32 +40,23 @@ module Helpers
 
     printf "%-20s %s\n", 'Config File', file
     printf "%-20s %s\n", 'Box Name', config['name']
-    printf "%-20s %s\n", 'Host', config['host'] if config['host'].kind_of? String
-    printf "%-20s %s\n", 'PHP Version', config['php']
-    printf "%-20s %s\n", 'PHP Dir', config['php_dir']
+    printf "%-20s %s\n", 'PHP Version', config['php'].to_s.split(//).join('.')
     printf "%-20s %s\n", 'SSL Enabled', config['ssl_enabled']
-    printf "%-20s %s\n", 'Hosts', config['hosts'] if @config['hosts'].length > 0
+    printf "%-20s %s\n", 'Hosts', config['hosts'].split('\n').join(', ') if (@config['hosts'].length > 0 && config['ssl_enabled'])
 
     puts ''
 
     config['sites'].each do |site, items|
-      puts "===> #{site}:".bold.yellow
-      printf "%-20s %s\n", 'is_subdomain', items['is_subdomain'] if items['is_subdomain']
-      printf "%-20s %s\n", 'user', items['user']
-      printf "%-20s %s\n", 'uid', items['uid']
-      printf "%-20s %s\n", 'group', items['group']
-      printf "%-20s %s\n", 'php', items['php']
-      printf "%-20s %s\n", 'php_dir', items['php_dir']
-      printf "%-20s %s\n", 'gid', items['gid']
-      printf "%-20s %s\n", 'sync_destination', items['sync_destination']
-      printf "%-20s %s\n", 'document_root', items['document_root']
-      printf "%-20s %s\n", 'root', items['root']
-      printf "%-20s %s\n", 'sync', items['sync']
-      printf "%-20s %s\n", 'ssl', items['ssl'] if items['ssl']
-      printf "%-20s %s\n", 'aliases', items['aliases']
-      printf "%-20s %s\n", 'box_name', items['box_name']
-      printf "%-20s %s\n", 'host', items['host']
-      printf "%-20s %s\n", 'vhost_file', items['vhost_file']
+      puts "===> Site: #{site}:".bold.yellow
+      printf "%-20s %s\n", 'Host', items['host'] if items['host']
+      printf "%-20s %s\n", 'User', items['user'] if items['user']
+      printf "%-20s %s\n", 'Group', items['group'] if (items['group'] != 'dreambox')
+      printf "%-20s %s\n", 'Document Root', items['document_root'] if items['document_root']
+      printf "%-20s %s\n", 'Local Sync Folder', items['sync'] if items['sync']
+      printf "%-20s %s\n", 'PHP Version', items['php'].to_s.split(//).join('.') if items['php']
+      printf "%-20s %s\n", 'SSL Enabled', items['ssl']
+      printf "%-20s %s\n", 'Aliases', items['aliases'].split(' ').join(', ') if items['aliases']
+      printf "%-20s %s\n", 'Virtual Host Config', items['vhost_file'] if items['vhost_file']
       puts ''
     end
     puts ''
