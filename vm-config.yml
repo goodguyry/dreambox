@@ -4,23 +4,23 @@ ssl: true
 
 sites:
   'dreambox':
-    user: 'db_user' # required
-    root: 'dreambox.com' # required
-    public: 'public'
-    sync: 'static/' # required
     host: 'www.dreambox.test' # required
+    root: 'dreambox.com' # required
+    sync: 'static/' # required
+    user: 'db_user' # required
+    public: 'public'
     aliases:
       - 'dreambox.test'
       - 'www2.dreambox.test'
     subdomains:
       app: 'app/'
   'example':
-    user: example_user
-    php: '56'
+    host: example.test
     root: example.com
     sync: web
-    host: example.test
-    subdomains: { 'help': '/app/help/' }
+    user: example_user
     ssl: false
+    php: '56'
+    subdomains: { 'help': '/app/help/' }
 
 # debug: true
