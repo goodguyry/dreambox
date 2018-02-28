@@ -188,7 +188,7 @@
   # - The `hosts` property should contain all SSL-enabled hosts in SubjectAlternateName
   #   format (DNS.<n> = <hostname>).
   {
-    'name' => "SSL On: The `hosts` property should contain all SSL-enabled hosts.',
+    'name' => "SSL On: The `hosts` property should contain all SSL-enabled hosts.",
     'expect' => 'DNS.1 = example.dev\nDNS.2 = www.example.dev\nDNS.3 = *.example.dev',
     'actual' => @tests.the['typical'].config['hosts'],
   },
