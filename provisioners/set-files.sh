@@ -2,9 +2,6 @@
 
 set -e;
 
-# Expect no interactive input.
-export DEBIAN_FRONTEND=noninteractive;
-
 # Create the dreambox directory.
 [[ ! -d /usr/local/dreambox ]] && mkdir /usr/local/dreambox;
 
