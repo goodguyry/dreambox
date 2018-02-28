@@ -5,15 +5,10 @@
 #
 # The root PHP version is overridden by the first site's PHP setting,but
 #   inherited by the second site.
-#
-# There is a host declared on the config root `host`
-#   property, so the site's host doesn't need to be repurposed
-#   as the root host.
 
 name: 'dreambox-tests'
 php: '71'
 ssl: false
-host: main-host.dev
 
 sites:
   'full-one':
