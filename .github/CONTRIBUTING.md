@@ -7,7 +7,6 @@ DreamBox is an open source project. It is licensed using the [GNU General Public
 If you're adding software:
 
 1. Please do your best to make sure the version matches the current version used by DreamHost.
-2. Please create a script (such as what exists in [/src](src)) for configuration and installation, including building a Debian package (using `checkinstall`) and `zip`ing it to /pkg.
-3. Please add any necessary post-install setup to [package-setup.sh](scripts/package-setup.sh)
+2. Please add any necessary post-install setup in a script at `provisioners/setup.<package-name>.sh` and make sure it's run from both `Vagrantfile` and `templates/Vagrantfile`.
 
 Thanks!
