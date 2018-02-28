@@ -11,6 +11,10 @@ Vagrant.configure(2) do |config|
   # Start bash as a non-login shell
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "#{Dreambox.config['name']}"
+  end
+
   if Dreambox.config['ssl_enabled'] then
     config.vm.provision "SSL Setup",
       type: "shell",
