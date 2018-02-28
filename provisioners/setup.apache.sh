@@ -24,8 +24,7 @@ for INDEX in ${!DIRS[*]}; do
 done;
 
 # Move the ports file into place.
-cp /usr/local/dreambox/httpd.conf "${TEMPLATE_PATH}/etc/";
-cp /usr/local/dreambox/ports.conf "${TEMPLATE_PATH}/etc/";
+rsync -av --exclude='ndn-vhost.conf' /usr/local/dreambox/*.conf "${TEMPLATE_PATH}/etc/";
 
 # Change httpd2 init script to use /bin/bash.
 # There are error when running in Bash.

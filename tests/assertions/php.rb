@@ -64,8 +64,8 @@
   # - The site's `php` value should match the site's version.
   {
     'name' => "PHP Override: The site's `php` value should match the site's version.",
-    'expect' => '56',
-    'actual' => @tests.the['full'].config['sites']['full-one']['php'],
+    'expect' => 'php56',
+    'actual' => @tests.the['full'].config['sites']['full-one']['php_dir'],
   },
 
   # Condition:
@@ -75,8 +75,8 @@
   # - The site `php_dir` property should inherit the default version from the root.
   {
     'name' => "Missing PHP: The site's `php_dir` value should override the root value.",
-    'expect' => 'php70',
-    'actual' => @tests.the['required'].config['sites']['required']['php_dir'],
+    'expect' => 'php56',
+    'actual' => @tests.the['typical'].config['sites']['typical-one']['php_dir'],
   },
 
   ## ===> Multiple value types for PHP

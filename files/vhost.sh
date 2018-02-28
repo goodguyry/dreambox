@@ -29,7 +29,7 @@ if [[ ! -z ${aliases+x} ]]; then
 fi;
 
 # Set the CGI script based on the PHP version
-sed -i -r s/'%php_dir%'/"${php_dir}"/ "${vhost_file}";
+sed -i -r "s/%php_dir%/${php_dir}/g" "${vhost_file}";
 
 # Update vhost file for SSL.
 if [[ 'true' == $ssl ]]; then
