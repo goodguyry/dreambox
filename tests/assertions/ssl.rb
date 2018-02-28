@@ -66,19 +66,6 @@
     'actual' => @tests.the['required'].config['sites']['required']['ssl'],
   },
 
-  # Conditions:
-  # - The root `ssl` property is missing
-  # - SSL is not enabled in the lone site declaration.
-  # - The root `hosts` property is empty.
-  #
-  # Expected Outcome:
-  # - The DNS Hosts file should not be created.
-  {
-    'name' => 'Missing SSL: The DNS Hosts file should not be created.',
-    'expect' => false,
-    'actual' => File.exist?(File.join(@assertions_dir, 'required.txt')),
-  },
-
   ## ===> SSL Off
   #
   # Overview:
@@ -229,7 +216,7 @@
   # Expected Outcome:
   # - The hosts string should contain the SSL-enabled site's aliases.
   {
-    'name' => "SSL On: The DNS Hosts file should contain the SSL-enabled site's aliases.",
+    'name' => "SSL On: The `hosts` property should contain all SSL-enabled hosts.',
     'expect' => 'DNS.1 = example.dev\nDNS.2 = www.example.dev\nDNS.3 = *.example.dev',
     'actual' => @tests.the['typical'].config['hosts'],
   },
