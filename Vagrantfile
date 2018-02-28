@@ -71,7 +71,7 @@ Vagrant.configure(2) do |config|
         :env => conf
 
       if (! conf['is_subdomain']) then
-        test.vm.synced_folder conf['local_root'], conf['sync_folder'],
+        test.vm.synced_folder conf['sync'], conf['sync_destination'],
           owner: "#{conf['uid']}",
           group: "#{conf['gid']}",
           mount_options: ["dmode=775,fmode=664"]

@@ -9,5 +9,5 @@ sites:
   'required':
     user: user
     root: example.com
-    local_root: web
+    sync: web
     host: example.dev

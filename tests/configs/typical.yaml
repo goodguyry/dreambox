@@ -15,7 +15,7 @@ sites:
     group: example_group
     php: 56
     root: example.com
-    local_root: web/
+    sync: web/
     host: example.dev
     aliases:
       - www.example.dev
@@ -23,7 +23,7 @@ sites:
   'typical-two':
     user: user-two
     root: example-two.com
-    local_root: web
+    sync: web
     host: example-two.dev
     aliases: [ www.example-two.dev, '*.example-two.dev' ] # alternative syntax
     ssl: false

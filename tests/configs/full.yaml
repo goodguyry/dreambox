@@ -22,7 +22,7 @@ sites:
     php: '56'
     root: example.com
     public: public
-    local_root: web/
+    sync: web/
     host: www.example.dev
     aliases:
       - example.dev
@@ -32,7 +32,7 @@ sites:
     user: user-two
     group: shared_group
     root: example-two.com
-    local_root: web
+    sync: web
     host: example-two.dev
     aliases: [ www.example-two.dev ] # alternative syntax
     subdomains: { 'help': '/app/help/' } # alternative syntax

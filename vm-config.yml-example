@@ -7,7 +7,7 @@ sites:
     user: 'db_user' # required
     root: 'dreambox.com' # required
     public: 'html'
-    local_root: 'web/' # required
+    sync: 'web/' # required
     host: 'www.dreambox.test' # required
     aliases:
       - 'dreambox.test'

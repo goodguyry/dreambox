@@ -35,11 +35,11 @@
   # - The site's `public` property has a valid String value.
   #
   # Expected Outcome:
-  # - The site's `sync_folder` property created by Config should unaffected by the public folder.
+  # - The site's `sync_destination` property created by Config should unaffected by the public folder.
   {
-    'name' => "Paths: The site's `sync_folder` property created by Config should unaffected by the public folder.",
+    'name' => "Paths: The site's `sync_destination` property should be unaffected by the public folder.",
     'expect' => '/home/user/example.com',
-    'actual' => @tests.the['full'].config['sites']['full-one']['sync_folder'],
+    'actual' => @tests.the['full'].config['sites']['full-one']['sync_destination'],
   },
 
   # Conditions:

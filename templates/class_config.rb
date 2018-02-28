@@ -61,7 +61,7 @@ class Config
 
     @raw['php_dir'] = @php_dirs[@php_versions.index(@raw.fetch('php').to_s)]
 
-    required_properties = ['user', 'root', 'local_root', 'host']
+    required_properties = ['user', 'root', 'sync', 'host']
     @raw['sites'].each_key do |dict|
       required_properties.each do |property|
         begin
@@ -130,12 +130,12 @@ class Config
       # Paths
       # Clean and build paths used by Vagrant and/or the provisioners
 
-      site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
+      site['sync'] = trim_slashes(@config['sites'].fetch(dict).fetch('sync'))
 
-      site['sync_folder'] = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
+      site['sync_destination'] = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
       site['document_root'] = (site.key?('public')) ?
-        File.join(site['sync_folder'], trim_slashes(site.fetch('public'))) :
-        site['sync_folder']
+        File.join(site['sync_destination'], trim_slashes(site.fetch('public'))) :
+        site['sync_destination']
 
       site['vhost_file'] = File.join("#{vhosts_dir}", "#{dict}.conf")
 
