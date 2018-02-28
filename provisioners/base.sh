@@ -6,6 +6,9 @@
 
 set -e;
 
+# Expect no interactive input.
+export DEBIAN_FRONTEND=noninteractive;
+
 # Add the keys for the DH repos.
 # @see http://keyserver.ubuntu.com/
 apt-key add /usr/local/dreambox/keys/ksplice.key;

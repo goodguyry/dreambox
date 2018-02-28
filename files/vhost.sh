@@ -17,19 +17,19 @@ cp /usr/local/dreambox/ndn-vhost.conf "${vhost_file}";
 
 # Set Apache directory.
 ESCAPED_DOCUMENT_ROOT=$(echo "${document_root}" | sed 's/\(\W\)/\\\1/g');
-sed -i s/"%document_root%"/"${ESCAPED_DOCUMENT_ROOT}"/ "${vhost_file}";
+sed -i "s/%document_root%/${ESCAPED_DOCUMENT_ROOT}/g" "${vhost_file}";
 
 # Update hostname throughout.
-sed -i -r s/"%host%"/"${host}/" "${vhost_file}";
+sed -i -r "s/%host%/${host}/g" "${vhost_file}";
 
 # Add alias(es)
 if [[ ! -z ${aliases+x} ]]; then
   sed -i -r 's/(#\s)(ServerAlias)/\2/' "${vhost_file}";
-  sed -i -r s/'%aliases%'/"${aliases}"/ "${vhost_file}";
+  sed -i -r "s/%aliases%/${aliases}/" "${vhost_file}";
 fi;
 
 # Set the CGI script based on the PHP version
-sed -i -r s/'%php_dir%'/"${php_dir}"/ "${vhost_file}";
+sed -i -r "s/%php_dir%/${php_dir}/g" "${vhost_file}";
 
 # Update vhost file for SSL.
 if [[ 'true' == $ssl ]]; then
@@ -40,7 +40,7 @@ if [[ 'true' == $ssl ]]; then
   # SSLEngine on.
   sed -i -r 's/(SSLEngine\s)\w*/\1on/' "${vhost_file}";
   # SSLCertificateFile & SSLCertificateKeyFile.
-  sed -i -r s/'(#\s)(SSLCertificate.*)(%cert_name%)'/"\2${box_name}"/ "${vhost_file}";
+  sed -i -r "s/(#\s)(SSLCertificate.*)(%cert_name%)/\2${box_name}/" "${vhost_file}";
 else
   # Listen and NameVirtualHost on port 80.
   sed -i -r 's/(#\s)(.*80)/\2/' "${port_file}";
