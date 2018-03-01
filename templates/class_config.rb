@@ -149,10 +149,10 @@ class Config
         @config['ssl_enabled'] = ssl_enabled = true
       end
 
-      add_host(site.fetch('host')) if ssl_enabled
+      add_item_to_root(site.fetch('host'), 'hosts') if ssl_enabled
 
       if site['aliases'].kind_of? Array
-        site['aliases'].each { |the_alias| add_host(the_alias) } if ssl_enabled
+        site['aliases'].each { |the_alias| add_item_to_root(the_alias, 'hosts') } if ssl_enabled
         # Aliases will be printed in the site's Apache conf
         site['aliases'] = site.fetch('aliases').join(' ')
       end
@@ -178,7 +178,7 @@ class Config
             'php_dir' => site.fetch('php_dir'), # Inherited from the parent site
             'box_name' => @config.fetch('name')
           }
-          add_host(subdomains[subdomain_name].fetch('host')) if ssl_enabled
+          add_item_to_root(subdomains[subdomain_name].fetch('host'), 'hosts') if ssl_enabled
         end
       end
 

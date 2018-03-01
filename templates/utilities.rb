@@ -18,8 +18,8 @@ module Helpers
     trim_ending_slash(trim_beginning_slash(str))
   end
 
-  def add_host(host)
-    @config['hosts'] = @config.fetch('hosts').push(host) unless @config.fetch('hosts').include?(host)
+  def add_item_to_root(item, key)
+    @config[key] = @config.fetch(key).push(item) unless @config.fetch(key).include?(item)
   end
 
   def remove_www(host)
