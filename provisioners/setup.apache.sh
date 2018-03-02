@@ -30,6 +30,9 @@ rsync -av --exclude='ndn-vhost.conf' /usr/local/dreambox/*.conf "${TEMPLATE_PATH
 # There are error when running in Bash.
 sed -i -r 's/(#! )(\/bin\/sh)/\1 \/bin\/bash/' /etc/init.d/httpd2;
 
+# Add comment to /etc/hosts
+bash -c "echo -e \"\n# Added by Dreambox\" >> /etc/hosts";
+
 # Set up the Apache instance.
 
 # Duplicate the template as new instance.
