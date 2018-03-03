@@ -22,7 +22,7 @@
   # - The root `php` property is not declared.
   #
   # Expected Outcome:
-  # - The root `php_dir` property created by Config should default to 'php70'.
+  # - The root `php_dir` property should default to 'php70'.
   {
     'name' => "Missing PHP: The root `php_dir` property should default to 'php70'.",
     'expect' => 'php70',

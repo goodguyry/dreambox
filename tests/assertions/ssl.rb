@@ -20,8 +20,7 @@
   # - SSL is not enabled in the lone site declaration.
   #
   # Expected Outcome:
-  # - The root `ssl_enabled` property created by Config should fall back
-  #   to the default `false`.
+  # - The root `ssl_enabled` property should fall back  to the default `false`.
   {
     'name' => 'Missing SSL: `ssl_enabled` should fall back to default `false` value.',
     'expect' => false,
@@ -64,7 +63,7 @@
   # - SSL is enabled in a site's declaration.
   #
   # Expected Outcome:
-  # - The root `ssl_enabled` property created by Config should be `true`.
+  # - The root `ssl_enabled` property should be `true`.
   {
     'name' => 'SSL Off: The root `ssl_enabled` property should be `true`.',
     'expect' => true, # See note in description for why
@@ -146,7 +145,7 @@
   # - SSL is not overridden in all of the sites
   #
   # Expected Outcome:
-  # - The root `ssl_enabled` property created by Config should be `true`.
+  # - The root `ssl_enabled` property should be `true`.
   {
     'name' => 'SSL On: the root `ssl_enabled` property should be true.',
     'expect' => true,
