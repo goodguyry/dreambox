@@ -57,7 +57,6 @@ fi;
 # Update permissions.
 chown -R "${user}:${group}" "/home/${user}";
 
-# Restart Apache.
-/etc/init.d/httpd2 restart;
+[[ $? ]] && echo "${host} added."
 
 exit $?;

@@ -50,7 +50,4 @@ sed -i -r "s/(PidFile \"\/var\/run\/)(template)(-httpd\.pid\")/\1${INSTANCE_NAME
 sysv-rc-conf apache2 on;
 sysv-rc-conf --list apache2;
 
-# Start Apache.
-/etc/init.d/httpd2 start;
-
 exit $?;

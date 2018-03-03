@@ -86,5 +86,9 @@ Vagrant.configure(2) do |config|
         inline: "/bin/bash /usr/local/dreambox/vhost.sh",
         :env => conf
     end
+
+    test.vm.provision "Start Apache",
+      type: "shell",
+      inline: "/bin/bash /etc/init.d/httpd2 start"
   end
 end
