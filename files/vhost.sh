@@ -25,8 +25,7 @@ sed -i -r "s/%host%/${host}/g" "${vhost_file}";
 
 # Add alias(es)
 if [[ ! -z ${aliases+x} ]]; then
-  sed -i -r 's/(#\s)(ServerAlias)/\2/' "${vhost_file}";
-  sed -i -r "s/%aliases%/${aliases}/" "${vhost_file}";
+  sed -i -r "s/(#\s)(ServerAlias)/\2 ${aliases}/" "${vhost_file}";
   hosts_line="${hosts_line} ${aliases}";
 fi;
 
