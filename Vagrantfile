@@ -39,7 +39,7 @@ Vagrant.configure(2) do |config|
     test.vm.network :private_network, ip: "192.168.56.78"
 
     config.vm.provider "virtualbox" do |vb|
-      vb.name = "#{Dreambox.config['name']}"
+      vb.name = "Dreambox"
     end
 
     # Start bash as a non-login shell

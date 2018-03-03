@@ -11,17 +11,17 @@ set -u;
 dpkg -i /usr/local/dreambox/dreambox-ca-certificates.deb;
 
 SSL_DIR_PATH='/usr/local/dh/apache2/apache2-dreambox/etc/ssl.crt';
-KEY_FILE="${SSL_DIR_PATH}/${name}.key";
-CRT_FILE="${SSL_DIR_PATH}/${name}.crt";
+KEY_FILE="${SSL_DIR_PATH}/dreambox.key";
+CRT_FILE="${SSL_DIR_PATH}/dreambox.crt";
 SSL_CONF='/root/ca/intermediate/openssl.cnf';
 
 # Copy the ca-chain file into place.
 cp /usr/local/dreambox/ca-chain.cert.pem  "${SSL_DIR_PATH}";
 
 # Check for a saved certificate and key.
-if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; then
-  echo "Using saved certs (${name}) from /vagrant/certs/";
-  cp -f "/vagrant/certs/${name}".* "${SSL_DIR_PATH}";
+if [[ -r "/vagrant/certs/dreambox.key" && -r "/vagrant/certs/dreambox.crt" ]]; then
+  echo "Using saved cert from /vagrant/certs/";
+  cp -f "/vagrant/certs/dreambox".* "${SSL_DIR_PATH}";
 else
   # Adds the SAN hosts to the openssl.cnf file.
   if [[ -n "${san_list}" ]]; then
@@ -39,7 +39,7 @@ else
     -new \
     -sha256 \
     -subj '/C=US/ST=Washington/L=Seattle/O=Dreambox/OU=Dreambox Web Services/CN=Dreambox VHost/' \
-    -out "/root/ca/intermediate/csr/${name}.csr";
+    -out "/root/ca/intermediate/csr/dreambox.csr";
 
   # Sign the vhost certificate.
   /usr/bin/expect <<EOF
@@ -49,7 +49,7 @@ else
       -days 375 \
       -notext \
       -md sha256 \
-      -in "/root/ca/intermediate/csr/${name}.csr" \
+      -in "/root/ca/intermediate/csr/dreambox.csr" \
       -out "${CRT_FILE}";
     expect "Sign the certificate?"
     send "y\r"
@@ -66,7 +66,7 @@ EOF
 
     # Save these for next time.
     [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs;
-    cp -f "${SSL_DIR_PATH}/${name}".* /vagrant/certs;
+    cp -f "${SSL_DIR_PATH}/dreambox".* /vagrant/certs;
 
     # Open permissions for /root/ca.
     chmod 755 /root/;

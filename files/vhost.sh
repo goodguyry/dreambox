@@ -45,7 +45,7 @@ if [[ 'true' == $ssl ]]; then
   # SSLEngine on.
   sed -i -r 's/(SSLEngine\s)\w*/\1on/' "${vhost_file}";
   # SSLCertificateFile & SSLCertificateKeyFile.
-  sed -i -r "s/(#\s)(SSLCertificate.*)(%cert_name%)/\2${box_name}/" "${vhost_file}";
+  sed -i -r "s/(#\s)(SSLCertificate.*)/\2/" "${vhost_file}";
 else
   # Listen and NameVirtualHost on port 80.
   sed -i -r 's/(#\s)(.*80)/\2/' "${port_file}";

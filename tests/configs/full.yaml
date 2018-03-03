@@ -6,7 +6,6 @@
 # The root PHP version is overridden by the first site's PHP setting, but
 #   inherited by the second site.
 
-name: 'dreambox-tests'
 php: '71'
 ssl: false
 

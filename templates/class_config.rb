@@ -44,7 +44,6 @@ class Config
     @php_dirs = ['php56', 'php70', 'php71']
 
     box_defaults = {}
-    box_defaults['name'] = 'dreambox'
     box_defaults['php'] = @php_versions.at(1)
     box_defaults['ssl'] = false
     box_defaults['ssl_enabled'] = false
@@ -88,7 +87,6 @@ class Config
     vhosts_dir = '/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/'
 
     site_defaults = {}
-    site_defaults['box_name'] = @config.fetch('name')
     site_defaults['is_subdomain'] = false
     site_defaults['php'] = @config.fetch('php')
     site_defaults['php_dir'] = @config.fetch('php_dir')
@@ -176,7 +174,6 @@ class Config
             'ssl' => site.fetch('ssl'), # Inherited from the parent site
             'php' => site.fetch('php'), # Inherited from the parent site
             'php_dir' => site.fetch('php_dir'), # Inherited from the parent site
-            'box_name' => @config.fetch('name')
           }
           add_item_to_root(subdomains[subdomain_name].fetch('host'), 'san_list') if ssl_enabled
         end

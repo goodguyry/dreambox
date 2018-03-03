@@ -39,7 +39,6 @@ module Helpers
     puts "===> Dreambox Debug:".bold.yellow
 
     printf "%-24s %s\n", 'Config File', file
-    printf "%-24s %s\n", 'Box Name', config['name']
     printf "%-24s %s\n", 'PHP Version', config['php'].to_s.split(//).join('.')
     printf "%-24s %s\n", 'SSL Enabled', config['ssl_enabled']
     host_list = config['san_list'].split('\n')
