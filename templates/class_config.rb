@@ -44,11 +44,10 @@ class Config
     @php_dirs = ['php56', 'php70', 'php71']
 
     box_defaults = {}
-    box_defaults['name'] = 'dreambox'
     box_defaults['php'] = @php_versions.at(1)
     box_defaults['ssl'] = false
     box_defaults['ssl_enabled'] = false
-    box_defaults['hosts'] = []
+    box_defaults['san_list'] = []
 
     # Fill in the blanks with default values
     @raw = box_defaults.merge(@raw)
@@ -61,7 +60,7 @@ class Config
 
     @raw['php_dir'] = @php_dirs[@php_versions.index(@raw.fetch('php').to_s)]
 
-    required_properties = ['user', 'root', 'local_root', 'host']
+    required_properties = ['user', 'root', 'sync', 'host']
     @raw['sites'].each_key do |dict|
       required_properties.each do |property|
         begin
@@ -88,7 +87,6 @@ class Config
     vhosts_dir = '/usr/local/dh/apache2/apache2-dreambox/etc/vhosts/'
 
     site_defaults = {}
-    site_defaults['box_name'] = @config.fetch('name')
     site_defaults['is_subdomain'] = false
     site_defaults['php'] = @config.fetch('php')
     site_defaults['php_dir'] = @config.fetch('php_dir')
@@ -130,12 +128,12 @@ class Config
       # Paths
       # Clean and build paths used by Vagrant and/or the provisioners
 
-      site['local_root'] = trim_slashes(@config['sites'].fetch(dict).fetch('local_root'))
+      site['sync'] = trim_slashes(@config['sites'].fetch(dict).fetch('sync'))
 
-      site['sync_folder'] = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
+      site['sync_destination'] = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
       site['document_root'] = (site.key?('public')) ?
-        File.join(site['sync_folder'], trim_slashes(site.fetch('public'))) :
-        site['sync_folder']
+        File.join(site['sync_destination'], trim_slashes(site.fetch('public'))) :
+        site['sync_destination']
 
       site['vhost_file'] = File.join("#{vhosts_dir}", "#{dict}.conf")
 
@@ -149,10 +147,10 @@ class Config
         @config['ssl_enabled'] = ssl_enabled = true
       end
 
-      add_host(site.fetch('host')) if ssl_enabled
+      add_item_to_root(site.fetch('host'), 'san_list') if ssl_enabled
 
       if site['aliases'].kind_of? Array
-        site['aliases'].each { |the_alias| add_host(the_alias) } if ssl_enabled
+        site['aliases'].each { |the_alias| add_item_to_root(the_alias, 'san_list') } if ssl_enabled
         # Aliases will be printed in the site's Apache conf
         site['aliases'] = site.fetch('aliases').join(' ')
       end
@@ -176,9 +174,8 @@ class Config
             'ssl' => site.fetch('ssl'), # Inherited from the parent site
             'php' => site.fetch('php'), # Inherited from the parent site
             'php_dir' => site.fetch('php_dir'), # Inherited from the parent site
-            'box_name' => @config.fetch('name')
           }
-          add_host(subdomains[subdomain_name].fetch('host')) if ssl_enabled
+          add_item_to_root(subdomains[subdomain_name].fetch('host'), 'san_list') if ssl_enabled
         end
       end
 
@@ -196,9 +193,9 @@ class Config
 
     # Build the hosts string
     # To be echoed onto openssl.cnf during SSL setup
-    @config['hosts'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" } if @config['hosts'].length > 0
-    delimiter = (@config['hosts'].length > 0) ? '\n' : ''
-    @config['hosts'] = @config.fetch('hosts').join(delimiter)
+    @config['san_list'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" } if @config['san_list'].length > 0
+    delimiter = (@config['san_list'].length > 0) ? '\n' : ''
+    @config['san_list'] = @config.fetch('san_list').join(delimiter)
 
     print_debug_info(@config, @config_config_file_path) if @config.key?('debug') && @config.fetch('debug')
   end

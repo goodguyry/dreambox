@@ -7,7 +7,7 @@
 
 sites:
   'required':
-    user: user
-    root: example.com
-    local_root: web
     host: example.dev
+    root: example.com
+    sync: web
+    user: user

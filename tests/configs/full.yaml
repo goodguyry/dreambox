@@ -1,39 +1,33 @@
 # Test configuration featuring multiple sites with full feature set
 #
-# The root SSL setting isinherited by the first site, but overridden by
+# The root SSL setting is inherited by the first site, but overridden by
 #   the second site's SSL setting.
 #
-# The root PHP version is overridden by the first site's PHP setting,but
+# The root PHP version is overridden by the first site's PHP setting, but
 #   inherited by the second site.
-#
-# There is a host declared on the config root `host`
-#   property, so the site's host doesn't need to be repurposed
-#   as the root host.
 
-name: 'dreambox-tests'
 php: '71'
 ssl: false
-host: main-host.dev
 
 sites:
   'full-one':
+    host: www.example.dev
+    root: example.com
+    sync: web/
     user: user
     group: shared_group
     php: '56'
-    root: example.com
     public: public
-    local_root: web/
-    host: www.example.dev
     aliases:
       - example.dev
     subdomains:
       app: 'app/'
   'full-two':
+    host: example-two.dev
+    root: example-two.com
+    sync: web
     user: user-two
     group: shared_group
-    root: example-two.com
-    local_root: web
-    host: example-two.dev
+    ssl: true
     aliases: [ www.example-two.dev ] # alternative syntax
     subdomains: { 'help': '/app/help/' } # alternative syntax
-    ssl: true

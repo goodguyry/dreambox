@@ -38,6 +38,10 @@ Vagrant.configure(2) do |config|
     test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"
 
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "Dreambox"
+    end
+
     # Start bash as a non-login shell
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
@@ -71,7 +75,7 @@ Vagrant.configure(2) do |config|
         :env => conf
 
       if (! conf['is_subdomain']) then
-        test.vm.synced_folder conf['local_root'], conf['sync_folder'],
+        test.vm.synced_folder conf['sync'], conf['sync_destination'],
           owner: "#{conf['uid']}",
           group: "#{conf['gid']}",
           mount_options: ["dmode=775,fmode=664"]
@@ -82,5 +86,9 @@ Vagrant.configure(2) do |config|
         inline: "/bin/bash /usr/local/dreambox/vhost.sh",
         :env => conf
     end
+
+    test.vm.provision "Start Apache",
+      type: "shell",
+      inline: "/bin/bash /etc/init.d/httpd2 start"
   end
 end

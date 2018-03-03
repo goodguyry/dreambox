@@ -8,6 +8,7 @@ set -e;
 set -u;
 
 port_file='/usr/local/dh/apache2/apache2-dreambox/etc/ports.conf';
+hosts_line="${host}";
 
 # Set the new vhost conf file in place.
 cp /usr/local/dreambox/ndn-vhost.conf "${vhost_file}";
@@ -24,9 +25,12 @@ sed -i -r "s/%host%/${host}/g" "${vhost_file}";
 
 # Add alias(es)
 if [[ ! -z ${aliases+x} ]]; then
-  sed -i -r 's/(#\s)(ServerAlias)/\2/' "${vhost_file}";
-  sed -i -r "s/%aliases%/${aliases}/" "${vhost_file}";
+  sed -i -r "s/(#\s)(ServerAlias)/\2 ${aliases}/" "${vhost_file}";
+  hosts_line="${hosts_line} ${aliases}";
 fi;
+
+# Add the domains to /etc/hosts
+echo "127.0.0.1 ${hosts_line}" >> /etc/hosts;
 
 # Set the CGI script based on the PHP version
 sed -i -r "s/%php_dir%/${php_dir}/g" "${vhost_file}";
@@ -40,7 +44,7 @@ if [[ 'true' == $ssl ]]; then
   # SSLEngine on.
   sed -i -r 's/(SSLEngine\s)\w*/\1on/' "${vhost_file}";
   # SSLCertificateFile & SSLCertificateKeyFile.
-  sed -i -r "s/(#\s)(SSLCertificate.*)(%cert_name%)/\2${box_name}/" "${vhost_file}";
+  sed -i -r "s/(#\s)(SSLCertificate.*)/\2/" "${vhost_file}";
 else
   # Listen and NameVirtualHost on port 80.
   sed -i -r 's/(#\s)(.*80)/\2/' "${port_file}";
@@ -53,7 +57,6 @@ fi;
 # Update permissions.
 chown -R "${user}:${group}" "/home/${user}";
 
-# Restart Apache.
-/etc/init.d/httpd2 restart;
+[[ $? ]] && echo "${host} added."
 
 exit $?;

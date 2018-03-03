@@ -1,29 +1,28 @@
 # Test configuration featuring a typical setup
 #
-# The root SSL setting isinherited by the first site, but overridden by
+# The root SSL setting is inherited by the first site, but overridden by
 #   the second site's SSL setting.
 #
 # The root PHP version defaults to 70 and is inherited by the second site,
 #   but is overridden by the first site's PHP setting,
 
-name: 'dreambox-tests'
 ssl: true
 
 sites:
   'typical-one':
+    host: example.dev
+    root: example.com
+    sync: web/
     user: user
     group: example_group
     php: 56
-    root: example.com
-    local_root: web/
-    host: example.dev
     aliases:
       - www.example.dev
       - '*.example.dev'
   'typical-two':
-    user: user-two
-    root: example-two.com
-    local_root: web
     host: example-two.dev
-    aliases: [ www.example-two.dev, '*.example-two.dev' ] # alternative syntax
+    root: example-two.com
+    sync: web
+    user: user-two
     ssl: false
+    aliases: [ www.example-two.dev, '*.example-two.dev' ] # alternative syntax
