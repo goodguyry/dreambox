@@ -48,7 +48,7 @@ class Config
     box_defaults['php'] = @php_versions.at(1)
     box_defaults['ssl'] = false
     box_defaults['ssl_enabled'] = false
-    box_defaults['hosts'] = []
+    box_defaults['san_list'] = []
 
     # Fill in the blanks with default values
     @raw = box_defaults.merge(@raw)
@@ -149,10 +149,10 @@ class Config
         @config['ssl_enabled'] = ssl_enabled = true
       end
 
-      add_item_to_root(site.fetch('host'), 'hosts') if ssl_enabled
+      add_item_to_root(site.fetch('host'), 'san_list') if ssl_enabled
 
       if site['aliases'].kind_of? Array
-        site['aliases'].each { |the_alias| add_item_to_root(the_alias, 'hosts') } if ssl_enabled
+        site['aliases'].each { |the_alias| add_item_to_root(the_alias, 'san_list') } if ssl_enabled
         # Aliases will be printed in the site's Apache conf
         site['aliases'] = site.fetch('aliases').join(' ')
       end
@@ -178,7 +178,7 @@ class Config
             'php_dir' => site.fetch('php_dir'), # Inherited from the parent site
             'box_name' => @config.fetch('name')
           }
-          add_item_to_root(subdomains[subdomain_name].fetch('host'), 'hosts') if ssl_enabled
+          add_item_to_root(subdomains[subdomain_name].fetch('host'), 'san_list') if ssl_enabled
         end
       end
 
@@ -196,9 +196,9 @@ class Config
 
     # Build the hosts string
     # To be echoed onto openssl.cnf during SSL setup
-    @config['hosts'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" } if @config['hosts'].length > 0
-    delimiter = (@config['hosts'].length > 0) ? '\n' : ''
-    @config['hosts'] = @config.fetch('hosts').join(delimiter)
+    @config['san_list'].map!.with_index(1) { |host, index| "DNS.#{index} = #{host}" } if @config['san_list'].length > 0
+    delimiter = (@config['san_list'].length > 0) ? '\n' : ''
+    @config['san_list'] = @config.fetch('san_list').join(delimiter)
 
     print_debug_info(@config, @config_config_file_path) if @config.key?('debug') && @config.fetch('debug')
   end

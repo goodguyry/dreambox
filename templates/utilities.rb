@@ -42,7 +42,7 @@ module Helpers
     printf "%-24s %s\n", 'Box Name', config['name']
     printf "%-24s %s\n", 'PHP Version', config['php'].to_s.split(//).join('.')
     printf "%-24s %s\n", 'SSL Enabled', config['ssl_enabled']
-    host_list = config['hosts'].split('\n')
+    host_list = config['san_list'].split('\n')
     host_list.each.with_index do |host, index|
       if (0 == index)
         printf "%-24s %s\n", 'Hosts', host

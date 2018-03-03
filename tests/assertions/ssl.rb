@@ -33,11 +33,11 @@
   # - SSL is not enabled in the lone site declaration.
   #
   # Expected Outcome:
-  # - The root `hosts` property created by Config should be an empty string.
+  # - The root `san_list` property should be an empty string.
   {
-    'name' => 'Missing SSL: The root `hosts` property should be an empty string.',
+    'name' => 'Missing SSL: The root `san_list` property should be an empty string.',
     'expect' => '',
-    'actual' => @tests.the['required'].config['hosts'],
+    'actual' => @tests.the['required'].config['san_list'],
   },
 
   # Conditions:
@@ -125,12 +125,12 @@
   # - The second site's `ssl` value is `true`.
   #
   # Expected Outcome:
-  # - The `hosts` property should contain all SSL-enabled hosts in SubjectAlternateName
-  #   format (DNS.<n> = <hostname>).
+  # - The `san_list` property should contain all SSL-enabled hosts in
+  #   SubjectAlternateName format (DNS.<n> = <hostname>).
   {
-    'name' => 'SSL Off: The `hosts` property should contain all SSL-enabled hosts.',
+    'name' => 'SSL Off: The `san_list` property should contain all SSL-enabled hosts.',
     'expect' => 'DNS.1 = example-two.dev\nDNS.2 = www.example-two.dev\nDNS.3 = help.example-two.dev',
-    'actual' => @tests.the['full'].config['hosts'],
+    'actual' => @tests.the['full'].config['san_list'],
   },
 
   ## ===> SSL On
@@ -181,16 +181,16 @@
   # - The root `ssl` value is `true`
   # - The first site's `ssl` property is undeclared, so the value was inherited
   #   from the root.
-  # - The first site's alias values should be added to the root `hosts`
+  # - The first site's alias values should be added to the root `san_list`
   #   property by Config
   #
   # Expected Outcome:
-  # - The `hosts` property should contain all SSL-enabled hosts in SubjectAlternateName
-  #   format (DNS.<n> = <hostname>).
+  # - The `san_list` property should contain all SSL-enabled hosts in
+  #   SubjectAlternateName format (DNS.<n> = <hostname>).
   {
-    'name' => "SSL On: The `hosts` property should contain all SSL-enabled hosts.",
+    'name' => "SSL On: The `san_list` property should contain all SSL-enabled hosts.",
     'expect' => 'DNS.1 = example.dev\nDNS.2 = www.example.dev\nDNS.3 = *.example.dev',
-    'actual' => @tests.the['typical'].config['hosts'],
+    'actual' => @tests.the['typical'].config['san_list'],
   },
 
 ])

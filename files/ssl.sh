@@ -24,8 +24,8 @@ if [[ -r "/vagrant/certs/${name}.key" && -r "/vagrant/certs/${name}.crt" ]]; the
   cp -f "/vagrant/certs/${name}".* "${SSL_DIR_PATH}";
 else
   # Adds the SAN hosts to the openssl.cnf file.
-  if [[ -n "${hosts}" ]]; then
-    bash -c "echo -e \"${hosts}\" >> ${SSL_CONF}";
+  if [[ -n "${san_list}" ]]; then
+    bash -c "echo -e \"${san_list}\" >> ${SSL_CONF}";
   fi;
 
   # Create a key.
