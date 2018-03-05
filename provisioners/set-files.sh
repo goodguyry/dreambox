@@ -6,7 +6,7 @@ set -e;
 [[ ! -d /usr/local/dreambox ]] && mkdir /usr/local/dreambox;
 
 # Copy support files into place.
-rsync -av --exclude='motd' /tmp/files/* /usr/local/dreambox/;
+rsync -av --exclude='motd' --exclude='preseed' /tmp/files/* /usr/local/dreambox/;
 
 # Remove existing motd and set up ours.
 rm -f /etc/update-motd.d/*
