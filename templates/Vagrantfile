@@ -7,6 +7,11 @@ dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
 
 Dreambox = Config.new(dreambox_config_file)
 
+if (defined?($user_vars) && ($user_vars.kind_of? Hash))
+  warn(">> Dreambox no longer uses `$user_vars` for configurations.".black.bg_yellow)
+  warn(">> See https://github.com/goodguyry/dreambox/wiki for more information.".black.bg_yellow)
+end
+
 Vagrant.configure(2) do |config|
   # Start bash as a non-login shell
   config.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
