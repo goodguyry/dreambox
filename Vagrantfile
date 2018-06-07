@@ -51,6 +51,7 @@ Vagrant.configure(2) do |config|
       "DREAMBOX_PROJECT_DIR" => "web",
       "ENABLE_SSL" => true,
       "DREAMBOX_SITE_NAME" => "dreambox.test",
+      "DREAMBOX_UID" => 31415,
     }
 
     # Runs user_setup
