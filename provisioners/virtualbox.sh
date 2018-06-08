@@ -4,7 +4,9 @@
 # VirtualBox-specific setup.
 #
 
-set -e;
+# Don't capture errors or exit status in this file due to GuestAdditions
+# installation emitting a supposedly non-error fail message.
+# https://www.virtualbox.org/ticket/17189#comment:3
 
 # Bail if we are not running inside VirtualBox.
 if [[ `facter virtual` != "virtualbox" ]]; then
