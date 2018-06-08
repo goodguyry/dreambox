@@ -12,8 +12,21 @@ if [[ -r "/vagrant/certs/${CERT_NAME}.key" && -r "/vagrant/certs/${CERT_NAME}.cr
   echo "Using saved certs from /vagrant/certs/"
   cp -f /vagrant/certs/"${CERT_NAME}".* /usr/local/apache2/conf/
 else
+  SSL_CONFIG_FILE='/usr/lib/ssl/openssl.cnf';
+  sed -i -r 's/(\[\s?v3_req\s?\])/\1\nsubjectAltName = @alt_names/' "${SSL_CONFIG_FILE}";
+  echo -e "\n[alt_names]\nDNS.1 = ${CERT_NAME}\nDNS.2 = *.${CERT_NAME}" >> "${SSL_CONFIG_FILE}";
+
   # Create the certificate
-  openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=${CERT_COUNTRY}/ST=${CERT_STATE}/L=${CERT_CITY}/O=${CERT_DEPARTMENT}/CN=*.${CERT_NAME}" -keyout "/usr/local/apache2/conf/${CERT_NAME}.key" -out "/usr/local/apache2/conf/${CERT_NAME}.crt"
+  openssl req \
+    -x509 \
+    -nodes \
+    -days 365 \
+    -newkey rsa:2048 \
+    -config $SSL_CONFIG_FILE \
+    -extensions v3_req \
+    -subj "/C=${CERT_COUNTRY}/ST=${CERT_STATE}/L=${CERT_CITY}/O=${CERT_DEPARTMENT}/CN=${CERT_NAME}" \
+    -keyout "/usr/local/apache2/conf/${CERT_NAME}.key" \
+    -out "/usr/local/apache2/conf/${CERT_NAME}.crt";
 
   # Create the certs directory
   [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs
