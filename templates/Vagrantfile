@@ -46,7 +46,7 @@ Vagrant.configure(2) do |config|
       :env => conf
   end
 
-  test.vm.provision "Start Apache",
+  config.vm.provision "Start Apache",
     type: "shell",
     inline: "/bin/bash /etc/init.d/httpd2 start"
 end
