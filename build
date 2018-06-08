@@ -6,18 +6,22 @@
 
 set -e;
 
-# Create the _builds directory.
-[[ ! -d '_builds' ]] && mkdir '_builds';
+vagrant destroy;
 
-# Clear the _builds directory, rather than forcing the build.
-rm -f _builds/*;
+if [[ ! -d '_builds' ]]; then
+  # Create the _builds directory.
+  mkdir '_builds';
+else
+  # Clear the _builds directory, rather than forcing the build.
+  rm -f _builds/*;
+fi;
 
 # Remove the box from Vagrant to avoid collisions.
 [[ $(vagrant box remove --force --all dreambox_pre/virtualbox 2> /dev/null) ]] || echo 'No Vagrant box to remove...';
 [[ $(vagrant box remove --force --all dreambox_pre/vmware 2> /dev/null) ]] || echo 'No Vagrant box to remove...';
 
 # Build.
-packer build -force -var-file=templates/common.json templates/dreambox.json;
+packer build -var-file=templates/common.json templates/dreambox.json;
 
 # Add the box to vagrant as 'dreambox_pre'.
 vagrant box add --force dreambox_pre/virtualbox _builds/dreambox.virtualbox.*.box;
