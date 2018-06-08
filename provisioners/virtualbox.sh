@@ -13,14 +13,14 @@ if [[ `facter virtual` != "virtualbox" ]]; then
     exit 0;
 fi;
 
+[[ -e /usr/lib/VBoxGuestAdditions ]] && rm /usr/lib/VBoxGuestAdditions;
+
 # Install the VMWare Tools from a linux ISO.
 mkdir -p /mnt/virtualbox;
-mount -o loop /home/vagrant/VBoxGuest*.iso /mnt/virtualbox;
+mount -o loop /home/vagrant/VBoxGuestAdditions_$(cat .vbox_version).iso /mnt/virtualbox;
 
 sh /mnt/virtualbox/VBoxLinuxAdditions.run;
 ln -s /opt/VBoxGuestAdditions-*/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions;
 
 umount /mnt/virtualbox;
-rm -rf /home/vagrant/VBoxGuest*.iso;
-
-exit $?;
+rm -rf /home/vagrant/VBoxGuestAdditions_$(cat .vbox_version).iso;
