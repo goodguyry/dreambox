@@ -22,4 +22,4 @@ sites:
     php: '56'
     subdomains: { 'help': '/app/help/' }
 
-debug: true
+# debug: true
