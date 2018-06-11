@@ -12,8 +12,35 @@
     {
       "type": "shell",
       "scripts": [
-        "{{ pwd }}/provisioners/set-files.sh",
-        "{{ pwd }}/provisioners/base.sh",
+        "{{ pwd }}/provisioners/set-files.sh"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        },
+        "vmware-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        }
+      }
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "{{ pwd }}/provisioners/base.sh"
+      ],
+      "expect_disconnect": true,
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        },
+        "vmware-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        }
+      }
+    },
+    {
+      "type": "shell",
+      "scripts": [
         "{{ pwd }}/provisioners/setup.apache.sh",
         "{{ pwd }}/provisioners/setup.mysql.sh",
         "{{ pwd }}/provisioners/virtualbox.sh",
@@ -22,6 +49,7 @@
         "{{ pwd }}/provisioners/cleanup.sh",
         "{{ pwd }}/provisioners/zerodisk.sh"
       ],
+      "pause_before": "30s",
       "override": {
         "virtualbox-iso": {
           "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"

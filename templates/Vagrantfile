@@ -3,7 +3,11 @@
 
 require_relative 'class_config.rb'
 
-dreambox_config_file = (defined?(config_file)) ? config_file : 'vm-config.yml'
+vagrant_dir = File.expand_path(Dir.pwd)
+# Allow for .yaml and .yml config file extension
+config_file_default = Dir["#{vagrant_dir}/vm-config.*"].select { |file| file =~ /\.ya?ml/ }
+
+dreambox_config_file = (defined?(config_file)) ? config_file : File.basename(config_file_default.first)
 
 Dreambox = Config.new(dreambox_config_file)
 
@@ -46,7 +50,7 @@ Vagrant.configure(2) do |config|
       :env => conf
   end
 
-  test.vm.provision "Start Apache",
+  config.vm.provision "Restart Apache",
     type: "shell",
-    inline: "/bin/bash /etc/init.d/httpd2 start"
+    inline: "/bin/bash /etc/init.d/httpd2 restart"
 end

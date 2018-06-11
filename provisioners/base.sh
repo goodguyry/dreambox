@@ -199,4 +199,16 @@ update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.1 100;
 # Link and cache libraries.
 ldconfig /usr/local/lib;
 
+# Install packages used by provider scripts.
+apt -y install \
+  dkms \
+  facter \
+  gcc \
+  linux-headers-$(uname -r) \
+  make \
+  > /dev/null;
+
+# Reboot here to ensure the correct headers are being used.
+reboot -f;
+
 exit $?;
