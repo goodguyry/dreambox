@@ -8,6 +8,16 @@ set -e;
 
 vagrant destroy;
 
+# Remove from VirtualBox.
+# Useful for quickly re-running failed builds.
+VM=$(vboxmanage list runningvms);
+VM_ID=$(echo $VM | sed -E 's/dreambox\"\s{(.*)}.*/\1/');
+vboxmanage controlvm $VM_ID poweroff && vboxmanage unregistervm $VM_ID --delete;
+
+# Remove the output directories
+rm -rf output-vmware-iso/;
+rm -rf output-virtualbox-iso/;
+
 if [[ ! -d '_builds' ]]; then
   # Create the _builds directory.
   mkdir '_builds';
