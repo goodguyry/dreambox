@@ -13,14 +13,18 @@ if [[ `facter virtual` != "virtualbox" ]]; then
     exit 0;
 fi;
 
-[[ -e /usr/lib/VBoxGuestAdditions ]] && rm /usr/lib/VBoxGuestAdditions;
+echo "Installing VirtualBox guest additions"
+
+VBOX_VERSION=$(cat /home/vagrant/.vbox_version);
 
 # Install the VMWare Tools from a linux ISO.
-mkdir -p /mnt/virtualbox;
-mount -o loop /home/vagrant/VBoxGuestAdditions_$(cat .vbox_version).iso /mnt/virtualbox;
+mount -o loop "/home/vagrant/VBoxGuestAdditions_${VBOX_VERSION}.iso" /mnt;
+sh /mnt/VBoxLinuxAdditions.run;
 
-sh /mnt/virtualbox/VBoxLinuxAdditions.run;
-ln -s /opt/VBoxGuestAdditions-*/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions;
+umount /mnt;
+rm "/home/vagrant/VBoxGuestAdditions_${VBOX_VERSION}.iso";
+rm /home/vagrant/.vbox_version;
 
-umount /mnt/virtualbox;
-rm -rf /home/vagrant/VBoxGuestAdditions_$(cat .vbox_version).iso;
+if [[ $VBOX_VERSION = "4.3.10" ]]; then
+    ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions;
+fi

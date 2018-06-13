@@ -206,6 +206,7 @@ apt -y install \
   gcc \
   linux-headers-$(uname -r) \
   make \
+  perl
   > /dev/null;
 
 # Reboot here to ensure the correct headers are being used.
