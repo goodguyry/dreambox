@@ -19,10 +19,11 @@ if $(getent passwd $user >/dev/null); then
   echo "User ${user} already exists.";
 else
   adduser --no-create-home -uid $uid -gid $gid --disabled-password --gecos '' $user;
-  cp -R /home/vagrant/.ssh "/home/${user}/.ssh";
+  cp -R /home/vagrant/.ssh /home/$user/.ssh;
   echo -e "vagrant\nvagrant" | (passwd $user);
-  cp /home/vagrant/.profile "/home/${user}/.profile";
-  echo "${user} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers;
+  cp /home/vagrant/.profile /home/$user/.profile;
+  echo "${user} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/$user;
+  chmod 440 /etc/sudoers.d/$user;
 fi;
 
 # Update home directory permissions.
