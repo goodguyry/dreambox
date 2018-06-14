@@ -6,14 +6,40 @@
 
 set -e;
 
+# Help text.
+function show_help() {
+
+cat <<EOT
+Usage:
+
+  ./$(basename "$0") [virtualbox|vmware]
+
+  If no option is passed, both will be built.
+EOT
+
+}
+
+if [[ $# -gt 0 ]]; then
+  # Test for known flags.
+  for OPT in "${@}";
+  do
+    case "${OPT}" in
+      virtualbox)  ONLY='-only=virtualbox-iso' ;;               # Suppresses installing packages.
+          vmware)  ONLY='-only=vmware-iso' ;;
+               *)  echo -e "Warning: invalid option \`${OPT}\`\n" && show_help && exit ;;
+    esac
+  done;
+fi;
+
 vagrant destroy;
 
 # Remove from VirtualBox.
 # Useful for quickly re-running failed builds.
-VM_ID=$(vboxmanage list runningvms | grep -oP "dreambox\"\s{(.*)}.*" | sed -E 's/.*{(.*)}/\1/');
-if [[ ! -z $VM_ID ]]; then
-  vboxmanage controlvm $VM_ID poweroff && vboxmanage unregistervm $VM_ID --delete;
-fi;
+# @review `packer -force` may take care of this
+# VM_ID=$(vboxmanage list runningvms | grep -oP "dreambox\"\s{(.*)}.*" | sed -E 's/.*{(.*)}/\1/');
+# if [[ -n $VM_ID ]]; then
+#   vboxmanage controlvm $VM_ID poweroff && vboxmanage unregistervm $VM_ID --delete;
+# fi;
 
 # Remove the output directories
 rm -rf output-vmware-iso/;
@@ -32,11 +58,14 @@ fi;
 [[ $(vagrant box remove --force --all dreambox_pre/vmware 2> /dev/null) ]] || echo 'No Vagrant box to remove...';
 
 # Build.
-# @todo: Separate the builds.
-packer build -var-file=templates/common.json templates/dreambox.json;
+packer build ${ONLY} -force -parallel=false -var-file=templates/common.json templates/dreambox.json;
 
 # Add the box to vagrant as 'dreambox_pre'.
-vagrant box add --force dreambox_pre/virtualbox _builds/dreambox.virtualbox.*.box;
-vagrant box add --force dreambox_pre/vmware _builds/dreambox.vmware.*.box;
+if [ -n "${ONLY}" ]; then
+  vagrant box add --force dreambox_pre/${@} _builds/dreambox.${@}.*.box;
+else
+  vagrant box add --force dreambox_pre/virtualbox _builds/dreambox.virtualbox.*.box;
+  vagrant box add --force dreambox_pre/vmware _builds/dreambox.vmware.*.box;
+fi;
 
 exit $?;
