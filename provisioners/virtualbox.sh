@@ -13,7 +13,9 @@ if [[ `facter virtual` != "virtualbox" ]]; then
     exit 0;
 fi;
 
-echo "Installing VirtualBox guest additions"
+echo "Installing VirtualBox guest additions";
+# Assuming the following packages are installed.
+# apt-get install -y linux-headers-$(uname -r) build-essential perl.
 
 VBOX_VERSION=$(cat /home/vagrant/.vbox_version);
 
@@ -27,4 +29,4 @@ rm /home/vagrant/.vbox_version;
 
 if [[ $VBOX_VERSION = "4.3.10" ]]; then
     ln -s /opt/VBoxGuestAdditions-4.3.10/lib/VBoxGuestAdditions /usr/lib/VBoxGuestAdditions;
-fi
+fi;
