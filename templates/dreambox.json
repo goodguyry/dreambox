@@ -46,6 +46,7 @@
         "{{ pwd }}/provisioners/virtualbox.sh",
         "{{ pwd }}/provisioners/vmware.sh",
         "{{ pwd }}/provisioners/vagrant.sh",
+        "{{ pwd }}/provisioners/minimizer.sh",
         "{{ pwd }}/provisioners/cleanup.sh",
         "{{ pwd }}/provisioners/zerodisk.sh"
       ],
