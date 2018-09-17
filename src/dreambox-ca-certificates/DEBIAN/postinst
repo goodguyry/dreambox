@@ -14,6 +14,7 @@ fi;
 if (! test -e "${SHARE_DIR}/intermediate.crt" && ! test -e "${SHARE_DIR}/ca.crt"); then
   cp "${CA_PATH}/intermediate/certs/intermediate.crt" "${SHARE_DIR}";
   cp "${CA_PATH}/certs/ca.crt" "${SHARE_DIR}";
+  cp "${CA_PATH}/intermediate/certs/ca-chain.cert.pem" /vagrant/.dreambox/;
 
   [[ $? -lt 1 ]] && update-ca-certificates;
 fi;
