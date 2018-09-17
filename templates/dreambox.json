@@ -12,7 +12,8 @@
     {
       "type": "shell",
       "scripts": [
-        "{{ pwd }}/provisioners/set-files.sh"
+        "{{ pwd }}/provisioners/set-files.sh",
+        "{{ pwd }}/provisioners/base.sh"
       ],
       "override": {
         "virtualbox-iso": {
@@ -26,7 +27,7 @@
     {
       "type": "shell",
       "scripts": [
-        "{{ pwd }}/provisioners/base.sh"
+        "{{ pwd }}/provisioners/reboot.sh"
       ],
       "expect_disconnect": true,
       "override": {
