@@ -12,7 +12,8 @@
     {
       "type": "shell",
       "scripts": [
-        "{{ pwd }}/provisioners/set-files.sh"
+        "{{ pwd }}/provisioners/set-files.sh",
+        "{{ pwd }}/provisioners/base.sh"
       ],
       "override": {
         "virtualbox-iso": {
@@ -26,7 +27,7 @@
     {
       "type": "shell",
       "scripts": [
-        "{{ pwd }}/provisioners/base.sh"
+        "{{ pwd }}/provisioners/reboot.sh"
       ],
       "expect_disconnect": true,
       "override": {
@@ -46,6 +47,7 @@
         "{{ pwd }}/provisioners/virtualbox.sh",
         "{{ pwd }}/provisioners/vmware.sh",
         "{{ pwd }}/provisioners/vagrant.sh",
+        "{{ pwd }}/provisioners/minimizer.sh",
         "{{ pwd }}/provisioners/cleanup.sh",
         "{{ pwd }}/provisioners/zerodisk.sh"
       ],
@@ -125,7 +127,7 @@
         "only": [
           "virtualbox-iso"
         ],
-        "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.box",
+        "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.{{ isotime \"20060102_150405-0800\" }}.box",
         "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
         "include": [
           "{{ pwd }}/templates/class_config.rb",
@@ -137,7 +139,7 @@
         "only": [
           "vmware-iso"
         ],
-        "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.box",
+        "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.{{ isotime \"20060102_150405-0800\" }}.box",
         "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
         "include": [
           "{{ pwd }}/templates/class_config.rb",

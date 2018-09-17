@@ -105,6 +105,7 @@ apt-get -y install \
   sqlite \
   subversion \
   subversion-tools \
+  vim \
   > /dev/null;
 
 
@@ -139,8 +140,8 @@ apt-get -y install \
   > /dev/null;
 
 echo 'Install MySQL packages';
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root';
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root';
+debconf-set-selections <<< 'mysql-server mysql-server/root_password password root';
+debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password root';
 
 apt-get -y install \
   libmysqlclient-dev \
@@ -191,6 +192,7 @@ apt-get -y install \
   > /dev/null;
 
 # Add PHP alternatives.
+echo "Add PHP alternatives."
 # update-alternatives --set php /usr/local/bin/php-5.6
 update-alternatives --install /usr/bin/php php /usr/local/bin/php-5.6 100;
 update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.0 100;
@@ -200,15 +202,13 @@ update-alternatives --install /usr/bin/php php /usr/local/bin/php-7.1 100;
 ldconfig /usr/local/lib;
 
 # Install packages used by provider scripts.
-apt -y install \
+apt-get -y install \
   dkms \
   facter \
   gcc \
   linux-headers-$(uname -r) \
   make \
+  perl \
   > /dev/null;
-
-# Reboot here to ensure the correct headers are being used.
-reboot -f;
 
 exit $?;
