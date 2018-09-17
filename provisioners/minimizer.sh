@@ -21,8 +21,7 @@ echo "==> Removing documentation.";
 dpkg --list | awk '{ print $2 }' | grep -- '-doc$' | xargs apt-get -y purge;
 
 echo "==> Removing X11 libraries.";
-# Except `libx11-data` because it removes some ndn-* packages.
-apt-get -y purge xauth libxmuu1 libxcb1 libx11-6 libxext6;
+apt-get -y purge xauth libxmuu1;
 
 echo "==> Removing obsolete networking components.";
 apt-get -y purge ppp pppconfig pppoeconf;
