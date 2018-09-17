@@ -4,13 +4,13 @@
 # Shoehorn the config file into our test Vagrantfile
 require_relative File.join(File.expand_path(Dir.pwd), 'templates/class_config.rb')
 
-# config_file = 'vm-config.yml-example'
+# config_file = 'vm-config.yml'
+dreambox_dir = '.dreambox'
+config_file_default = Dir.glob("#{dreambox_dir}/*.*").grep(/\.ya?ml$/).first
 
-vagrant_dir = File.expand_path(Dir.pwd)
-# Allow for .yaml and .yml config file extension
-config_file_default = Dir["#{vagrant_dir}/vm-config.*"].select { |file| file =~ /\.ya?ml/ }
-
-dreambox_config_file = (defined?(config_file)) ? config_file : File.basename(config_file_default.first)
+dreambox_config_file = (defined?(config_file)) ?
+  config_file :
+  config_file_default
 
 Dreambox = Config.new(dreambox_config_file)
 
