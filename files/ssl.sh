@@ -19,9 +19,9 @@ SSL_CONF='/root/ca/intermediate/openssl.cnf';
 cp /usr/local/dreambox/ca-chain.cert.pem  "${SSL_DIR_PATH}";
 
 # Check for a saved certificate and key.
-if [[ -r "/vagrant/certs/dreambox.key" && -r "/vagrant/certs/dreambox.crt" ]]; then
-  echo "Using saved cert from /vagrant/certs/";
-  cp -f "/vagrant/certs/dreambox".* "${SSL_DIR_PATH}";
+if [[ -r "/vagrant/.dreambox/dreambox.key" && -r "/vagrant/.dreambox/dreambox.crt" ]]; then
+  echo "Using saved cert from /vagrant/.dreambox/";
+  cp -f "/vagrant/.dreambox/dreambox".* "${SSL_DIR_PATH}";
 else
   # Adds the SAN hosts to the openssl.cnf file.
   if [[ -n "${san_list}" ]]; then
@@ -65,8 +65,8 @@ EOF
     echo ">> ${CRT_FILE}";
 
     # Save these for next time.
-    [[ ! -d /vagrant/certs ]] && mkdir /vagrant/certs;
-    cp -f "${SSL_DIR_PATH}/dreambox".* /vagrant/certs;
+    [[ ! -d /vagrant/.dreambox ]] && mkdir /vagrant/.dreambox;
+    cp -f "${SSL_DIR_PATH}/dreambox".* /vagrant/.dreambox;
 
     # Open permissions for /root/ca.
     chmod 755 /root/;
