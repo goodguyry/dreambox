@@ -3,6 +3,8 @@
 #
 # VMWare-specific setup.
 #
+# h/t https://github.com/quarkslab/packer-ubuntu/blob/master/script/vmware.sh
+#
 
 set -e;
 
@@ -10,36 +12,6 @@ set -e;
 if [[ `facter virtual` != "vmware" ]]; then
     exit 0;
 fi;
-
-# # Install the VMWare Tools from a Linux ISO.
-# mkdir -p /mnt/vmware;
-# mount -o loop /tmp/linux.iso /mnt/vmware;
-
-# tar xzf /mnt/vmware/VMwareTools-*.tar.gz -C /tmp;
-
-# umount /mnt/vmware;
-# rmdir /mnt/vmware;
-# rm -f /tmp/linux.iso;
-
-# /tmp/vmware-tools-distrib/vmware-install.pl -d;
-# rm -fr /tmp/vmware-tools-distrib;
-
-# # VMware tools doesn't install on newer kernels, it exits recommending open-vm-tools be installed
-# if [ ! -f /usr/sbin/vmtoolsd ]; then
-#   # Install open-vm-tools so we can mount shared folders.
-#   apt-get install -y -q open-vm-tools;
-#   # Add /mnt/hgfs so the mount works automatically with Vagrant.
-#   mkdir /mnt/hgfs;
-# fi
-
-# exit $?;
-
-# =================
-# =================
-# =================
-# =================
-
-# h/t https://github.com/quarkslab/packer-ubuntu/blob/master/script/vmware.sh
 
 function install_vmware_tools {
   echo "Installing VMware Tools";
