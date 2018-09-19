@@ -24,9 +24,15 @@ PROJECT_URL='https://github.com/goodguyry/dreambox'
 DOCS_PATH='/wiki'
 ISSUES_PATH='/issues'
 UPGRADE_PATH='/wiki/Upgrading-Dreambox'
+BETA_DOCS='/wiki/0.3.0'
 
 printf "\n* Documentation:\n${PROJECT_URL}%s\n" "${DOCS_PATH}"
 
 printf "\n* Issues:\n${PROJECT_URL}%s\n" "${ISSUES_PATH}"
 
 printf "\n* >>> If you're experiencing issues after upgrading, please see the upgrade docs:\n${PROJECT_URL}%s\n\n" "${UPGRADE_PATH}"
+
+printf "****"
+printf "\n* 0.3.0-beta now available for testing!"
+printf "\n* Version 0.3.0-beta documentation:\n*   ${PROJECT_URL}%s" "${BETA_DOCS}"
+printf "\n****\n"

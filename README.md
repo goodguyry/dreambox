@@ -3,7 +3,7 @@ DreamBox
 
 > Recreates the DreamHost shared hosting environment as a Vagrant box.
 
-**Version 0.2.x contains breaking changes to the Vagrantfile setup. See [upgrading Dreambox][upgrading_dreambox] for more information.**
+**If you'd like to help test Dreambox 0.3.0-beta, please see [the 0.3.0 configuration notes](../../wiki/0.3.0) in the Wiki**
 
 This project repo contains the code for [building the Dreambox base box][wiki_build]. To use Dreambox in your project, check out the ["Getting Started" section of the Wiki][getting_started].
 
