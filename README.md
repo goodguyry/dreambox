@@ -13,9 +13,9 @@ Ubuntu `14.04 LTS`
 
 | Package           | Version    |
 | ------------------|------------|
-| ndn-php56         | 5.6.33-1   |
-| ndn-php70         | 7.0.27-1   |
-| ndn-php71         | 7.1.13-1   |
+| ndn-php56         | 5.6.36     |
+| ndn-php70         | 7.0.30     |
+| ndn-php71         | 7.1.19     |
 | ndn-apache22      | 2.2.31-5   |
 | mysql-server-5.6  | 5.6.33     |
 
