@@ -1,8 +1,8 @@
-!packages/*.zip
 *.box
 *.crt
 *.key
-.dreambox
+*.pem
+
+# local dev specific
 web
 static
-tests/**/*.txt
