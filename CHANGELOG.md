@@ -5,6 +5,7 @@
 **BREAKING CHANGES in 0.3.x: See [Upgrading-Dreambox](Upgrading-Dreambox)**
 
 - ADDED: Uses Dreamhost NDN repositories
+  - #36
   - Prefixed with `ndn-` in `dpkg -l`
 - ADDED: Create multiple vhosts during vagrant up ([#5](../issues/5))
 - ADDED: Choose between multiple PHP versions
@@ -25,9 +26,13 @@
 
 > **BREAKING CHANGES in 0.2.x: See [Upgrading-Dreambox](Upgrading-Dreambox)**
 
+## 0.2.5
+
+- ADDED: A message about testing Dreambox `0.3.0-beta`
+
 ## 0.2.4
 
-- FIXED: Fixes an SSL bug ([#37](../issues/37))
+- FIXED: SSL no longer automatically enabled ([#37](../issues/37))
 
 ## 0.2.3
 
