@@ -65,6 +65,10 @@ Vagrant.configure(2) do |config|
       type: "shell",
       path: "provisioners/setup.mysql.sh"
 
+    test.vm.provision "Box Host Setup",
+      type: "shell",
+      path: "provisioners/setup.box-host.sh"
+
     if Dreambox.config['ssl_enabled'] then
       test.vm.provision "SSL Setup",
         type: "shell",
