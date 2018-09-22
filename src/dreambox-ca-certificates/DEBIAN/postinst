@@ -14,7 +14,10 @@ fi;
 if (! test -e "${SHARE_DIR}/intermediate.crt" && ! test -e "${SHARE_DIR}/ca.crt"); then
   cp "${CA_PATH}/intermediate/certs/intermediate.crt" "${SHARE_DIR}";
   cp "${CA_PATH}/certs/ca.crt" "${SHARE_DIR}";
-  cp "${CA_PATH}/intermediate/certs/ca-chain.cert.pem" /vagrant/.dreambox/;
+
+  # Create the public folder and copy over the chain cert.
+  [[ ! -d /dh/web/public/ ]] && mkdir -p /dh/web/public/;
+  cp "${CA_PATH}/intermediate/certs/ca-chain.cert.pem" /dh/web/public/;
 
   [[ $? -lt 1 ]] && update-ca-certificates;
 fi;
