@@ -50,6 +50,14 @@ else
   sed -i -r 's/(#\s)(.*80)/\2/' "${port_file}";
 fi;
 
+# Create the database
+if [[ 'false' != "${database}" ]]; then
+  echo "CREATE DATABASE IF NOT EXISTS ${database};
+        GRANT ALL PRIVILEGES ON ${database}.* TO 'vagrant'@'localhost';
+        FLUSH PRIVILEGES;" | mysql;
+  [[ $? ]] && echo "Database ${database} created";
+fi;
+
 # Create root path.
 # For when the site's document root isn't the site root.
 [[ ! -d "${document_root}" ]] && mkdir -p "${document_root}";

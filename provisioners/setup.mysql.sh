@@ -51,7 +51,11 @@ echo "${SECURE_MYSQL}";
 # Set MySQL to start at boot.
 sysv-rc-conf --level 345 mysql on;
 
+# Create the vagrant user.
 mysql -u root -proot -e "CREATE USER 'vagrant'@'localhost' IDENTIFIED BY 'vagrant';"
+
+# Create MySQL credentials file for root.
+echo -e "[client]\nuser=root\npassword=root" > /root/.my.cnf;
 
 # Restart MySQL.
 /etc/init.d/mysql restart;

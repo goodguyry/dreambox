@@ -90,6 +90,7 @@ class Config
     site_defaults['is_subdomain'] = false
     site_defaults['php'] = @config.fetch('php')
     site_defaults['php_dir'] = @config.fetch('php_dir')
+    site_defaults['database'] = false
 
     @config['sites'].each_key do |dict|
       # Make a deep copy of the hash so it's not altered as we are iterating
@@ -155,6 +156,9 @@ class Config
         site['aliases'] = site.fetch('aliases').join(' ')
       end
 
+      # Database name
+      site['database'] = @config['sites'].fetch(dict).fetch('database') if @config['sites'].fetch(dict).key?('database')
+
       # Subdomains
       # Each subdomain is converted to a site hash; gets its own Apache conf
 
@@ -174,6 +178,7 @@ class Config
             'ssl' => site.fetch('ssl'), # Inherited from the parent site
             'php' => site.fetch('php'), # Inherited from the parent site
             'php_dir' => site.fetch('php_dir'), # Inherited from the parent site
+            'database' => false, # Default
           }
           add_item_to_root(subdomains[subdomain_name].fetch('host'), 'san_list') if ssl_enabled
         end
