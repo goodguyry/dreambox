@@ -13,6 +13,9 @@ cp /usr/local/dreambox/ndn-vhost.conf /usr/local/dh/apache2/apache2-dreambox/etc
 # Create vhost log directory.
 [[ ! -d /var/log/apache2/dreambox/dream.box ]] && mkdir -p /var/log/apache2/dreambox/dream.box;
 
+# Add the index.php file
+cp /tmp/files/index.php /usr/local/dh/web/;
+
 # Set Apache directory.
 ESCAPED_DOCUMENT_ROOT=$(echo "/usr/local/dh/web" | sed 's/\(\W\)/\\\1/g');
 sed -i "s/%document_root%/${ESCAPED_DOCUMENT_ROOT}/g" /usr/local/dh/apache2/apache2-dreambox/etc/vhosts/dream.box.conf;
