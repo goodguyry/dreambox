@@ -63,6 +63,7 @@ module Helpers
       printf "%-24s %s\n", 'Local Sync Folder', items['sync'] if items['sync']
       printf "%-24s %s\n", 'PHP Version', items['php'].to_s.split(//).join('.') if items['php']
       printf "%-24s %s\n", 'SSL Enabled', items['ssl']
+      printf "%-24s %s\n", 'Database', items['database'] if items['database']
       printf "%-24s %s\n", 'Aliases', items['aliases'].split(' ').join(', ') if items['aliases']
       printf "%-24s %s\n", 'Virtual Host Config', items['vhost_file'] if items['vhost_file']
       puts ''

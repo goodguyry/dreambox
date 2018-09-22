@@ -183,6 +183,7 @@ apt-get -y install \
   ndn-ntp-client \
   ndn-openipmi \
   ndn-passenger \
+  ndn-phpmyadmin-central \
   ndn-procwatch \
   ndn-savelog \
   ndn-sdbm-util \

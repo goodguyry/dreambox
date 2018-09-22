@@ -13,6 +13,7 @@ sites:
       - 'www2.dreambox.test'
     subdomains:
       app: 'app/'
+    database: 'dreambox_test_db'
   'example':
     host: example.test
     root: example.com

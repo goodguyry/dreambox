@@ -22,6 +22,7 @@ sites:
       - example.dev
     subdomains:
       app: 'app/'
+    database: full_one_db
   'full-two':
     host: example-two.dev
     root: example-two.com
