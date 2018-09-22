@@ -16,8 +16,8 @@ if (! test -e "${SHARE_DIR}/intermediate.crt" && ! test -e "${SHARE_DIR}/ca.crt"
   cp "${CA_PATH}/certs/ca.crt" "${SHARE_DIR}";
 
   # Create the public folder and copy over the chain cert.
-  [[ ! -d /dh/web/public/ ]] && mkdir -p /dh/web/public/;
-  cp "${CA_PATH}/intermediate/certs/ca-chain.cert.pem" /dh/web/public/;
+  [[ ! -d /usr/local/dh/web/public/ ]] && mkdir -p /usr/local/dh/web/public/;
+  cp "${CA_PATH}/intermediate/certs/ca-chain.cert.pem" /usr/local/dh/web/public/;
 
   [[ $? -lt 1 ]] && update-ca-certificates;
 fi;
