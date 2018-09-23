@@ -126,7 +126,7 @@
         <a href="https://github.com/goodguyry/dreambox/issues">Issues</a>
       </li>
       <li>
-        <a href="https://github.com/goodguyry/dreambox/issues">Releases</a>
+        <a href="https://github.com/goodguyry/dreambox/releases">Releases</a>
       </li>
     </ul>
   </body>

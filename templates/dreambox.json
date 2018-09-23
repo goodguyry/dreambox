@@ -44,6 +44,7 @@
       "scripts": [
         "{{ pwd }}/provisioners/setup.apache.sh",
         "{{ pwd }}/provisioners/setup.mysql.sh",
+        "{{ pwd }}/provisioners/setup.box-host.sh",
         "{{ pwd }}/provisioners/virtualbox.sh",
         "{{ pwd }}/provisioners/vmware.sh",
         "{{ pwd }}/provisioners/vagrant.sh",

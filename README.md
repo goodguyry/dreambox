@@ -34,9 +34,19 @@ See [the Wiki][getting_started] for additional documentation.
 
 ## CHANGELOG
 
-### 0.3.0-beta-1
+### 0.3.0-beta-2
 
-> **BREAKING CHANGES in 0.3.x: See [Upgrading-Dreambox][upgrading_dreambox]**
+```
+**BREAKING CHANGES in 0.3.x: See [Upgrading-Dreambox](Upgrading-Dreambox)**
+```
+
+ADDED: `dream.box` admin page and links
+ADDED: Installs phpMyAdmin ([#6](../../issues/6))
+ADDED: The ability to create databases during provisioning
+ADDED: A vagrant database user
+CHANGED: ca-chain.cert.pem is copied to the `dream.box` public folder
+
+### 0.3.0-beta-1
 
 - ADDED: Uses Dreamhost NDN repositories ([#36](../../issues/36))
   - Prefixed with `ndn-` in `dpkg -l`
