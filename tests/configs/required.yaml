@@ -10,4 +10,4 @@ sites:
     host: example.dev
     root: example.com
     sync: web
-    user: user
+    username: user

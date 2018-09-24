@@ -57,7 +57,7 @@ module Helpers
     config['sites'].each do |site, items|
       puts "===> Site: #{site}:".bold.yellow
       printf "%-24s %s\n", 'Host', items['host'] if items['host']
-      printf "%-24s %s\n", 'User', items['user'] if items['user']
+      printf "%-24s %s\n", 'Username', items['username'] if items['username']
       printf "%-24s %s\n", 'Group', items['group'] if (items['group'] != 'dreambox')
       printf "%-24s %s\n", 'Document Root', items['document_root'] if items['document_root']
       printf "%-24s %s\n", 'Local Sync Folder', items['sync'] if items['sync']

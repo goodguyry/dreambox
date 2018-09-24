@@ -60,7 +60,7 @@ class Config
 
     @raw['php_dir'] = @php_dirs[@php_versions.index(@raw.fetch('php').to_s)]
 
-    required_properties = ['user', 'root', 'sync', 'host']
+    required_properties = ['username', 'root', 'sync', 'host']
     @raw['sites'].each_key do |dict|
       required_properties.each do |property|
         begin
@@ -100,11 +100,11 @@ class Config
       # Assign a UID based either on a previously-declared user or a new user
       # Assign a GID based either on a previously-declared group, a new group, or the default
 
-      if users.key?(site['user'])
-        site['uid'] = users[site['user']]
+      if users.key?(site['username'])
+        site['uid'] = users[site['username']]
       else
         site['uid'] = user_id += 1
-        users.merge!(site['user'] => site['uid'])
+        users.merge!(site['username'] => site['uid'])
       end
 
       site['group'] = 'dreambox' unless site['group']
@@ -131,7 +131,7 @@ class Config
 
       site['sync'] = trim_slashes(@config['sites'].fetch(dict).fetch('sync'))
 
-      site['sync_destination'] = File.join('/home/', site.fetch('user'), trim_slashes(site.fetch('root')))
+      site['sync_destination'] = File.join('/home/', site.fetch('username'), trim_slashes(site.fetch('root')))
       site['document_root'] = (site.key?('public')) ?
         File.join(site['sync_destination'], trim_slashes(site.fetch('public'))) :
         site['sync_destination']
@@ -167,7 +167,7 @@ class Config
           path = site['subdomains'][sub]
           subdomain_name = "#{sub}.#{dict}"
           subdomains[subdomain_name] = {
-            'user' => site.fetch('user'), # Inherited from the parent site
+            'username' => site.fetch('username'), # Inherited from the parent site
             'uid' => site.fetch('uid'), # Inherited from the parent site
             'group' => site.fetch('group'), # Inherited from the parent site
             'gid' => site.fetch('gid'), # Inherited from the parent site

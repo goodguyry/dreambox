@@ -14,7 +14,7 @@ sites:
     host: www.example.dev
     root: example.com
     sync: web/
-    user: user
+    username: user
     group: shared_group
     php: '56'
     public: public
@@ -27,7 +27,7 @@ sites:
     host: example-two.dev
     root: example-two.com
     sync: web
-    user: user-two
+    username: user-two
     group: shared_group
     ssl: true
     aliases: [ www.example-two.dev ] # alternative syntax
