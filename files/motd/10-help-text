@@ -26,7 +26,10 @@
 PROJECT_URL='https://github.com/goodguyry/dreambox';
 DOCS_PATH="${PROJECT_URL}/wiki/0.3.0";
 ISSUES_PATH="${PROJECT_URL}/issues";
+ADMIN_PAGE='http://dream.box';
 
 printf "\n* Version 0.3.0 documentation:\n%s\n" "${DOCS_PATH}";
 
 printf "\n* Issues:\n%s\n\n" "${ISSUES_PATH}";
+
+printf "\n* Visit %s for more.\n" "${ADMIN_PAGE}";

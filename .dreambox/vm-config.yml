@@ -6,7 +6,7 @@ sites:
     host: 'www.dreambox.test' # required
     root: 'dreambox.com' # required
     sync: 'static/' # required
-    user: 'db_user' # required
+    username: 'db_user' # required
     public: 'public'
     aliases:
       - 'dreambox.test'
@@ -18,7 +18,7 @@ sites:
     host: example.test
     root: example.com
     sync: web
-    user: example_user
+    username: example_user
     ssl: false
     php: '56'
     subdomains: { 'help': '/app/help/' }

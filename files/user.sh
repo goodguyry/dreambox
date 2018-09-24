@@ -15,18 +15,18 @@ else
 fi;
 
 # Create the user.
-if $(getent passwd $user >/dev/null); then
-  echo "User ${user} already exists.";
+if $(getent passwd $username >/dev/null); then
+  echo "User ${username} already exists.";
 else
-  adduser --no-create-home -uid $uid -gid $gid --disabled-password --gecos '' $user;
-  cp -R /home/vagrant/.ssh /home/$user/.ssh;
-  echo -e "vagrant\nvagrant" | (passwd $user);
-  cp /home/vagrant/.profile /home/$user/.profile;
-  echo "${user} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/$user;
-  chmod 440 /etc/sudoers.d/$user;
+  adduser --no-create-home -uid $uid -gid $gid --disabled-password --gecos '' $username;
+  cp -R /home/vagrant/.ssh /home/$username/.ssh;
+  echo -e "vagrant\nvagrant" | (passwd $username);
+  cp /home/vagrant/.profile /home/$username/.profile;
+  echo "${username} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/$username;
+  chmod 440 /etc/sudoers.d/$username;
 fi;
 
 # Update home directory permissions.
-chown -R "${user}:${group}" "/home/${user}";
+chown -R "${username}:${group}" "/home/${username}";
 
 exit $?;

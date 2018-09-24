@@ -77,7 +77,7 @@ Vagrant.configure(2) do |config|
     end
 
     Dreambox.config['sites'].each do |site, conf|
-      test.vm.provision "User Setup: #{conf['user']}",
+      test.vm.provision "User Setup: #{conf['username']}",
         type: "shell",
         inline: "/bin/bash /usr/local/dreambox/user.sh",
         :env => conf

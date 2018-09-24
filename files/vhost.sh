@@ -63,7 +63,7 @@ fi;
 [[ ! -d "${document_root}" ]] && mkdir -p "${document_root}";
 
 # Update permissions.
-chown -R "${user}:${group}" "/home/${user}";
+chown -R "${username}:${group}" "/home/${username}";
 
 [[ $? ]] && echo "${host} added."
 

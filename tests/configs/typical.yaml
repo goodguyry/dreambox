@@ -13,7 +13,7 @@ sites:
     host: example.dev
     root: example.com
     sync: web/
-    user: user
+    username: user
     group: example_group
     php: 56
     aliases:
@@ -23,6 +23,6 @@ sites:
     host: example-two.dev
     root: example-two.com
     sync: web
-    user: user-two
+    username: user-two
     ssl: false
     aliases: [ www.example-two.dev, '*.example-two.dev' ] # alternative syntax
