@@ -34,11 +34,16 @@ See [the Wiki][getting_started] for additional documentation.
 
 ## CHANGELOG
 
-### 0.3.0-beta-2
+### 0.3.0-beta-3
 
 ```
 **BREAKING CHANGES in 0.3.x: See [Upgrading-Dreambox](Upgrading-Dreambox)**
 ```
+
+- ADDED: dream.box URL to motd
+- CHANGED: `user` config property is now `username`
+
+### 0.3.0-beta-2
 
 ADDED: `dream.box` admin page and links
 ADDED: Installs phpMyAdmin ([#6](../../issues/6))
