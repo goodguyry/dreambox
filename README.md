@@ -5,6 +5,8 @@ DreamBox
 
 **If you'd like to help test Dreambox 0.3.0-beta, please see [the 0.3.0 configuration notes](../../wiki/0.3.0) in the Wiki**
 
+The `master` branch [will be archived soon](../../issues/64)
+
 This project repo contains the code for [building the Dreambox base box][wiki_build]. To use Dreambox in your project, check out the ["Getting Started" section of the Wiki][getting_started].
 
 ## Package Versions
