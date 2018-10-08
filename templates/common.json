@@ -1,6 +1,6 @@
 {
   "boot_wait": "20s",
-  "box_version": "0.3.0-beta-3",
+  "box_version": "0.3.0",
   "description": "A Vagrant environment based on DreamHost's shared hosting",
   "disk_size": "20480",
   "headless": "true",
