@@ -4,9 +4,6 @@ DreamBox is an open source project. It is licensed using the [GNU General Public
 2. Please start a discussion beforehand for any large patches and pull requests.
 3. Make sure to fully document any patches and pull requests, specifying what it achieves and why it is necessary.
 
-If you're adding software:
-
-1. Please do your best to make sure the version matches the current version used by DreamHost.
-2. Please add any necessary post-install setup in a script at `provisioners/setup.<package-name>.sh` and make sure it's run from both `Vagrantfile` and `templates/Vagrantfile`.
+If you're adding software, **please only add software that is available from the repos included in Dreambox**. This will ensure package versions and dependencies are correct.
 
 Thanks!
