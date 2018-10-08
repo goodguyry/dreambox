@@ -1,0 +1,11 @@
+Package: dreambox-ca-certificates
+Source: dreambox-ca-certificates
+Maintainer: Ryan Domingue <goodguyry@users.noreply.github.com>
+Version: 0.1
+Section: misc
+Priority: optional
+Architecture: all
+Description: Dreambox CA Certificates
+ This package includes CA certificates and support files for the Dreambox
+ Vagrant box. The CA certificates installed by this package will be implicitly
+ trusted.

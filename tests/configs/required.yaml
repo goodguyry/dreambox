@@ -1,0 +1,13 @@
+# Test configuration featuring only required settings
+#
+# The box defaults will be inherited by this config:
+# - PHP version 70
+# - SSL disabled
+# - 'dreambox' box name
+
+sites:
+  'required':
+    host: example.dev
+    root: example.com
+    sync: web
+    username: user

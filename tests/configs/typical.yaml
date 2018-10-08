@@ -1,0 +1,28 @@
+# Test configuration featuring a typical setup
+#
+# The root SSL setting is inherited by the first site, but overridden by
+#   the second site's SSL setting.
+#
+# The root PHP version defaults to 70 and is inherited by the second site,
+#   but is overridden by the first site's PHP setting,
+
+ssl: true
+
+sites:
+  'typical-one':
+    host: example.dev
+    root: example.com
+    sync: web/
+    username: user
+    group: example_group
+    php: 56
+    aliases:
+      - www.example.dev
+      - '*.example.dev'
+  'typical-two':
+    host: example-two.dev
+    root: example-two.com
+    sync: web
+    username: user-two
+    ssl: false
+    aliases: [ www.example-two.dev, '*.example-two.dev' ] # alternative syntax

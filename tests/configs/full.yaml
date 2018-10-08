@@ -1,0 +1,34 @@
+# Test configuration featuring multiple sites with full feature set
+#
+# The root SSL setting is inherited by the first site, but overridden by
+#   the second site's SSL setting.
+#
+# The root PHP version is overridden by the first site's PHP setting, but
+#   inherited by the second site.
+
+php: '71'
+ssl: false
+
+sites:
+  'full-one':
+    host: www.example.dev
+    root: example.com
+    sync: web/
+    username: user
+    group: shared_group
+    php: '56'
+    public: public
+    aliases:
+      - example.dev
+    subdomains:
+      app: 'app/'
+    database: full_one_db
+  'full-two':
+    host: example-two.dev
+    root: example-two.com
+    sync: web
+    username: user-two
+    group: shared_group
+    ssl: true
+    aliases: [ www.example-two.dev ] # alternative syntax
+    subdomains: { 'help': '/app/help/' } # alternative syntax

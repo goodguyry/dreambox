@@ -10,21 +10,49 @@
       "destination": "/tmp"
     },
     {
-      "type": "file",
-      "source": "{{ pwd }}/packages",
-      "destination": "/tmp"
+      "type": "shell",
+      "scripts": [
+        "{{ pwd }}/provisioners/set-files.sh",
+        "{{ pwd }}/provisioners/base.sh"
+      ],
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        },
+        "vmware-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        }
+      }
     },
     {
       "type": "shell",
       "scripts": [
-        "{{ pwd }}/scripts/base.sh",
-        "{{ pwd }}/scripts/package-setup.sh",
-        "{{ pwd }}/scripts/virtualbox.sh",
-        "{{ pwd }}/scripts/vmware.sh",
-        "{{ pwd }}/scripts/vagrant.sh",
-        "{{ pwd }}/scripts/cleanup.sh",
-        "{{ pwd }}/scripts/zerodisk.sh"
+        "{{ pwd }}/provisioners/reboot.sh"
       ],
+      "expect_disconnect": true,
+      "override": {
+        "virtualbox-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        },
+        "vmware-iso": {
+          "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
+        }
+      }
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "{{ pwd }}/provisioners/setup.apache.sh",
+        "{{ pwd }}/provisioners/setup.mysql.sh",
+        "{{ pwd }}/provisioners/setup.box-host.sh",
+        "{{ pwd }}/provisioners/virtualbox.sh",
+        "{{ pwd }}/provisioners/vmware.sh",
+        "{{ pwd }}/provisioners/vagrant.sh",
+        "{{ pwd }}/provisioners/minimizer.sh",
+        "{{ pwd }}/provisioners/cleanup.sh",
+        "{{ pwd }}/provisioners/zerodisk.sh"
+      ],
+      "pause_before": "30s",
       "override": {
         "virtualbox-iso": {
           "execute_command": "echo 'vagrant' | sudo -S bash '{{ .Path }}'"
@@ -94,17 +122,31 @@
     }
   ],
   "post-processors": [
-    [{
-      "type": "vagrant",
-      "only": ["virtualbox-iso"],
-      "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.box",
-      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
-    },
-    {
-      "type": "vagrant",
-      "only": ["vmware-iso"],
-      "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.box",
-      "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile"
-    }]
+    [
+      {
+        "type": "vagrant",
+        "only": [
+          "virtualbox-iso"
+        ],
+        "output": "{{ pwd }}/_builds/dreambox.virtualbox.{{ user `box_version` }}.{{ isotime \"20060102_150405-0800\" }}.box",
+        "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
+        "include": [
+          "{{ pwd }}/templates/class_config.rb",
+          "{{ pwd }}/templates/utilities.rb"
+        ]
+      },
+      {
+        "type": "vagrant",
+        "only": [
+          "vmware-iso"
+        ],
+        "output": "{{ pwd }}/_builds/dreambox.vmware.{{ user `box_version` }}.{{ isotime \"20060102_150405-0800\" }}.box",
+        "vagrantfile_template": "{{ pwd }}/templates/Vagrantfile",
+        "include": [
+          "{{ pwd }}/templates/class_config.rb",
+          "{{ pwd }}/templates/utilities.rb"
+        ]
+      }
+    ]
   ]
 }

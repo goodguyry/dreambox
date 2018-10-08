@@ -1,5 +1,8 @@
-!packages/*.zip
 *.box
-certs
+*.crt
+*.key
+*.pem
+
+# local dev specific
 web
-output-*
+static

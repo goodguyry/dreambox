@@ -1,9 +1,21 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Shoehorn the config file into our test Vagrantfile
+require_relative File.join(File.expand_path(Dir.pwd), 'templates/class_config.rb')
+
+# config_file = 'vm-config.yml'
+dreambox_dir = '.dreambox'
+config_file_default = Dir.glob("#{dreambox_dir}/*.*").grep(/\.ya?ml$/).first
+
+dreambox_config_file = (defined?(config_file)) ?
+  config_file :
+  config_file_default
+
+Dreambox = Config.new(dreambox_config_file)
+
 Vagrant.configure(2) do |config|
-  config.vm.box = "hashicorp/precise64"
-  config.vm.box_url = "https://atlas.hashicorp.com/hashicorp/boxes/precise64"
+  config.vm.box = "ubuntu/trusty64"
 
   config.vm.network :forwarded_port, guest: 80, host: 8080, auto_correct: true
 
@@ -11,52 +23,80 @@ Vagrant.configure(2) do |config|
     vb.customize ["modifyvm", :id, "--memory", "1024"]
   end
 
-  # Set these so the provisioning scripts can be run via ssh
-  config.vm.synced_folder "files", "/tmp/files", create: false, :mount_options => ["dmode=775", "fmode=664"]
-  config.vm.synced_folder "packages", "/tmp/packages", create: false, :mount_options => ["dmode=775", "fmode=664"]
+  # Recreates the Packer file provisioner
+  files = {
+    'files' => '/tmp/',
+  }
+  files.each { | dir, path | config.vm.provision "file", source: "#{dir}", destination: "#{path}" }
 
   # Development machine
-  # Ubuntu 12.04
+  # Ubuntu 14.04
   config.vm.define 'dev', autostart: false do |dev|
     dev.vm.hostname = "dreambox.dev"
     dev.vm.network :private_network, ip: "192.168.12.34"
   end
 
   # Testing machine
-  # Fully provisioned and ready to test
+  # To be fully provisioned and ready to test
   config.vm.define 'test', primary: true do |test|
-    test.vm.hostname = "dreambox.com"
+    test.vm.hostname = "dreambox.test"
     test.vm.network :private_network, ip: "192.168.56.78"
 
-    # Sets up the sync folder
-    test.vm.synced_folder 'web', '/home/db_user/dreambox.com'
+    config.vm.provider "virtualbox" do |vb|
+      vb.name = "Dreambox"
+    end
 
     # Start bash as a non-login shell
     test.ssh.shell = "bash -c 'BASH_ENV=/etc/profile exec bash'"
 
-    # Installed utinities and libraries
-    test.vm.provision "base",
+    test.vm.provision "Set Files",
       type: "shell",
-      path: "scripts/base.sh"
+      path: "provisioners/set-files.sh"
 
-    # Post-install MySQL setup
-    test.vm.provision "package-setup",
+    test.vm.provision "Base",
       type: "shell",
-      path: "scripts/package-setup.sh"
+      path: "provisioners/base.sh"
 
-    # Environment variables for automating user_setup
-    user_vars = {
-      "DREAMBOX_USER_NAME" => "db_user",
-      "DREAMBOX_SITE_ROOT" => "dreambox.com",
-      "DREAMBOX_PROJECT_DIR" => "web",
-      "ENABLE_SSL" => true,
-      "DREAMBOX_SITE_NAME" => "dreambox.test",
-    }
+    test.vm.provision "Apache Setup",
+      type: "shell",
+      path: "provisioners/setup.apache.sh"
 
-    # Runs user_setup
-    test.vm.provision "shell",
-      inline: "/bin/bash /usr/local/bin/user_setup",
-      # Pass user_setup ENV variables to this script
-      :env => user_vars
+    test.vm.provision "MySQL Setup",
+      type: "shell",
+      path: "provisioners/setup.mysql.sh"
+
+    test.vm.provision "Box Host Setup",
+      type: "shell",
+      path: "provisioners/setup.box-host.sh"
+
+    if Dreambox.config['ssl_enabled'] then
+      test.vm.provision "SSL Setup",
+        type: "shell",
+        inline: "/bin/bash /usr/local/dreambox/ssl.sh",
+        :env => Dreambox.config
+    end
+
+    Dreambox.config['sites'].each do |site, conf|
+      test.vm.provision "User Setup: #{conf['username']}",
+        type: "shell",
+        inline: "/bin/bash /usr/local/dreambox/user.sh",
+        :env => conf
+
+      if (! conf['is_subdomain']) then
+        test.vm.synced_folder conf['sync'], conf['sync_destination'],
+          owner: "#{conf['uid']}",
+          group: "#{conf['gid']}",
+          mount_options: ["dmode=775,fmode=664"]
+      end
+
+      test.vm.provision "VHost Setup: #{conf['host']}",
+        type: "shell",
+        inline: "/bin/bash /usr/local/dreambox/vhost.sh",
+        :env => conf
+    end
+
+    test.vm.provision "Start Apache",
+      type: "shell",
+      inline: "/bin/bash /etc/init.d/httpd2 start"
   end
 end

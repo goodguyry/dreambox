@@ -20,19 +20,15 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-PROJECT_URL='https://github.com/goodguyry/dreambox'
-DOCS_PATH='/wiki'
-ISSUES_PATH='/issues'
-UPGRADE_PATH='/wiki/Upgrading-Dreambox'
-BETA_DOCS='/wiki/0.3.0'
+# Prints Documentation and Issues links
 
-printf "\n* Documentation:\n${PROJECT_URL}%s\n" "${DOCS_PATH}"
+PROJECT_URL='https://github.com/goodguyry/dreambox';
+DOCS_PATH="${PROJECT_URL}/wiki/0.3.0";
+ISSUES_PATH="${PROJECT_URL}/issues";
+ADMIN_PAGE='http://dream.box';
 
-printf "\n* Issues:\n${PROJECT_URL}%s\n" "${ISSUES_PATH}"
+printf "\n* Version 0.3.0 documentation:\n%s\n" "${DOCS_PATH}";
 
-printf "\n* >>> If you're experiencing issues after upgrading, please see the upgrade docs:\n${PROJECT_URL}%s\n\n" "${UPGRADE_PATH}"
+printf "\n* Issues:\n%s\n\n" "${ISSUES_PATH}";
 
-printf "****"
-printf "\n* 0.3.0-beta now available for testing!"
-printf "\n* Version 0.3.0-beta documentation:\n*   ${PROJECT_URL}%s" "${BETA_DOCS}"
-printf "\n****\n"
+printf "\n* Visit %s for more.\n" "${ADMIN_PAGE}";

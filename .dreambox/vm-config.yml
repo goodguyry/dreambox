@@ -1,0 +1,26 @@
+php: 71
+ssl: true
+
+sites:
+  'dreambox':
+    host: 'www.dreambox.test' # required
+    root: 'dreambox.com' # required
+    sync: 'static/' # required
+    username: 'db_user' # required
+    public: 'public'
+    aliases:
+      - 'dreambox.test'
+      - 'www2.dreambox.test'
+    subdomains:
+      app: 'app/'
+    database: 'dreambox_test_db'
+  'example':
+    host: example.test
+    root: example.com
+    sync: web
+    username: example_user
+    ssl: false
+    php: '56'
+    subdomains: { 'help': '/app/help/' }
+
+# debug: true
