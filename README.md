@@ -34,38 +34,27 @@ See [the Wiki][getting_started] for additional documentation.
 
 ## CHANGELOG
 
-**BREAKING CHANGES in 0.3.x: See [Upgrading-Dreambox](Upgrading-Dreambox)**
-
-### 0.3.0-beta-3
-
-- ADDED: dream.box URL to motd
-- CHANGED: `user` config property is now `username`
-
-### 0.3.0-beta-2
-
-- ADDED: `dream.box` admin page and links
-- ADDED: Installs phpMyAdmin ([#6](../../issues/6))
-- ADDED: The ability to create databases during provisioning
-- ADDED: A vagrant database user
-- CHANGED: ca-chain.cert.pem is copied to the `dream.box` public folder
-
-### 0.3.0-beta-1
+### 0.3.0
 
 - ADDED: Uses Dreamhost NDN repositories ([#36](../../issues/36))
   - Prefixed with `ndn-` in `dpkg -l`
 - ADDED: Create multiple vhosts during vagrant up ([#5](../../issues/5))
 - ADDED: Choose between multiple PHP versions
 - ADDED: Run more than one version of PHP
+- ADDED: Installs phpMyAdmin ([#6](../../issues/6))
 - ADDED: Certificate Authority (no more self-signed certificates) ([#54](../../issues/54))
 - ADDED: Subdomain support
 - ADDED: Support for host aliases
-- ADDED: `.dreambox` directory
+- ADDED: The ability to create a database during provisioning
+- ADDED: `dream.box` admin page and links
 - CHANGED: Moves configuration to external YAML file
 - CHANGED: Updates Ubuntu to `14.04.5`
+- CHANGED: Updates MySQL to `5.6.33`
+- CHANGED: Updates PHP to versions `5.6.33`, `7.0.27`, and `7.1.13`
 - CHANGED: Build scripts improved for a more streamlined VM.
 - FIXED: Corrects user home directory permissions.
 - FIXED: Uses `subjectAltName` for all hosts
-	- [commonName matching is deprecated](https://groups.google.com/a/chromium.org/forum/m/#!topic/security-dev/IGT2fLJrAeo)
+  - [commonName matching is deprecated](https://groups.google.com/a/chromium.org/forum/m/#!topic/security-dev/IGT2fLJrAeo)
 - REMOVED: Configuration via a hash of settings values
 
 ### 0.2.5
