@@ -93,7 +93,7 @@ Thanks to [@jbtule](https://github.com/jbtule) and [@meowsus](https://github.com
 
 ### 0.2.0
 
-> **BREAKING CHANGES on 0.2.x: See [Upgrading-Dreambox][upgrading_dreambox]**
+> **BREAKING CHANGES on 0.2.x: See [0.2.x Archived Notes](../../wiki/0.2.x)**
 
 - ADDED: Example Vagrantfile
 - ADDED: Packaged Vagrantfile to simplify the setup process
