@@ -20,8 +20,7 @@
 #    with this program; if not, write to the Free Software Foundation, Inc.,
 #    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-#
-# Prints Documentation and Issues links, as well as help docs for breaking changes.
+# Prints Documentation and Issues links
 
 PROJECT_URL='https://github.com/goodguyry/dreambox';
 DOCS_PATH="${PROJECT_URL}/wiki/0.3.0";
